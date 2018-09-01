@@ -1,0 +1,299 @@
+#! /usr/bin/env lua
+
+-- This program sets pwm of Active thermal Solution for RockPro64
+--
+-- Nota : temperature can be more than real because of self heating
+----------------------------------------------------------------------
+-- Copyright (c) 2018 Carlos Domingues, aka tuxd3v, Lisboa Portugal
+-- tuxd3v@sapo.pt
+--
+-- Permission is granted to use the source code within this
+-- file in whole or in part for non-commercial use,
+-- providing that modifications are given back to the community.
+--
+-- No warranties, either explicit or implied, are made as to the
+-- suitability of this code for any purpose. Use at your own risk.
+----------------------------------------------------------------------
+
+---- Tests Done
+--
+-- This tool was tested 24x7, for more than a month, under Full Load, with:
+-- < Minimal Debian Strech release > by ayufan
+
+---- Thermal Control Variables
+--
+-- Thermal Zone 0
+THERMAL0_CTL = "N/A";
+-- Thermal Zone 1
+THERMAL0_CTL = "N/A";
+-- FAN Control
+FAN_CTL      = "N/A";
+
+---- Thermal Global Variables
+--
+-- Fan Pwm Value
+FAN_PWM   = 0
+-- Thermal Zone 0
+THERMAL_0 = "N/A"
+-- Thermal Zone 1
+THERMAL_1 = "N/A"
+
+----
+---- Functions Related with Active Thermal Zone.
+--
+--
+
+---- Find Device sysfs location
+--
+function getConditions(  therm0_ctl, therm1_ctl, fan_ctl )
+ 	local handle = io.open( therm0_ctl , "r")
+	if ( handle ~= nil )
+	then
+		THERMAL0_CTL = therm0_ctl
+		handle:close()
+	else
+		THERMAL0_CTL = "ERROR"
+		return 1
+	end
+ 	handle = io.open( therm1_ctl , "r")
+	if ( handle ~= nil )
+	then
+		THERMAL1_CTL = therm1_ctl
+		handle:close()
+	else
+		THERMAL1_CTL = "ERROR"
+		return 1
+	end
+ 	handle = io.open( fan_ctl , "r")
+	if ( handle ~= nil )
+	then
+		FAN_CTL = fan_ctl
+		handle:close()
+	else
+		FAN_CTL = "ERROR"
+		return 1
+	end
+	return 0
+end
+
+-- Set Fan PWM value
+-- 
+function setFanpwm( value )
+    local RETURN = "N/A";
+ 	local handle = io.open( FAN_CTL , "w")
+	if ( handle ~= nil )
+	then
+		RETURN = handle:write( value .. "" )
+		handle:close()
+		if( RETURN ~= nill or RETURN ~= "N/A" )
+		then
+			getFanpwm()
+			if( tonumber( FAN_PWM ) == value )
+			then
+				FAN_PWM = value
+				return 0
+			end
+    	end
+    end
+    FAN_PWM = 0
+    return 1
+end
+
+-- Get Fan PWM value
+-- 
+function getFanpwm()
+	local RETURN = "N/A";
+	local handle = io.open( FAN_CTL , "r")
+	if ( handle ~= nil )
+	then
+		RETURN = handle:read("*a")
+		handle:close()
+		if( RETURN ~= nill and RETURN ~= "N/A" )
+		then
+			FAN_PWM = tonumber( RETURN )
+			return 0
+		end
+	end
+	FAN_PWM = 0
+	return 1
+end
+
+-- Get Thernal Values
+-- 
+function getThermal()
+	local RETURN = "N/A";
+	local handle = io.open( THERMAL0_CTL , "r")
+	if ( handle ~= nil )
+	then
+		RETURN = handle:read("*a")
+		handle:close()
+		if( RETURN ~= nill and RETURN ~= "N/A" )
+		then
+			THERMAL_0 = tonumber( RETURN  / 1000 )
+		else
+			THERMAL_0 = "ERROR"
+		end
+	else
+			THERMAL_0 = "ERROR"
+	end
+	RETURN = "N/A";
+	handle = io.open( THERMAL1_CTL .. "", "r")
+	if ( handle ~= nil )
+	then
+		RETURN = handle:read("*a")
+		handle:close()
+		if( RETURN ~= nill and RETURN ~= "N/A" )
+		then
+			THERMAL_1 = tonumber( RETURN  / 1000 )
+			return 0
+		else
+			THERMAL_1="ERROR"
+		end
+	else
+		THERMAL_1 = "ERROR"
+	end					
+	return 1
+end
+
+----------------------------
+---- Variables and Functions to Deamonize.
+--
+--
+ppid=1000000000000000000000000
+
+createLock()
+then
+	local RETURN = "N/A"
+	local handle = io.open( "/var/lock/fanctl.lock" , "r")
+	if ( handle == nil )
+	then
+		handle:close()
+		RETURN = os.execute("echo $BASHPID;")
+		ppid   = tonumber( RETURN )
+		handle = io.open( "/var/lock/fanctl.lock" , "w")
+		handle:write( RETURN .. "" )
+		handle:close()
+		return 0
+	end
+	handle:close()
+	return 1
+end
+
+---- MAIN ----
+---- Check Configurations
+--
+-- if( createLock() == 1 ){
+--	print( "fanctl is already running.." )
+--	print( "exit 1" )
+--	os.exit(1);
+--}
+
+therm0_ctl = "/sys/class/thermal/thermal_zone0/temp"
+therm1_ctl = "/sys/class/thermal/thermal_zone1/temp"
+fan_ctl    = "/sys/devices/platform/pwm-fan/hwmon/hwmon0/pwm1"
+if( getConditions( therm0_ctl, therm1_ctl, fan_ctl ) == 1 )
+then
+	io.write( string.format("getConditions: Warning, Couldnt get sysfs Locations:\n%s\n%s\n%s\n\n", therm0_ctl, therm1_ctl, fan_ctl ))
+	io.write( string.format("getConditions: Warning, Values { THERMAL0_CTL, THERMAL1_CTL, FAN_CTL }: %s, %s, %s\n", THERMAL0_CTL, THERMAL1_CTL, FAN_CTL ))
+	io.write( string.format("exit 1\n"))
+	os.exit(1)
+end
+
+---- Temperature Parameters
+--
+-- By Experience, without Underclock, with cpufreq Scalling 'Ondemand',
+-- And with all CPUs at 100%, the temperature should not grow more than ~57/58C,
+-- But it depends of the HeatSink used and also the Fan characteristics..
+
+-- Max Temperatue Allowed on CPU, Above This Threshold, machine will  shutdown
+ABSOLUTE_MAX_THERMAL_TEMP   = 70
+-- Max Temperature Allowed without sufering Underclocking
+MAX_CONTINUOUS_THERMAL_TEMP = 62
+
+-- Max Temperature taken to set a Ratio to PWM
+MAX_THERMAL_TEMP            = 60
+-- Min Temperature taken to set a Ratio to PWM( also the temperature threshold to activate Fan )
+MIN_THERMAL_TEMP            = 45
+
+---- PWM Parameters
+--
+-- Min PWM alue, to Stop Fan.
+STOP_FAN_PWM          = 0
+-- Max PWM value possible
+MAX_FAN_PWM           = 255
+-- Adjust conform your Fan specs, some neds greater values, others work with less current
+MIN_FAN_PWM           = 30
+PWM_RANGE             = ( MAX_FAN_PWM - MIN_FAN_PWM )
+
+---- Initial Temperature
+-- For Safety Reasons,
+-- It Starts ABOVE 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps... if so, it will underclock.
+-- 
+-- In the absence of proper Active Thermal Solution, to cool down( Weak Fan? ),
+-- It will underclock to { 0, 1 } = { 1,2Ghz, 1,6Ghz }( for safety Reasons ), but Fan continue to work and adjust( if readings temps work ),
+-- Until 'ABSOLUTE_MAX_THERMAL_TEMP' reached, were it Shutdown.
+--
+TEMP                  = 63
+
+---- Pulling operations check and correct fan speed
+--
+-- Don't Start Fan with Big initial jump.. 
+setFanpwm( 90 )
+setFanpwm( 130 )
+os.execute( "sleep " .. 1 )
+setFanpwm( 190 )
+os.execute( "sleep " .. 6 )
+
+while true
+do
+	getThermal()
+	if( THERMAL_0 > THERMAL_1 )
+	then
+       	TEMP = THERMAL_0
+	else
+		TEMP = THERMAL_1
+	end
+
+	-- Temp Inside Active envelope to adjust Fan
+	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
+	then
+		PWM_VALUE = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
+        setFanpwm( PWM_VALUE )    
+	else
+		-- Fan not needed, temp below threshold
+		if( TEMP < MIN_THERMAL_TEMP )
+		then
+			if( FAN_PWM > 0 )
+			then
+				setFanpwm( 0 )
+			end
+		else
+			-- Temp Above threshold to Underclock Frequencies
+			if( TEMP < ABSOLUTE_MAX_THERMAL_TEMP )
+			then
+				os.execute( "cpufreq-set -c 0 -f 1.2Ghz ")
+				os.execute( "cpufreq-set -c 4 -f 1.6Ghz ")
+			else
+				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
+				io.write( string.format("Warning: SHUTTING DOWN in 10s\n"))
+				os.execute( "sleep " .. 10 )
+				io.write( string.format("exit 1\n"))
+				os.execute( "shutdown -h now")
+				os.exit( 1 );
+			end	
+		end
+	end
+	-- Sleep 5 Seconds, until next check
+	os.execute( "sleep " .. 5 )
+end
+
+os.exit( 1 );
+
