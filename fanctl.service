@@ -1,0 +1,14 @@
+[Unit]
+Description=Active Thermal Fan Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=8
+User=root
+ExecStart=/usr/sbin/fanctl
+
+[Install]
+WantedBy=multi-user.target
