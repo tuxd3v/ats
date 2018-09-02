@@ -15,13 +15,13 @@ Characteristics:
 	1. Temp < 45 Degrees Celsius,
 		Fan will Stop
 
-	2. 62 <= TEMP >= 45 , Temp is Adjusted
+	2. 45 <= TEMP <= 62 , Temp is Adjusted
 
-	3. Temp > 70 Degrees Celsius,
-		System will shutdown in 10 Seconds..
-
-	4. Temp > 62 Degrees Celsius,
+	3. 70 > Temp <= 63 Degrees Celsius,
 		system will UnderClock Frequencies
+
+	4. Temp > 70 Degrees Celsius,
+		System will shutdown in 10 Seconds..
 
 
 ## Requirements:
