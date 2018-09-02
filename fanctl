@@ -159,7 +159,6 @@ end
 ---- Variables and Functions to Deamonize.
 --
 --
-ppid=1000000000000000000000000
 
 createLock()
 then
