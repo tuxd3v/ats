@@ -6,9 +6,7 @@ But Could be adapted to other boards too..
 This tool is system Agnostic.
 
 The Control is Made via SysFS, based in the Lua Scripting Language.
-
-You can Adapt the file fanctl, if you want( its configured  for #### RockPro64 )
-to adjust your paths on SysFs
+You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 
 Characteristics:
 
