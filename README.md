@@ -1,6 +1,6 @@
 # fanctl
 
-Active Fan Thermal tool to Control Processor Temperature to #### RockPro64,
+Active Fan Thermal tool to Control Processor Temperature to  RockPro64 Single Board Computer,
 
 But Could be adapted to other boards too..
 This tool is system Agnostic.
