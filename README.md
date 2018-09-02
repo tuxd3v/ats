@@ -36,7 +36,7 @@ You need to install only the tinny Lua runtime.
 ### Install Dependencies.
 	apt-get install lua5.3
 
-Then made the Symbolic Link:
+##### Then made the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 
 
