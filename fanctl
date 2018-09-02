@@ -204,7 +204,7 @@ end
 -- And with all CPUs at 100%, the temperature should not grow more than ~57/58C,
 -- But it depends of the HeatSink used and also the Fan characteristics..
 
--- Max Temperatue Allowed on CPU, Above This Threshold, machine will  shutdown
+-- Max Temperatue Allowed on CPU, Above This Threshold, machine will shutdown
 ABSOLUTE_MAX_THERMAL_TEMP   = 70
 -- Max Temperature Allowed without sufering Underclocking
 MAX_CONTINUOUS_THERMAL_TEMP = 62
