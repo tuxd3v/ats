@@ -46,11 +46,8 @@ Characteristics:
 #### Copy the Systemd Service file to Destination Folder
 	cp fanctl.service /lib/systemd/system
 
-#### Tell systemd to enable Service
-	systemctl enable fanctl
-
-#### Start the Service
-	systemctl start fanctl
+#### Enable and Start Service
+	systemctl enable fanctl && systemctl start fanctl
 
 #### Check the Status
 	systemctl status fanctl
