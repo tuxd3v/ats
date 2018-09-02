@@ -1,6 +1,6 @@
 # fanctl
 
-Active Fan Thermal tool to Control Processor Temperature to  RockPro64 Single Board Computer,
+Active Fan Thermal tool, to Control Processor Temperature on RockPro64 Single Board Computer,
 
 But Could be adapted to other boards too..
 This tool is system Agnostic.
@@ -13,12 +13,12 @@ Characteristics:
 	1. Temp < 45 Degrees Celsius,
 		Fan will Stop
 
-	2. 45 <= TEMP <= 62 , Temp is Adjusted
+	2. 45 <= Temp <= 62 , Temp is Adjusted
 
-	3. 70 > Temp <= 63 Degrees Celsius,
-		system will UnderClock Frequencies
+	3. 63 <= Temp < 70 Degrees Celsius,
+		System will UnderClock Frequencies
 
-	4. Temp > 70 Degrees Celsius,
+	4. Temp >= 70 Degrees Celsius,
 		System will shutdown in 10 Seconds..
 
 
