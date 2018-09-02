@@ -27,7 +27,7 @@ Characteristics:
 You need to install only the tinny Lua runtime.
 
 ## Requirements:
-	Only a Single Dependecie,
+	Only a Single Dependence,
 	The Lua 5.3 Runtime.
 
 
