@@ -12,19 +12,17 @@ to adjust your paths on SysFs
 
 Characteristics:
 
-1. Temp < 45 Degrees Celsius,
-	Fan will Stop
+	1. Temp < 45 Degrees Celsius,
+		Fan will Stop
 
-2. 62 <= TEMP >= 45 , Temp is Adjusted
+	2. 62 <= TEMP >= 45 , Temp is Adjusted
 
-3. Temp > 70 Degrees Celsius,
-	System will shutdown in 10 Seconds..
+	3. Temp > 70 Degrees Celsius,
+		System will shutdown in 10 Seconds..
 
-4. Temp > 62 Degrees Celsius,
-	system will UnderClock Frequencies
+	4. Temp > 62 Degrees Celsius,
+		system will UnderClock Frequencies
 
-
-You need to install only the tinny Lua runtime.
 
 ## Requirements:
 	Only a Single Dependence,
@@ -53,6 +51,7 @@ You need to install only the tinny Lua runtime.
 
 #### Start the Service
 	systemctl start fanctl
-	
+
+
 That's it!!!
 
