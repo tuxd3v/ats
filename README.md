@@ -52,6 +52,21 @@ Characteristics:
 #### Start the Service
 	systemctl start fanctl
 
+#### Check the Status
+	systemctl status fanctl
+
+	root@rockpro64:# systemctl status fanctl
+	● fanctl.service - Active Thermal Fan Service
+	   Loaded: loaded (/lib/systemd/system/fanctl.service; enabled; vendor preset: enabled)
+	   Active: active (running) since Sat 2018-09-01 23:23:49 WEST; 3h 0min ago
+	 Main PID: 704 (lua)
+		Tasks: 3 (limit: 4915)
+	   CGroup: /system.slice/fanctl.service
+		       ├─  704 lua /usr/sbin/fanctl
+		       ├─19575 sh -c sleep 5
+		       └─19576 sleep 5
+	Sep 01 23:23:49 rockpro64 systemd[1]: Started Active Thermal Fan Service.
+
 
 That's it!!!
 
