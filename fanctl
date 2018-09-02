@@ -189,7 +189,7 @@ end
 
 therm0_ctl = "/sys/class/thermal/thermal_zone0/temp"
 therm1_ctl = "/sys/class/thermal/thermal_zone1/temp"
-fan_ctl    = "/sys/devices/platform/pwm-fan/hwmon/hwmon0/pwm1"
+fan_ctl    = "/sys/class/hwmon/hwmon0/pwm1"
 if( getConditions( therm0_ctl, therm1_ctl, fan_ctl ) == 1 )
 then
 	io.write( string.format("getConditions: Warning, Couldnt get sysfs Locations:\n%s\n%s\n%s\n\n", therm0_ctl, therm1_ctl, fan_ctl ))
