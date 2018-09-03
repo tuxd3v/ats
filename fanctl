@@ -243,6 +243,8 @@ os.execute( "sleep " .. 1 )
 setFanpwm( 190 )
 os.execute( "sleep " .. 6 )
 
+TEMP_RATIO=0
+
 while true
 do
 	getThermal()
@@ -256,8 +258,11 @@ do
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
-		PWM_VALUE = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
-        setFanpwm( PWM_VALUE )    
+		TEMP_RATIO = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
+		if( TEMP_RATIO ~= PWM_VALUE )
+		then
+        	setFanpwm( PWM_VALUE )
+        end  
 	else
 		-- Fan not needed, temp below threshold
 		if( TEMP < MIN_THERMAL_TEMP )
