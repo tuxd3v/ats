@@ -258,10 +258,11 @@ do
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
-		TEMP_RATIO = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
-		if( TEMP_RATIO ~= PWM_VALUE )
+		PWM_RATIO = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
+		-- If temp doesnt change...don't update it..
+		if( PWM_RATIO ~= PWM_VALUE )
 		then
-        	setFanpwm( PWM_VALUE )
+        	setFanpwm( PWM_RATIO )
         end  
 	else
 		-- Fan not needed, temp below threshold
