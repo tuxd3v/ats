@@ -267,6 +267,7 @@ do
 		-- Fan not needed, temp below threshold
 		if( TEMP < MIN_THERMAL_TEMP )
 		then
+            -- IF Fan already Stop, don't ask to stop again..
 			if( FAN_PWM > 0 )
 			then
 				setFanpwm( 0 )
