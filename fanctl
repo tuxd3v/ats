@@ -160,8 +160,7 @@ end
 --
 --
 
-createLock()
-then
+function createLock()
 	local RETURN = "N/A"
 	local handle = io.open( "/var/lock/fanctl.lock" , "r")
 	if ( handle == nil )
