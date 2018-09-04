@@ -288,9 +288,8 @@ do
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
 				io.write( string.format("Warning: SHUTTING DOWN in 10s\n"))
-				os.execute( "sleep " .. 10 )
+				os.execute( "shutdown -h +10")
 				io.write( string.format("exit 1\n"))
-				os.execute( "shutdown -h now")
 				os.exit( 1 );
 			end	
 		end
