@@ -10,16 +10,22 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 
 Characteristics:
 
-	1. Temp < 45 Degrees Celsius,
+
+	1. Temp < 40 Degrees Celsius,
 		Fan will Stop
 
-	2. 45 <= Temp <= 62 , Temp is Adjusted
+	2. 40 <= Temp <= 62 Degrees Celsius,
+	    Fan is Adjusted, acordingly like in the Chart, 'Active Fan Thermal Envelope'   --- >                        ![alt text](https://github.com/tuxd3v/fanctl/master/ative_fan_thermal_envelope.png) 
 
 	3. 63 <= Temp < 70 Degrees Celsius,
-		System will UnderClock Frequencies
+		Fan set do Maximum Value..
 
 	4. Temp >= 70 Degrees Celsius,
 		System will shutdown in 10 Seconds..
+		
+		Nota:
+		RockChip as done its tests on a Board at 80 or 85C, but that temps are not good to maintain Continously,
+		And so I decided to take some precation mesures here..
 
 
 ## Requirements:

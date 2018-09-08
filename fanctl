@@ -211,7 +211,7 @@ MAX_CONTINUOUS_THERMAL_TEMP = 62
 -- Max Temperature taken to set a Ratio to PWM
 MAX_THERMAL_TEMP            = 60
 -- Min Temperature taken to set a Ratio to PWM( also the temperature threshold to activate Fan )
-MIN_THERMAL_TEMP            = 45
+MIN_THERMAL_TEMP            = 40
 
 ---- PWM Parameters
 --
@@ -236,9 +236,7 @@ TEMP                  = 63
 ---- Pulling operations check and correct fan speed
 --
 -- Don't Start Fan with Big initial jump.. 
-setFanpwm( 90 )
 setFanpwm( 130 )
-os.execute( "sleep " .. 1 )
 setFanpwm( 190 )
 os.execute( "sleep " .. 6 )
 
@@ -259,8 +257,15 @@ do
 	then
 		PWM_RATIO = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
 		-- If temp doesnt change...don't update it..
-		if( PWM_RATIO ~= PWM_VALUE )
+		if( PWM_RATIO ~= FAN_PWM )
 		then
+		    if( FAN_PWM < 1 )
+		    then
+		        -- when stopped, it needs more power to start... 
+                setFanpwm( 130 )
+                setFanpwm( 190 )
+                os.execute( "sleep " .. 2 )
+		    end
         	setFanpwm( PWM_RATIO )
         end  
 	else
@@ -273,13 +278,16 @@ do
 				setFanpwm( 0 )
 			end
 		else
+		    -- Set Fan to max, only if not there already..
+		    if( FAN_PWM < 255 )
+		    then
+		        setFanpwm( 255 )
+		    end
 			-- Temp Above threshold to Underclock Frequencies
-			if( TEMP < ABSOLUTE_MAX_THERMAL_TEMP )
+			if( TEMP > ABSOLUTE_MAX_THERMAL_TEMP )
 			then
-				os.execute( "cpufreq-set -c 0 -f 1.2Ghz ")
-				os.execute( "cpufreq-set -c 4 -f 1.6Ghz ")
-			else
 				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
+				os.execute( "shutdown -h +10 &")
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
@@ -289,9 +297,7 @@ do
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
 				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
 				io.write( string.format("Warning: SHUTTING DOWN in 10s\n"))
-				os.execute( "shutdown -h +10")
 				io.write( string.format("exit 1\n"))
-				os.exit( 1 );
 			end	
 		end
 	end
