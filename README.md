@@ -30,8 +30,8 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 		
 		Nota:
 		RockChip has done its tests on a Board, at 80 or 85C(I am not sure the exact value),
-		But that temps are not good to maintain Continously,
-		And so I decided to take some precaution mesures here..
+		But that temps are not good to maintain Continuously,
+		And so I decided to take some precaution measures here..
 
 
 
