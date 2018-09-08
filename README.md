@@ -32,7 +32,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ##### Response of PWM to Temperature Curve:
 
 ![Response of PWM to Temperature Curve:]
-(https://github.com/tuxd3v/fanctl/blob/master/active_fan_thermal_envelope.png)
+(https://github.com/tuxd3v/fanctl/master/active_fan_thermal_envelope.png)
 
 
 
