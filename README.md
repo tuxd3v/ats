@@ -8,13 +8,13 @@ This tool is system Agnostic.
 The Control is Made via SysFS, based in the Lua Scripting Language.
 You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 
-Characteristics:
+### Characteristics:
 
-    Response of PWM to Temperature Curve:
+    ##### Response of PWM to Temperature Curve:
     
     [[https://github.com/tuxd3v/fanctl/blob/master/active_fan_thermal_envelope.png]]
 
-    Explanation:
+    ##### Explanation:
     
 	1. Temp < 40 Degrees Celsius,
 		Fan will Stop
