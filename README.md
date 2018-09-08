@@ -10,9 +10,12 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 
 Characteristics:
 
-Response of PWM to Temperature Curve:
-[[https://github.com/tuxd3v/fanctl/blob/master/active_fan_thermal_envelope.png]]
+    Response of PWM to Temperature Curve:
+    
+    [[https://github.com/tuxd3v/fanctl/blob/master/active_fan_thermal_envelope.png]]
 
+    Explanation:
+    
 	1. Temp < 40 Degrees Celsius,
 		Fan will Stop
 
