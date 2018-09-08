@@ -11,7 +11,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 Characteristics:
 
 Response of PWM to Temperature Curve:
-[[https://github.com/tuxd3v/fanctl/master/ative_fan_thermal_envelope.png|alt=ative_fan_thermal_envelope]]
+[[https://github.com/tuxd3v/fanctl/blob/master/active_fan_thermal_envelope.png]]
 
 	1. Temp < 40 Degrees Celsius,
 		Fan will Stop
@@ -26,7 +26,8 @@ Response of PWM to Temperature Curve:
 		System will shutdown in 10 Seconds..
 		
 		Nota:
-		RockChip has done its tests on a Board at 80 or 85C, but that temps are not good to maintain Continously,
+		RockChip has done its tests on a Board, at 80 or 85C(I am not sure the exact value),
+		But that temps are not good to maintain Continously,
 		And so I decided to take some precation mesures here..
 
 
