@@ -24,7 +24,7 @@ Characteristics:
 		System will shutdown in 10 Seconds..
 		
 		Nota:
-		RockChip as done its tests on a Board at 80 or 85C, but that temps are not good to maintain Continously,
+		RockChip has done its tests on a Board at 80 or 85C, but that temps are not good to maintain Continously,
 		And so I decided to take some precation mesures here..
 
 
