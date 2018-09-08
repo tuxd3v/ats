@@ -28,7 +28,7 @@ Response of PWM to Temperature Curve:
 		Nota:
 		RockChip has done its tests on a Board, at 80 or 85C(I am not sure the exact value),
 		But that temps are not good to maintain Continously,
-		And so I decided to take some precation mesures here..
+		And so I decided to take some precaution mesures here..
 
 
 ## Requirements:
