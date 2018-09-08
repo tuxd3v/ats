@@ -225,11 +225,11 @@ PWM_RANGE             = ( MAX_FAN_PWM - MIN_FAN_PWM )
 
 ---- Initial Temperature
 -- For Safety Reasons,
--- It Starts ABOVE 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps... if so, it will underclock.
+-- It Starts ABOVE 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
 -- 
 -- In the absence of proper Active Thermal Solution, to cool down( Weak Fan? ),
--- It will underclock to { 0, 1 } = { 1,2Ghz, 1,6Ghz }( for safety Reasons ), but Fan continue to work and adjust( if readings temps work ),
--- Until 'ABSOLUTE_MAX_THERMAL_TEMP' reached, were it Shutdown.
+-- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown, for safety reasons..
+--
 --
 TEMP                  = 63
 
