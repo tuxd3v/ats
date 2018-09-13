@@ -36,26 +36,26 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 
 
 ## Requirements:
-	Only a Single Dependence,
-	The Lua 5.3 Runtime.
+	The Lua 5.3 Runtime/Development package, gcc, make, git
 
 
 ### Debian/Ubuntu
 
 ### Install Dependencies.
-	apt-get install lua5.3
+	apt-get install lua5.3 lua5.3-dev gcc make git
 
 ##### Then made the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 
-
-### Configure fanctl
-
-####  Copy Fanctl to /usr/sbin/
-	cp fanctl /usr/sbin/ && chmod 550 /usr/sbin/fanctl && chown root: /usr/sbin/fanctl
-
-#### Copy the Systemd Service file to Destination Folder
-	cp fanctl.service /lib/systemd/system
+### Download/Compile/Configure/install fanctl
+	If you Have already fanctl Running with a previous release, then:
+	systemctl stop fanctl
+	
+##### Change to /root Dir, then Go to Releases, get last one, by tag( ie: v0.1.4 ):
+	cd /root && git clone --branch v0.1.4 https://github.com/tuxd3v/fanctl.git && cd fanctl
+	make
+	make install
+	make clean
 
 #### Enable and Start Service
 	systemctl enable fanctl && systemctl start fanctl
@@ -63,17 +63,15 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 #### Check the Status
 	systemctl status fanctl
 
-	root@rockpro64:# systemctl status fanctl
 	● fanctl.service - Active Thermal Fan Service
 	   Loaded: loaded (/lib/systemd/system/fanctl.service; enabled; vendor preset: enabled)
-	   Active: active (running) since Sat 2018-09-01 23:23:49 WEST; 3h 0min ago
-	 Main PID: 704 (lua)
-		Tasks: 3 (limit: 4915)
+	   Active: active (running) since Thu 2018-09-13 20:29:54 WEST; 3s ago
+	 Main PID: 29133 (lua)
+		Tasks: 1 (limit: 4915)
 	   CGroup: /system.slice/fanctl.service
-		       ├─  704 lua /usr/sbin/fanctl
-		       ├─19575 sh -c sleep 5
-		       └─19576 sleep 5
-	Sep 01 23:23:49 rockpro64 systemd[1]: Started Active Thermal Fan Service.
+		       └─29133 lua /usr/sbin/fanctl
+
+	Sep 13 20:29:54 rockpro64 systemd[1]: Started Active Thermal Fan Service.
 
 
 That's it!!!
