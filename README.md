@@ -47,7 +47,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ##### Then made the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 
-### Download/Compile/Configure/install fanctl
+### Download/Compile/Configure/Install fanctl
 ######	If you Have already fanctl Running with a previous release, then:
 	systemctl stop fanctl
 	
