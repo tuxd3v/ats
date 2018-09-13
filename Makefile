@@ -31,7 +31,7 @@ $(NAME).so.$(VERSION): $(NAME).o
 install:
 	cp fanctl /usr/sbin/ && chmod 550 /usr/sbin/fanctl && chown root: /usr/sbin/fanctl
 	cp fanctl.service /lib/systemd/system
-	mkdir -pv $(LDIR)/lua/5.3 && cp -v $(NAME).so.$(VERSION) $(LDIR)/lua/5.3 && chown root: $(LDIR)/lua/5.3/$(NAME).so.$(VERSION) && chmod 755 $(LDIR)/lua/5.3/$(NAME).so.$(VERSION) && ln -s $(LDIR)/lua/5.3/$(NAME).so.$(VERSION) $(LDIR)/lua/5.3/$(NAME).so
+	mkdir -pv $(LDIR)/lua/5.3 && cp -v $(NAME).so.$(VERSION) $(LDIR)/lua/5.3 && chown root: $(LDIR)/lua/5.3/$(NAME).so.$(VERSION) && chmod 755 $(LDIR)/lua/5.3/$(NAME).so.$(VERSION) && ln -s $(LDIR)/lua/5.3/$(NAME).so.$(VERSION) $(LDIR)/lua/5.3/$(NAME).so && cd / && rm -rf /root/fanctl
 
 .PHONY: clean
 clean:
