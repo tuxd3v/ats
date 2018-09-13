@@ -44,7 +44,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ### Install Dependencies.
 	apt-get install lua5.3 lua5.3-dev gcc make git
 
-##### Then made the Symbolic Link:
+######    Then made the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 
 ### Download/Compile/Configure/Install fanctl
