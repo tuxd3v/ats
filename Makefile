@@ -1,6 +1,6 @@
 
 IDIR    :=/usr/include/lua5.3
-LDIR    :=/usr/lib/x86_64-linux-gnu
+LDIR    :=/usr/lib/aarch64-linux-gnu
 
 NAME    := sleep
 MAJOR   := 0
