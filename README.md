@@ -36,8 +36,6 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 
 
 ## Requirements:
-	The Lua 5.3 Runtime/Development package, gcc, make, git
-
 
 ### Debian/Ubuntu
 
