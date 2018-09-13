@@ -20,6 +20,10 @@
 -- This tool was tested 24x7, for more than a month, under Full Load, with:
 -- < Minimal Debian Strech release > by ayufan
 
+---- Require Sleep Functions to dynamic link against
+--
+require("sleep");
+
 ---- Thermal Control Variables
 --
 -- Thermal Zone 0
@@ -238,7 +242,7 @@ TEMP                  = 63
 -- Don't Start Fan with Big initial jump.. 
 setFanpwm( 130 )
 setFanpwm( 190 )
-os.execute( "sleep " .. 6 )
+sleep( 6 )
 
 TEMP_RATIO=0
 
@@ -264,8 +268,8 @@ do
 		        -- when stopped, it needs more power to start... 
                 setFanpwm( 130 )
                 setFanpwm( 190 )
-                os.execute( "sleep " .. 2 )
-		    end
+                sleep( 2 )
+            end
         	setFanpwm( PWM_RATIO )
         end  
 	else
@@ -302,7 +306,7 @@ do
 		end
 	end
 	-- Sleep 5 Seconds, until next check
-	os.execute( "sleep " .. 5 )
+	sleep( 5 )
 end
 
 os.exit( 1 );
