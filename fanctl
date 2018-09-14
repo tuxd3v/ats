@@ -259,7 +259,7 @@ do
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
-		PWM_RATIO = math.floor( (450/45)*( TEMP - 35 ) )
+		PWM_RATIO = math.ceil( 10 * ( TEMP - 35 ) )
 		-- If temp doesnt change...don't update it..
 		if( PWM_RATIO ~= FAN_PWM )
 		then
@@ -268,7 +268,7 @@ do
 		        -- when stopped, it needs more power to start... 
                 setFanpwm( 130 )
                 setFanpwm( 190 )
-                sleep( 2 )
+                sleep( 1 )
             end
         	setFanpwm( PWM_RATIO )
         end  
