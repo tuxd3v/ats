@@ -210,12 +210,12 @@ end
 -- Max Temperatue Allowed on CPU, Above This Threshold, machine will shutdown
 ABSOLUTE_MAX_THERMAL_TEMP   = 70
 -- Max Temperature Allowed without sufering Underclocking
-MAX_CONTINUOUS_THERMAL_TEMP = 62
+MAX_CONTINUOUS_THERMAL_TEMP = 60
 
 -- Max Temperature taken to set a Ratio to PWM
 MAX_THERMAL_TEMP            = 60
 -- Min Temperature taken to set a Ratio to PWM( also the temperature threshold to activate Fan )
-MIN_THERMAL_TEMP            = 40
+MIN_THERMAL_TEMP            = 39
 
 ---- PWM Parameters
 --
@@ -259,7 +259,7 @@ do
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
-		PWM_RATIO = math.floor(( ( TEMP / MAX_THERMAL_TEMP )^3 * PWM_RANGE ) )
+		PWM_RATIO = math.floor( (450/45)*( TEMP - 35 ) )
 		-- If temp doesnt change...don't update it..
 		if( PWM_RATIO ~= FAN_PWM )
 		then
