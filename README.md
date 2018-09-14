@@ -19,10 +19,10 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	1. Temp < 40 Degrees Celsius,
 		Fan will Stop
 
-	2. 40 <= Temp <= 62 Degrees Celsius,
+	2. 39 <= Temp <= 60 Degrees Celsius,
 	    Fan is Adjusted, acordingly like in the Chart, 'PWM Response to Temperature'
 
-	3. 63 <= Temp < 70 Degrees Celsius,
+	3. 60 <= Temp < 70 Degrees Celsius,
 		Fan set do Maximum Value..
 
 	4. Temp >= 70 Degrees Celsius,
