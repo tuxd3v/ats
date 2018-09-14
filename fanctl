@@ -209,7 +209,7 @@ end
 
 -- Max Temperatue Allowed on CPU, Above This Threshold, machine will shutdown
 ABSOLUTE_MAX_THERMAL_TEMP   = 70
--- Max Temperature Allowed without sufering Underclocking
+-- Max Temperature Allowed for adjusting fan pwm
 MAX_CONTINUOUS_THERMAL_TEMP = 60
 
 -- Max Temperature taken to set a Ratio to PWM
