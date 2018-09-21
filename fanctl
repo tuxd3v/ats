@@ -241,6 +241,7 @@ TEMP                  = 63
 --
 -- Don't Start Fan with Big initial jump.. 
 setFanpwm( 130 )
+msleep( 200 )
 setFanpwm( 190 )
 sleep( 6 )
 
@@ -251,11 +252,10 @@ do
 	getThermal()
 	if( THERMAL_0 > THERMAL_1 )
 	then
-       	TEMP = THERMAL_0
+		TEMP = THERMAL_0
 	else
 		TEMP = THERMAL_1
 	end
-
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
@@ -263,45 +263,46 @@ do
 		-- If temp doesnt change...don't update it..
 		if( PWM_RATIO ~= FAN_PWM )
 		then
-		    if( FAN_PWM < 1 )
-		    then
-		        -- when stopped, it needs more power to start... 
-                setFanpwm( 130 )
-                setFanpwm( 190 )
-                sleep( 1 )
-            end
-        	setFanpwm( PWM_RATIO )
-        end  
+			if( FAN_PWM < 1 )
+			then
+				-- when stopped, it needs more power to start... 
+				setFanpwm( 130 )
+				msleep( 200 )
+				setFanpwm( 190 )
+				sleep( 1 )
+			end
+			setFanpwm( PWM_RATIO )
+		end  
 	else
 		-- Fan not needed, temp below threshold
 		if( TEMP < MIN_THERMAL_TEMP )
 		then
-            -- IF Fan already Stop, don't ask to stop again..
+			-- IF Fan already Stop, don't ask to stop again..
 			if( FAN_PWM > 0 )
 			then
 				setFanpwm( 0 )
 			end
 		else
-		    -- Set Fan to max, only if not there already..
-		    if( FAN_PWM < 255 )
-		    then
-		        setFanpwm( 255 )
-		    end
+			-- Set Fan to max, only if not there already..
+			if( FAN_PWM < 255 )
+			then
+				setFanpwm( 255 )
+			end
 			-- Temp Above threshold to Underclock Frequencies
 			if( TEMP > ABSOLUTE_MAX_THERMAL_TEMP )
 			then
 				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
 				os.execute( "shutdown -h +10 &")
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n"))
-				io.write( string.format("Warning: SHUTTING DOWN in 10s\n"))
-				io.write( string.format("exit 1\n"))
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
+				io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
+				io.write( string.format( "exit 1\n" ) )
 			end	
 		end
 	end
@@ -310,4 +311,3 @@ do
 end
 
 os.exit( 1 );
-
