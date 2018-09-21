@@ -9,7 +9,7 @@
 
 /* 
 * unistd.h don't provide a msleep function( provide usleep ), but still,
-* avoid namming convenctions from unistd.h, providing a termination "_c" on function name
+* Avoid to name convenctions from unistd.h, providing a termination "_c" on function name
 */
 static int msleep_c( lua_State *L ){
 	long msecs = lua_tointeger( L, -1 );
@@ -19,7 +19,7 @@ static int msleep_c( lua_State *L ){
 
 /* 
 * unistd.h provide a sleep function,
-* Avoid namming convenctions from unistd.h, providing a termination "_c" on function name
+* Avoid to name  convenctions from unistd.h, providing a termination "_c" on function name
 */
 static int sleep_c( lua_State *L ){
 	long secs = lua_tointeger( L, -1 );
