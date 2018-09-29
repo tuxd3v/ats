@@ -42,7 +42,7 @@ install:
 	cp -f $(SERVICE_PATH)/fanctl.service $(SYSTEMDIR)
 	if [ ! -d $(LDIR) ];then \
         mkdir -p $(LDIR);   \
-    fi
+	fi
 	mv $(NAME).so.$(VERSION) $(LDIR) && chown root: $(LDIR)/$(NAME).so.$(VERSION) && chmod 755 $(LDIR)/$(NAME).so.$(VERSION)
 	if [ -L $(LDIR)/$(NAME).so ];then \
 		rm -f $(LDIR)/$(NAME).so;     \
