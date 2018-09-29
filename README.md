@@ -51,14 +51,16 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ### Download/Compile/Configure/Install fanctl
 ######    If you Have already fanctl Running with a previous release, then:
 	systemctl stop fanctl
+
 	
 ######    Change to /root Dir, then Go to Releases, get last one, by tag( ie: v0.1.4 ):
 	cd /root && git clone --branch v0.1.4 https://github.com/tuxd3v/fanctl.git && cd fanctl
 	make
 	make install
 
-After install, remove the downloaded code
+######    After install, remove the downloaded code
 	make purge
+
 
 #### Enable and Start Service
 	systemctl enable fanctl && systemctl start fanctl
