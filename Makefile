@@ -38,12 +38,12 @@ $(NAME).so.$(VERSION): $(OBJS)
 
 .PHONY: install
 install:
-	cp -f $(SRCS_PATH)fanctl /usr/sbin/ && chmod 550 /usr/sbin/fanctl && chown root: /usr/sbin/fanctl
-	cp -f $(SERVICE_PATH)/fanctl.service $(SYSTEMDIR)
+	install --preserve-timestamps --owner=root --group=root --mode=755 --target-directory=/usr/sbin $(SRCS_PATH)fanctl
+	install --preserve-timestamps --owner=root --group=root --mode=755 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/fanctl.service
 	if [ ! -d $(LDIR) ];then \
         mkdir -p $(LDIR);   \
 	fi
-	mv $(NAME).so.$(VERSION) $(LDIR) && chown root: $(LDIR)/$(NAME).so.$(VERSION) && chmod 755 $(LDIR)/$(NAME).so.$(VERSION)
+	install --preserve-timestamps --owner=root --group=root --mode=755 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
 	if [ -L $(LDIR)/$(NAME).so ];then \
 		rm -f $(LDIR)/$(NAME).so;     \
 	fi
@@ -53,7 +53,7 @@ install:
 .PHONY: clean
 clean:
 	rm $(OBJS)
-
+	rm $(NAME).so.$(VERSION)
 
 .PHONY: purge
 purge:
