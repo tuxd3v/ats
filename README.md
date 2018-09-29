@@ -57,8 +57,8 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	make
 	make install
 
-#######   After install, remove the downloaded code    	
-    make purge
+After install, remove the downloaded code
+	make purge
 
 #### Enable and Start Service
 	systemctl enable fanctl && systemctl start fanctl
