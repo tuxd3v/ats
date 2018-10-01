@@ -252,7 +252,7 @@ do
 	-- Aquire  THERMAL_{0,1} values
 	getThermal()
 	-- Use  Biggest Thermal Value from THERMAL_{0,1}
-	TEMP = if THERMAL_0 > THERMAL_1 then THERMAL_0 else THERMAL_1 end
+	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
 	
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
