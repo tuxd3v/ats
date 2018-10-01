@@ -40,12 +40,12 @@ $(NAME).so.$(VERSION): $(OBJS)
 install:
 	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)fanctl
 	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/fanctl.service
-	if [ ! -d $(LDIR) ];then \
-        mkdir -p $(LDIR);   \
+	if [ ! -d $(LDIR) ];then  \
+		mkdir -p $(LDIR); \
 	fi
 	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
-	if [ -L $(LDIR)/$(NAME).so ];then \
-		rm -f $(LDIR)/$(NAME).so;     \
+	if [ -L $(LDIR)/$(NAME).so ];then  \
+		rm -f $(LDIR)/$(NAME).so;    \
 	fi
 	ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
 
