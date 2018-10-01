@@ -291,15 +291,15 @@ do
 			then
 				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
 				os.execute( "sleep 10 && shutdown -h +0 &")
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP'\n" ) )
 				io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
 				io.write( string.format( "exit 1\n" ) )
 			end	
 		end
