@@ -249,13 +249,11 @@ TEMP_RATIO=0
 
 while true
 do
+	-- Aquire  THERMAL_{0,1} values
 	getThermal()
-	if( THERMAL_0 > THERMAL_1 )
-	then
-		TEMP = THERMAL_0
-	else
-		TEMP = THERMAL_1
-	end
+	-- Use  Biggest Thermal Value from THERMAL_{0,1}
+	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
+	
 	-- Temp Inside Active envelope to adjust Fan
 	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
@@ -277,7 +275,7 @@ do
 		-- Fan not needed, temp below threshold
 		if( TEMP < MIN_THERMAL_TEMP )
 		then
-			-- IF Fan already Stop, don't ask to stop again..
+			-- Only ask to stop Fan, if Fan is Active
 			if( FAN_PWM > 0 )
 			then
 				setFanpwm( 0 )
