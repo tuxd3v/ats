@@ -28,10 +28,10 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	4. Temp >= 70°C,
 		System will shutdown in 10 Seconds..
 		
-		Nota:
-		RockChip has done its tests on a Board, at 80°C,they rate it as the maximum.
-		But that temps are not good to maintain Continuously,
-		So I decided to take some precaution measures here, shutting down at 70°C.
+	Nota:
+	RockChip has done its tests on a Board, at 80°C,they rate it as the maximum.
+	But that temps are not good to maintain Continuously,
+	So I decided to take some precaution measures here, shutting down at 70°C.
 
 
 
