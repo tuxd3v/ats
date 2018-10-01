@@ -4,6 +4,7 @@ IDIR      := /usr/include/lua5.3
 LDIR      := /usr/lib/aarch64-linux-gnu/lua/5.3
 SYSTEMDIR := /lib/systemd/system
 
+# Shared Library
 NAME      := sleep
 MAJOR     := 0
 MINOR     := 1
