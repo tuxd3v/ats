@@ -290,7 +290,7 @@ do
 			if( TEMP > ABSOLUTE_MAX_THERMAL_TEMP )
 			then
 				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
-				os.execute( "sleep 10 && shutdown -h +0 &")
+				os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
 				io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
 				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
 				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
