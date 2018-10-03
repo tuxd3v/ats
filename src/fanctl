@@ -265,7 +265,7 @@ do
 	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
 	
 	-- Get PWM_RATIO from Table
-	INSTANT_RATIO = PWM_RATIO[ TEMP  ]
+	INSTANT_RATIO = PWM_RATIO[ TEMP ]
 	
 	-- If temp doesnt change...don't update it..
 	if( INSTANT_RATIO ~= FAN_PWM )
