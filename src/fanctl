@@ -243,7 +243,7 @@ sleep( 1 )
 -- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
 -- Table Created using Linear Interpolated Method
 PWM_RATIO={}
-for i = 0,ABSOLUTE_MAX_THERMAL_TEMP,1 
+for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 100 ),1 
 do
 	if( i >= 0 and i < MIN_THERMAL_TEMP )
 	then
@@ -282,7 +282,7 @@ do
 	end
 	
 	-- Temp Above threshold to Underclock Frequencies
-	if( TEMP > ABSOLUTE_MAX_THERMAL_TEMP )
+	if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
 	then
 		-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
 		os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
