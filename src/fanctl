@@ -26,10 +26,10 @@ require("sleep");
 
 ---- Thermal Control Variables
 --
--- Thermal Zone 0
+-- CPU Thermal Zone
 THERMAL0_CTL = "N/A";
--- Thermal Zone 1
-THERMAL0_CTL = "N/A";
+-- GPU Thermal Zone
+THERMAL1_CTL = "N/A";
 -- FAN Control
 FAN_CTL      = "N/A";
 
@@ -37,9 +37,9 @@ FAN_CTL      = "N/A";
 --
 -- Fan Pwm Value
 FAN_PWM   = 0
--- Thermal Zone 0
+-- CPU  Thermal Zone
 THERMAL_0 = "N/A"
--- Thermal Zone 1
+-- GPU Thermal Zone
 THERMAL_1 = "N/A"
 
 ----
@@ -126,36 +126,36 @@ end
 -- 
 function getThermal()
 	local RETURN = "N/A";
-	local handle = io.open( THERMAL0_CTL , "r")
+	local handle = io.open( THERMAL0_CTL , "r" )
 	if ( handle ~= nil )
 	then
-		RETURN = handle:read("*a")
+		RETURN = handle:read( "*a" )
 		handle:close()
 		if( RETURN ~= nill and RETURN ~= "N/A" )
 		then
-			THERMAL_0 = tonumber( RETURN  / 1000 )
+			THERMAL_0 = tonumber( RETURN  // 100 )
 		else
-			THERMAL_0 = "ERROR"
+			THERMAL_0 = 650
 		end
 	else
-			THERMAL_0 = "ERROR"
+			THERMAL_0 = 650
 	end
 	RETURN = "N/A";
-	handle = io.open( THERMAL1_CTL .. "", "r")
+	handle = io.open( THERMAL1_CTL .. "", "r" )
 	if ( handle ~= nil )
 	then
-		RETURN = handle:read("*a")
+		RETURN = handle:read( "*a" )
 		handle:close()
 		if( RETURN ~= nill and RETURN ~= "N/A" )
 		then
-			THERMAL_1 = tonumber( RETURN  / 1000 )
+			THERMAL_1 = tonumber( RETURN  // 100 )
 			return 0
 		else
-			THERMAL_1="ERROR"
+			THERMAL_1 = 650
 		end
 	else
-		THERMAL_1 = "ERROR"
-	end					
+		THERMAL_1 = 650
+	end
 	return 1
 end
 
@@ -208,14 +208,14 @@ end
 -- But it depends of the HeatSink used and also the Fan characteristics..
 
 -- Max Temperatue Allowed on CPU, Above This Threshold, machine will shutdown
-ABSOLUTE_MAX_THERMAL_TEMP   = 70
+ABSOLUTE_MAX_THERMAL_TEMP   = 700
 -- Max Temperature Allowed for adjusting fan pwm
-MAX_CONTINUOUS_THERMAL_TEMP = 60
+MAX_CONTINUOUS_THERMAL_TEMP = 600
 
 -- Max Temperature taken to set a Ratio to PWM
-MAX_THERMAL_TEMP            = 60
+MAX_THERMAL_TEMP            = 600
 -- Min Temperature taken to set a Ratio to PWM( also the temperature threshold to activate Fan )
-MIN_THERMAL_TEMP            = 39
+MIN_THERMAL_TEMP            = 390
 
 ---- PWM Parameters
 --
@@ -225,19 +225,17 @@ STOP_FAN_PWM          = 0
 MAX_FAN_PWM           = 255
 -- Adjust conform your Fan specs, some neds greater values, others work with less current
 MIN_FAN_PWM           = 30
-PWM_RANGE             = ( MAX_FAN_PWM - MIN_FAN_PWM )
 
 ---- Initial Temperature
 -- For Safety Reasons,
--- It Starts ABOVE 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
+-- It Starts with 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
 -- 
+TEMP                  = 600
+
 -- In the absence of proper Active Thermal Solution, to cool down( Weak Fan? ),
 -- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown, for safety reasons..
---
---
-TEMP                  = 63
 
----- Pulling operations check and correct fan speed
+---- Start Fan to Calculate PWM_RATIO table values
 --
 -- Don't Start Fan with Big initial jump.. 
 setFanpwm( 130 )
@@ -245,65 +243,64 @@ msleep( 200 )
 setFanpwm( 190 )
 sleep( 6 )
 
-TEMP_RATIO=0
+-- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
+-- Table Crated with Linear interpolated method
+PWM_RATIO={}
+for i = 0,700,1 
+do
+	if( i >= 0 and i < 390 )
+	then
+		PWM_RATIO[ i ] = 0
+	elseif( i >= 390 and i <= 600 )
+	then
+  		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 210 ) * ( i - 390 ) )
+  	elseif ( i > 600 )
+  	then
+  		PWM_RATIO[ i ] = 255
+  	end
+end
 
 while true
 do
-	-- Aquire  THERMAL_{0,1} values
+	-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
 	getThermal()
 	-- Use  Biggest Thermal Value from THERMAL_{0,1}
 	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
 	
-	-- Temp Inside Active envelope to adjust Fan
-	if( TEMP >= MIN_THERMAL_TEMP and TEMP <= MAX_CONTINUOUS_THERMAL_TEMP )
+	-- Get PWM_RATIO from Table
+	INSTANT_RATIO = PWM_RATIO[ TEMP  ]
+	
+	-- If temp doesnt change...don't update it..
+	if( INSTANT_RATIO ~= FAN_PWM )
 	then
-		PWM_RATIO = math.ceil( 10 * ( TEMP - 35 ) )
-		-- If temp doesnt change...don't update it..
-		if( PWM_RATIO ~= FAN_PWM )
+		if( FAN_PWM < 1 )
 		then
-			if( FAN_PWM < 1 )
-			then
-				-- when stopped, it needs more power to start... 
-				setFanpwm( 130 )
-				msleep( 200 )
-				setFanpwm( 190 )
-				sleep( 1 )
-			end
-			setFanpwm( PWM_RATIO )
-		end  
-	else
-		-- Fan not needed, temp below threshold
-		if( TEMP < MIN_THERMAL_TEMP )
-		then
-			-- Only ask to stop Fan, if Fan is Active
-			if( FAN_PWM > 0 )
-			then
-				setFanpwm( 0 )
-			end
-		else
-			-- Set Fan to max, only if not there already..
-			if( FAN_PWM < 255 )
-			then
-				setFanpwm( 255 )
-			end
-			-- Temp Above threshold to Underclock Frequencies
-			if( TEMP > ABSOLUTE_MAX_THERMAL_TEMP )
-			then
-				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
-				os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
-				io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-				io.write( string.format( "exit 1\n" ) )
-			end	
+			-- When stopped, it needs more power to start... 
+			setFanpwm( 130 )
+			msleep( 200 )
+			setFanpwm( 190 )
+			sleep( 1 )
 		end
+		setFanpwm( INSTANT_RATIO )
 	end
+	
+	-- Temp Above threshold to Underclock Frequencies
+	if( TEMP > ABSOLUTE_MAX_THERMAL_TEMP )
+	then
+		-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
+		os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
+		io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+		io.write( string.format( "exit 1\n" ) )
+	end
+	
 	-- Sleep 5 Seconds, until next check
 	sleep( 5 )
 end
