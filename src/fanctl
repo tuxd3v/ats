@@ -205,17 +205,15 @@ end
 --
 -- By Experience, without Underclock, with cpufreq Scalling 'Ondemand',
 -- And with all CPUs at 100%, the temperature should not grow more than ~57/58C,
--- But it depends of the HeatSink used and also the Fan characteristics..
+-- But it depends of the HeatSink used and also the Fan characteristics..and the environment around..
 
--- Max Temperatue Allowed on CPU, Above This Threshold, machine will shutdown
-ABSOLUTE_MAX_THERMAL_TEMP   = 700
--- Max Temperature Allowed for adjusting fan pwm
-MAX_CONTINUOUS_THERMAL_TEMP = 600
+-- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
+ABSOLUTE_MAX_THERMAL_TEMP	= 700
 
--- Max Temperature taken to set a Ratio to PWM
-MAX_THERMAL_TEMP            = 600
--- Min Temperature taken to set a Ratio to PWM( also the temperature threshold to activate Fan )
-MIN_THERMAL_TEMP            = 390
+-- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
+MAX_CONTINUOUS_THERMAL_TEMP	= 600
+-- Min Temperature  threshold to activate Fan
+MIN_THERMAL_TEMP				= 390
 
 ---- PWM Parameters
 --
@@ -230,31 +228,30 @@ MIN_FAN_PWM           = 30
 -- For Safety Reasons,
 -- It Starts with 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
 -- 
-TEMP                  = 600
+TEMP                  = MAX_CONTINUOUS_THERMAL_TEMP
 
--- In the absence of proper Active Thermal Solution, to cool down( Weak Fan? ),
--- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown, for safety reasons..
+-- In the absence of proper Active Thermal Solution, to cool down( weak or dead fan? ),
+-- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown in 10s( for safety reasons.. )
 
----- Start Fan to Calculate PWM_RATIO table values
---
+
 -- Don't Start Fan with Big initial jump.. 
 setFanpwm( 130 )
 msleep( 200 )
 setFanpwm( 190 )
-sleep( 6 )
+sleep( 1 )
 
 -- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
--- Table Crated with Linear interpolated method
+-- Table Created using Linear Interpolated Method
 PWM_RATIO={}
-for i = 0,700,1 
+for i = 0,ABSOLUTE_MAX_THERMAL_TEMP,1 
 do
-	if( i >= 0 and i < 390 )
+	if( i >= 0 and i < MIN_THERMAL_TEMP )
 	then
 		PWM_RATIO[ i ] = 0
-	elseif( i >= 390 and i <= 600 )
+	elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
   		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 210 ) * ( i - 390 ) )
-  	elseif ( i > 600 )
+  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
   	then
   		PWM_RATIO[ i ] = 255
   	end
