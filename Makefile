@@ -29,7 +29,7 @@ SERVICE_PATH := systemd
 all   : $(NAME).so.$(VERSION)
 
 
-$(SRCS): $(OBJS)
+$(OBJS): $(SRCS)
 	$(CC) ${CFLAGS} -o $< $@
 
 
