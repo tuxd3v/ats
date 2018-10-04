@@ -30,7 +30,7 @@ all   : $(NAME).so.$(VERSION)
 
 
 $(OBJS): $(SRCS)
-	$(CC) ${CFLAGS} -o $< $@
+	$(CC) ${CFLAGS} -o $@ $<
 
 
 $(NAME).so.$(VERSION): $(OBJS)
