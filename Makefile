@@ -17,10 +17,10 @@ CFLAGS    := -c -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
 LDFLAGS  := -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 
 # source code
-SRCS            := sleep.c
-SRCS_PATH := src/
-SRCS           := $(addprefix $(SRCS_PATH),$(SRCS))
-OBJS            := $(SRCS:.c=.o)
+SRCS		:= sleep.c
+SRCS_PATH	:= src/
+SRCS		:= $(addprefix $(SRCS_PATH),$(SRCS))
+OBJS		:= $(SRCS:.c=.o)
 
 # systemd service
 SERVICE_PATH := systemd
