@@ -12,7 +12,7 @@ VERSION	:= $(MAJOR).$(MINOR)
 
 DEPS		:= lua5.3
 
-CC			:= gcc # Compiller
+CC		:= gcc # Compiller
 CFLAGS		:= -c -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
 LDFLAGS	:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 
