@@ -1,5 +1,5 @@
 # include PATHs
-IDIR			:= /usr/include/lua5.3
+IDIR		:= /usr/include/lua5.3
 # destination PATHs
 LDIR		:= /usr/lib/aarch64-linux-gnu/lua/5.3
 SYSTEMDIR	:= /lib/systemd/system
