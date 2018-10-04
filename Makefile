@@ -1,20 +1,20 @@
 # include PATHs
-IDIR      := /usr/include/lua5.3
+IDIR			:= /usr/include/lua5.3
 # destination PATHs
-LDIR      := /usr/lib/aarch64-linux-gnu/lua/5.3
-SYSTEMDIR := /lib/systemd/system
+LDIR		:= /usr/lib/aarch64-linux-gnu/lua/5.3
+SYSTEMDIR	:= /lib/systemd/system
 
 # Shared Library
-NAME    := sleep
-MAJOR   := 0
-MINOR   := 1
-VERSION := $(MAJOR).$(MINOR)
+NAME		:= sleep
+MAJOR		:= 0
+MINOR		:= 1
+VERSION	:= $(MAJOR).$(MINOR)
 
-DEPS      := lua5.3
+DEPS		:= lua5.3
 
-CC          := gcc # Compiller
-CFLAGS    := -c -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
-LDFLAGS  := -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
+CC			:= gcc # Compiller
+CFLAGS		:= -c -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+LDFLAGS	:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 
 # source code
 SRCS		:= sleep.c
@@ -23,7 +23,7 @@ SRCS		:= $(addprefix $(SRCS_PATH),$(SRCS))
 OBJS		:= $(SRCS:.c=.o)
 
 # systemd service
-SERVICE_PATH := systemd
+SERVICE_PATH	:= systemd
 
 .PHONY: all
 all   : $(NAME).so.$(VERSION)
