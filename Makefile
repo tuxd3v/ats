@@ -49,6 +49,7 @@ install:
 		rm -f $(LDIR)/$(NAME).so;	\
 	fi
 	ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
+	systemctl enable fanctl
 
 
 .PHONY: clean

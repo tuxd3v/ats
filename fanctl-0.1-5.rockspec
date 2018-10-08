@@ -18,11 +18,11 @@ dependencies = {
 	supported_platforms	= "linux"
 }
 external_dependencies = {
-	UNISTD	= { header = "unistd.h" },
-	LUALIB		= { header = "lualib.h" },
-	LAUXLIB	= { header = "lauxlib.h" },
-	LUA			= { header = "lua.h" },
-	LUALIB		= { shared = "liblua5.3.so" }
+	UNISTD		= { header = "unistd.h" },
+	LUALIB			= { header = "lualib.h" },
+	LAUXLIB		= { header = "lauxlib.h" },
+	LUA				= { header = "lua.h" },
+	LUA53			= { library = "liblua5.3.so" }
 }
 build = {
 	type						= "make",
