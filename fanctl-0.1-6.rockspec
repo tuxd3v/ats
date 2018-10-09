@@ -7,7 +7,7 @@ description = {
 		This tool, provide support for Rockpro64, Active thermal Service( Fan Control ).
 	]],
 	homepage	= "https://github.com/tuxd3v/fanctl",
-	license			= "See License..",
+	license		= "See License..",
 	maintainer	= "tuxd3v <tuxd3v@sapo.pt>"
 }
 source = {
@@ -19,20 +19,20 @@ dependencies = {
 }
 external_dependencies = {
 	UNISTD		= { header = "unistd.h" },
-	LUALIB			= { header = "lualib.h" },
+	LUALIB		= { header = "lualib.h" },
 	LAUXLIB		= { header = "lauxlib.h" },
-	LUA				= { header = "lua.h" },
-	LUA53			= { library = "liblua5.3.so" }
+	LUA			= { header = "lua.h" },
+	LUA53		= { library = "liblua5.3.so" }
 }
 build = {
-	type						= "make",
-	makefile				= "Makefile",
+	type			= "make",
+	makefile			= "Makefile",
 	build_target		= "all",
-	build_pass			= true,
+	build_pass		= true,
 	build_variables	= {},
 	install_target		= "install",
 	install_pass		= true,
 	install_variables	= {},
-	variables				= {},
-	modules				= { sleep = "src/sleep.c" }
+	variables		= {},
+	modules	= { sleep = "src/sleep.c" }
 }
