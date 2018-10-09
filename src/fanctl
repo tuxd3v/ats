@@ -234,7 +234,7 @@ setFanpwm( 190 )
 
 -- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
 -- Table Created using Linear Interpolated Method -- PWM_RATIO
--- Predefine Ranges and were Active thermal Service stops Fan - QUIET,RUN
+-- Predefind Triggers Range were Active thermal Service stops/start Fan - QUIET,RUN
 PWM_RATIO={}
 QUIET={}
 RUN={}
@@ -278,7 +278,7 @@ end
 --
 while true
 do
-	-- Sleeping with Fan off, until next cicle
+	-- Sleeping with Fan OFF, until next cicle
 	sleep( QUIET[ TEMP ] )
 	
 	-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
@@ -320,7 +320,7 @@ do
 		io.write( string.format( "exit 1\n" ) )
 	end
 	
-	-- sleeping with Fan on until next cycle
+	-- sleeping with Fan ON until next cycle
 	sleep( RUN[ TEMP ] )
 	-- Stop Fan
 	setFanpwm( 0 )
