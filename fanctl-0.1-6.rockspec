@@ -6,7 +6,7 @@ description = {
 	detailed		= [[ This tool, provide support for Rockpro64, Active thermal Service( Fan Control ). ]],
 	homepage	= "https://github.com/tuxd3v/fanctl",
 	license		= "See License..",
-	maintainer	= "tuxd3v \<tuxd3v@sapo.pt\>"
+	maintainer	= "tuxd3v <tuxd3v@sapo.pt>"
 }
 source = {
 	url			= "git://github.com/tuxd3v/fanctl",
