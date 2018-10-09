@@ -250,26 +250,26 @@ do
   		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 21 ) * ( i - 39 ) )
   		if ( i <= 45 )
   		then
-  			QUIET[ i ] = 60
-  			RUN[ i ]    = 10
+  			QUIET[ i ]	= 60
+  			RUN[ i ]		= 10
   		elseif( i <= 50 )
   		then
-  			QUIET[ i ] = 35
-  			RUN[ i ]    = 25
+  			QUIET[ i ]	= 35
+  			RUN[ i ]		= 25
   		elseif( i <= 55 )
   		then
-    			QUIET[ i ] = 20
-  			RUN[ i ]    = 40
+    			QUIET[ i ]	= 20
+  			RUN[ i ]		= 40
   		elseif( i <= 60 )
   		then
-    			QUIET[ i ] = 10
-  			RUN[ i ]    = 90
+    			QUIET[ i ]	= 10
+  			RUN[ i ]		= 90
   		end	
   	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
   	then
-  		PWM_RATIO[ i ] = 255
-  		QUIET[ i ]           = 6
-  		RUN[ i ]              = 120
+  		PWM_RATIO[ i ]	= 255
+  		QUIET[ i ]		= 6
+  		RUN[ i ]			= 120
   		
   	end
 end
