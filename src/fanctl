@@ -278,13 +278,13 @@ end
 --
 while true
 do
+	-- Sleeping with Fan off, until next cicle
+	sleep( QUIET[ TEMP ] )
+	
 	-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
 	getThermal()
 	-- Use  Biggest Thermal Value from THERMAL_{0,1}
 	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
-	
-	-- Sleeping with Fan off, until next cicle
-	sleep( QUIET[ TEMP ] )
 	
 	-- Get PWM_RATIO from Table
 	INSTANT_RATIO = PWM_RATIO[ TEMP ]
