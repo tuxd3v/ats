@@ -320,7 +320,7 @@ do
 		io.write( string.format( "exit 1\n" ) )
 	end
 	
-	-- Run Fan during a determined amount of time..
+	-- sleeping with Fan on until next cycle
 	sleep( RUN[ TEMP ] )
 	-- Stop Fan
 	setFanpwm( 0 )
