@@ -62,8 +62,8 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	make purge
 
 
-#### Enable and Start Service
-	systemctl enable fanctl && systemctl start fanctl
+#### Start the Service
+	systemctl start fanctl
 
 #### Check the Status
 	systemctl status fanctl
