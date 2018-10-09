@@ -260,6 +260,7 @@ do
     			QUIET[ i ]	= 20
   			RUN[ i ]		= 40
   		elseif( i <= 60 )
+  		then
     			QUIET[ i ]	= 10
   			RUN[ i ]		= 90
   		end
