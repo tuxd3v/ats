@@ -126,7 +126,7 @@ function getThermal()
 		handle:close()
 		if( RETURN ~= nill and RETURN ~= "N/A" )
 		then
-			THERMAL_0 = tonumber( RETURN  // 100 )
+			THERMAL_0 = tonumber( RETURN  // 1000 )
 		else
 			THERMAL_0 = 650
 		end
@@ -141,7 +141,7 @@ function getThermal()
 		handle:close()
 		if( RETURN ~= nill and RETURN ~= "N/A" )
 		then
-			THERMAL_1 = tonumber( RETURN  // 100 )
+			THERMAL_1 = tonumber( RETURN  // 1000 )
 			return 0
 		else
 			THERMAL_1 = 650
@@ -201,12 +201,12 @@ end
 -- But it depends of the HeatSink used and also the Fan characteristics..and the environment around..
 
 -- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
-ABSOLUTE_MAX_THERMAL_TEMP	= 700
+ABSOLUTE_MAX_THERMAL_TEMP	= 70
 
 -- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
-MAX_CONTINUOUS_THERMAL_TEMP	= 600
+MAX_CONTINUOUS_THERMAL_TEMP	= 60
 -- Min Temperature  threshold to activate Fan
-MIN_THERMAL_TEMP				= 390
+MIN_THERMAL_TEMP				= 39
 
 ---- PWM Parameters
 --
@@ -231,19 +231,58 @@ TEMP                  = MAX_CONTINUOUS_THERMAL_TEMP
 setFanpwm( 130 )
 msleep( 200 )
 setFanpwm( 190 )
-sleep( 1 )
 
 -- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
 -- Table Created using Linear Interpolated Method
 PWM_RATIO={}
-for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 100 ),1 
+QUIET={}
+RUN={}
+for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1 
 do
 	if( i >= 0 and i < MIN_THERMAL_TEMP )
+	then
+		PWM_RATIO[ i ]	= 0
+		QUIET[ i ]		=120
+		RUN[ i ]			= 6
+	elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
+	then
+  		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 21 ) * ( i - 39 ) )
+  		if ( i <= 45 )
+  		then
+  			QUIET[ i ]		= 60
+  			RUN[ i ]			= 10
+  		elseif( i <= 50 )
+  		then
+  			QUIET[ i ]		= 35
+  			RUN[ i ]			= 25
+  		elseif( i <= 55 )
+    			QUIET[ i ]		= 20
+  			RUN[ i ]			= 40
+  		elseif( i <= 60 )
+    			QUIET[ i ]		= 10
+  			RUN[ i ]			= 90
+  		fi
+  		
+  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
+  	then
+  		PWM_RATIO[ i ]	= 255
+  		QUIET[ i ]		= 6
+  		RUN[ i ]			= 120
+  		
+  	end
+end
+
+-- Predefine Ranges and were Active thermal Service stops Fan
+-- 
+QUIET={}
+for i = 0,( MAX_CONTINUOUS_THERMAL_TEMP + 10 ),1 
+do
+	if( i >= 0 and i <  )
 	then
 		PWM_RATIO[ i ] = 0
 	elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
 	then
-  		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 210 ) * ( i - 390 ) )
+  		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 21 ) * ( i - 39 ) )
   	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
   	then
   		PWM_RATIO[ i ] = 255
@@ -256,6 +295,9 @@ do
 	getThermal()
 	-- Use  Biggest Thermal Value from THERMAL_{0,1}
 	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
+	
+	-- Sleeping with Fan off, until next cicle
+	sleep( QUIET[ TEMP ] )
 	
 	-- Get PWM_RATIO from Table
 	INSTANT_RATIO = PWM_RATIO[ TEMP ]
@@ -291,8 +333,10 @@ do
 		io.write( string.format( "exit 1\n" ) )
 	end
 	
-	-- Sleep 5 Seconds, until next check
-	sleep( 5 )
+	-- Run Fan during a determined amount of time..
+	sleep( RUN[ TEMP ] )
+	-- Stop Fan
+	setFanpwm( 0 )
 end
 
 os.exit( 1 );
