@@ -233,7 +233,8 @@ msleep( 200 )
 setFanpwm( 190 )
 
 -- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
--- Table Created using Linear Interpolated Method
+-- Table Created using Linear Interpolated Method -- PWM_RATIO
+-- Predefine Ranges and were Active thermal Service stops Fan - QUIET,RUN
 PWM_RATIO={}
 QUIET={}
 RUN={}
@@ -263,8 +264,7 @@ do
   		then
     			QUIET[ i ]	= 10
   			RUN[ i ]		= 90
-  		end
-  		
+  		end	
   	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
   	then
   		PWM_RATIO[ i ]	= 255
@@ -274,23 +274,8 @@ do
   	end
 end
 
--- Predefine Ranges and were Active thermal Service stops Fan
--- 
-QUIET={}
-for i = 0,( MAX_CONTINUOUS_THERMAL_TEMP + 10 ),1 
-do
-	if( i >= 0 and i <  )
-	then
-		PWM_RATIO[ i ] = 0
-	elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
-	then
-  		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 21 ) * ( i - 39 ) )
-  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
-  	then
-  		PWM_RATIO[ i ] = 255
-  	end
-end
-
+-- Loop to Active Control Temps..
+--
 while true
 do
 	-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
