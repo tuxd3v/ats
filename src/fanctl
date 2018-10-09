@@ -256,6 +256,7 @@ do
   			QUIET[ i ]	= 35
   			RUN[ i ]		= 25
   		elseif( i <= 55 )
+  		then
     			QUIET[ i ]	= 20
   			RUN[ i ]		= 40
   		elseif( i <= 60 )
