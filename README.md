@@ -53,8 +53,8 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	systemctl stop fanctl
 
 	
-######    Change to /root Dir, then Go to Releases, get last one, by tag( ie: v0.1.5 ):
-	cd /root && git clone --branch v0.1.5 https://github.com/tuxd3v/fanctl.git && cd fanctl
+######    Change to /root Dir, then Go to Releases, get last one, by tag( ie: v0.1.6 ):
+	cd /root && git clone --branch v0.1.6 https://github.com/tuxd3v/fanctl.git && cd fanctl
 	make
 	make install
 
