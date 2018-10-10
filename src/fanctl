@@ -82,7 +82,7 @@ function setFanpwm( value )
 	then
 		RETURN = handle:write( value .. "" )
 		handle:close()
-		if( RETURN ~= nill or RETURN ~= "N/A" )
+		if( RETURN ~= nil or RETURN ~= "N/A" )
 		then
 			getFanpwm()
 			if( tonumber( FAN_PWM ) == value )
@@ -105,7 +105,7 @@ function getFanpwm()
 	then
 		RETURN = handle:read("*a")
 		handle:close()
-		if( RETURN ~= nill and RETURN ~= "N/A" )
+		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			FAN_PWM = tonumber( RETURN )
 			return 0
@@ -124,7 +124,7 @@ function getThermal()
 	then
 		RETURN = handle:read( "*a" )
 		handle:close()
-		if( RETURN ~= nill and RETURN ~= "N/A" )
+		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			THERMAL_0 = tonumber( RETURN  // 1000 )
 		else
@@ -139,7 +139,7 @@ function getThermal()
 	then
 		RETURN = handle:read( "*a" )
 		handle:close()
-		if( RETURN ~= nill and RETURN ~= "N/A" )
+		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			THERMAL_1 = tonumber( RETURN  // 1000 )
 			return 0
