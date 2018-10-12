@@ -250,15 +250,15 @@ do
   		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 21 ) * ( i - 39 ) )
   		if ( i <= 45 )
   		then
-  			QUIET[ i ]	= 60
+  			QUIET[ i ]	= 90
   			RUN[ i ]		= 10
   		elseif( i <= 50 )
   		then
-  			QUIET[ i ]	= 35
+  			QUIET[ i ]	= 45
   			RUN[ i ]		= 25
   		elseif( i <= 55 )
   		then
-    			QUIET[ i ]	= 20
+    			QUIET[ i ]	= 30
   			RUN[ i ]		= 40
   		elseif( i <= 60 )
   		then
