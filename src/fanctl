@@ -255,15 +255,15 @@ do
   		elseif( i <= 50 )
   		then
   			QUIET[ i ]	= 45
-  			RUN[ i ]		= 25
+  			RUN[ i ]		= 20
   		elseif( i <= 55 )
   		then
-    			QUIET[ i ]	= 30
-  			RUN[ i ]		= 40
+    			QUIET[ i ]	= 40
+  			RUN[ i ]		= 30
   		elseif( i <= 60 )
   		then
     			QUIET[ i ]	= 10
-  			RUN[ i ]		= 90
+  			RUN[ i ]		= 60
   		end	
   	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
   	then
