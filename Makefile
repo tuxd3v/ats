@@ -39,6 +39,9 @@ $(NAME).so.$(VERSION): $(OBJS)
 
 .PHONY: install
 install:
+	if [ -f '/var/run/systemd/units/invocation:fanctl.service' ];then	\
+		systemctl stop fanctl;									\
+	fi
 	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)fanctl
 	install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/fanctl.service
 	if [ ! -d $(LDIR) ];then	\
@@ -50,6 +53,8 @@ install:
 	fi
 	ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
 	systemctl enable fanctl
+	systemctl start fanctl
+	systemctl status fanctl
 
 
 .PHONY: clean
