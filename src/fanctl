@@ -128,10 +128,10 @@ function getThermal()
 		then
 			THERMAL_0 = tonumber( RETURN  // 1000 )
 		else
-			THERMAL_0 = 650
+			THERMAL_0 = 65
 		end
 	else
-			THERMAL_0 = 650
+			THERMAL_0 = 65
 	end
 	RETURN = "N/A";
 	handle = io.open( THERMAL1_CTL .. "", "r" )
@@ -144,10 +144,10 @@ function getThermal()
 			THERMAL_1 = tonumber( RETURN  // 1000 )
 			return 0
 		else
-			THERMAL_1 = 650
+			THERMAL_1 = 65
 		end
 	else
-		THERMAL_1 = 650
+		THERMAL_1 = 65
 	end
 	return 1
 end
