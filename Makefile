@@ -39,7 +39,7 @@ $(NAME).so.$(VERSION): $(OBJS)
 
 .PHONY: install
 install:
-	if [ -f '/var/run/systemd/units/invocation:fanctl.service' ];then	\
+	if [ -f "/var/run/systemd/units/invocation:fanctl.service" ];then	\
 		systemctl stop fanctl;						\
 	fi
 	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)fanctl
