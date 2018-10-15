@@ -2,6 +2,7 @@
 
 
 Improve rockspec to create a rock, so that it could be easilly downloaded.
+Add  "--test" option, so that it would be possible, to get CPU,GPU temps, PWM issued, and fanctl state, on terminal.
 Add support for SysVinit systems.
 
 v0.1.7 - master
