@@ -233,9 +233,10 @@ function buildTriggers()
 	  	end
 	end
 end
-----------------------------
+
+----
 ---- Variables and Functions to Deamonize.
---
+---
 --
 
 function createLock()
