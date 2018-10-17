@@ -183,44 +183,44 @@ end
 
 -- Predefind Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
 function buildTriggers()
-	-- local table, with 2 diferent pwm 'Response Curves' functions
+	-- Local table, with 2 diferent pwm 'Response Curves' functions
 	local fanSpec = {
-		smallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 21 ) * ( temp - 39 ) ) end
+		smallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 21 ) * ( temp - 39 ) ) end,
 		tallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 31 ) * ( temp - 39 ) ) end
 	}
-	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1 
+	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
 	do
 		if( i >= 0 and i < MIN_THERMAL_TEMP )
 		then
-			PWM_RATIO[ i ]		= 0
-			QUIET[ i ]			= 120
-			RUN[ i ]			= 6
+			PWM_RATIO[ i ]	= 0
+			QUIET[ i ]		= 120
+			RUN[ i ]		= 6
 		elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
 		then
 			-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
-	  		PWM_RATIO[ i ]		= fanSpec[ FANSPEC ]( i )
+	  		PWM_RATIO[ i ]	= fanSpec[ FANSPEC ]( i )
 	  		if ( i <= 45 )
 	  		then
-	  			QUIET[ i ]		= 90
-	  			RUN[ i ]		= 10
+	  			QUIET[ i ]	= 90
+	  			RUN[ i ]	= 10
 	  		elseif( i <= 50 )
 	  		then
-	  			QUIET[ i ]		= 45
-	  			RUN[ i ]		= 20
+	  			QUIET[ i ]	= 45
+	  			RUN[ i ]	= 20
 	  		elseif( i <= 55 )
 	  		then
-				QUIET[ i ]		= 40
-	  			RUN[ i ]		= 30
+				QUIET[ i ]	= 40
+	  			RUN[ i ]	= 30
 	  		elseif( i <= 60 )
 	  		then
-				QUIET[ i ]		= 10
-	  			RUN[ i ]		= 60
+				QUIET[ i ]	= 10
+	  			RUN[ i ]	= 60
 	  		end	
 	  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
 	  	then
-	  		PWM_RATIO[ i ]		= 255
-	  		QUIET[ i ]			= 6
-	  		RUN[ i ]			= 120
+	  		PWM_RATIO[ i ]	= 255
+	  		QUIET[ i ]		= 6
+	  		RUN[ i ]		= 120
 	  	end
 	end
 end
@@ -247,6 +247,9 @@ function createLock()
 end
 
 ---- MAIN ----
+----
+--
+
 ---- Check Configurations
 --
 -- if( createLock() == 1 ){
@@ -283,17 +286,17 @@ MIN_THERMAL_TEMP			= 39
 ---- PWM Parameters
 --
 -- Min PWM alue, to Stop Fan.
-STOP_FAN_PWM		= 0
+STOP_FAN_PWM	= 0
 -- Max PWM value possible
-MAX_FAN_PWM			= 255
+MAX_FAN_PWM		= 255
 -- Adjust conform your Fan specs, some neds greater values, others work with less current
-MIN_FAN_PWM			= 30
+MIN_FAN_PWM		= 30
 
 ---- Initial Temperature
 -- For Safety Reasons,
 -- It Starts with 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
 -- 
-TEMP				= MAX_CONTINUOUS_THERMAL_TEMP
+TEMP			= MAX_CONTINUOUS_THERMAL_TEMP
 
 -- In the absence of proper Active Thermal Solution, to cool down( weak or dead fan? ),
 -- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown in 10s( for safety reasons.. )
@@ -327,7 +330,7 @@ do
 	then
 		if( FAN_PWM < 1 )
 		then
-			-- When stopped, it needs more power to start... 
+			-- When stopped, it needs more power to start...
 			setFanpwm( 130 )
 			msleep( 200 )
 			setFanpwm( 190 )
