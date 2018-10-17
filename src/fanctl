@@ -17,30 +17,53 @@
 --
 require("sleep");
 
----- Thermal Control Variables
---
--- CPU Thermal Zone
-THERMAL0_CTL = "N/A";
--- GPU Thermal Zone
-THERMAL1_CTL = "N/A";
--- FAN Control
-FAN_CTL      = "N/A";
-
+----
 ---- Thermal Global Variables
+---
+
+---   Path locations for control..
 --
--- Fan Pwm Value
-FAN_PWM   = 0
--- CPU  Thermal Zone
-THERMAL_0 = "N/A"
--- GPU Thermal Zone
-THERMAL_1 = "N/A"
+
+	-- CPU Thermal Zone[ String ]
+	THERMAL0_CTL = "N/A";
+	-- GPU Thermal Zone[ String ]
+	THERMAL1_CTL = "N/A";
+	-- FAN Control[ String ]
+	FAN_CTL      = "N/A";
+
+---   Update thermal,pwm values..
+--
+
+	-- Fan Pwm Value[ Integer ]
+	FAN_PWM   = 0
+	-- CPU  Thermal Zone[ Integer ]
+	THERMAL_0 = 65
+	-- GPU Thermal Zone [ Integer ]
+	THERMAL_1 = 64
+
+--- Active Solution, 2 profiles[ smallerfan,tallerfan ]
+--
+
+--- Chose Fan profile,
+--  1 - smaller fan( ~10 mm taller )
+--  2 - talller fan( ~20 mm taller )
+	FANSPEC = 1
+
+--- Entire Range of values, calculated on aplication startup, that will be used at runtime.
+--
+
+	-- PWM ratio, calculated based on interpolated values inside normal envelope, and some other values outside[ Global table of integer types ]
+	PWM_RATIO={}
+	-- Sleep timer( in seconds ), used for sleeping with Fan Stoped[ Global table of integer types ]
+	QUIET={}
+	-- Sleep timer( in seconds ), used for sleeping with Fan Running[ Global table of integer types ]
+	RUN={}
 
 ----
----- Functions Related with Active Thermal Zone.
---
---
+---- Core Functions
+---
 
----- Find Device sysfs location
+--- Find Device sysfs location
 --
 function getConditions(  therm0_ctl, therm1_ctl, fan_ctl )
  	local handle = io.open( therm0_ctl , "r")
@@ -73,11 +96,11 @@ function getConditions(  therm0_ctl, therm1_ctl, fan_ctl )
 	return 0
 end
 
--- Set Fan PWM value
+-- Set Fan PWM value[ integer ]
 -- 
 function setFanpwm( value )
     local RETURN = "N/A";
- 	local handle = io.open( FAN_CTL , "w")
+	local handle = io.open( FAN_CTL , "w")
 	if ( handle ~= nil )
 	then
 		RETURN = handle:write( value .. "" )
@@ -90,13 +113,13 @@ function setFanpwm( value )
 				FAN_PWM = value
 				return 0
 			end
-    	end
+	end
     end
     FAN_PWM = 0
     return 1
 end
 
--- Get Fan PWM value
+-- Get Fan PWM value[ integer ]
 -- 
 function getFanpwm()
 	local RETURN = "N/A";
@@ -115,7 +138,7 @@ function getFanpwm()
 	return 1
 end
 
--- Get Thernal Values
+-- Get Thernal Values[ integer ]
 -- 
 function getThermal()
 	local RETURN = "N/A";
@@ -152,6 +175,55 @@ function getThermal()
 	return 1
 end
 
+---- Feature Functions
+---
+
+--- Function using Linear Interpolated Method
+--
+
+-- Predefind Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
+function buildTriggers()
+	-- local table, with 2 diferent pwm 'Response Curves' functions
+	local fanSpec = {
+		smallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 21 ) * ( temp - 39 ) ) end
+		tallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 31 ) * ( temp - 39 ) ) end
+	}
+	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1 
+	do
+		if( i >= 0 and i < MIN_THERMAL_TEMP )
+		then
+			PWM_RATIO[ i ]		= 0
+			QUIET[ i ]			= 120
+			RUN[ i ]			= 6
+		elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
+		then
+			-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
+	  		PWM_RATIO[ i ]		= fanSpec[ FANSPEC ]( i )
+	  		if ( i <= 45 )
+	  		then
+	  			QUIET[ i ]		= 90
+	  			RUN[ i ]		= 10
+	  		elseif( i <= 50 )
+	  		then
+	  			QUIET[ i ]		= 45
+	  			RUN[ i ]		= 20
+	  		elseif( i <= 55 )
+	  		then
+				QUIET[ i ]		= 40
+	  			RUN[ i ]		= 30
+	  		elseif( i <= 60 )
+	  		then
+				QUIET[ i ]		= 10
+	  			RUN[ i ]		= 60
+	  		end	
+	  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
+	  	then
+	  		PWM_RATIO[ i ]		= 255
+	  		QUIET[ i ]			= 6
+	  		RUN[ i ]			= 120
+	  	end
+	end
+end
 ----------------------------
 ---- Variables and Functions to Deamonize.
 --
@@ -206,22 +278,22 @@ ABSOLUTE_MAX_THERMAL_TEMP	= 70
 -- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
 MAX_CONTINUOUS_THERMAL_TEMP	= 60
 -- Min Temperature  threshold to activate Fan
-MIN_THERMAL_TEMP				= 39
+MIN_THERMAL_TEMP			= 39
 
 ---- PWM Parameters
 --
 -- Min PWM alue, to Stop Fan.
-STOP_FAN_PWM          = 0
+STOP_FAN_PWM		= 0
 -- Max PWM value possible
-MAX_FAN_PWM           = 255
+MAX_FAN_PWM			= 255
 -- Adjust conform your Fan specs, some neds greater values, others work with less current
-MIN_FAN_PWM           = 30
+MIN_FAN_PWM			= 30
 
 ---- Initial Temperature
 -- For Safety Reasons,
 -- It Starts with 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
 -- 
-TEMP                  = MAX_CONTINUOUS_THERMAL_TEMP
+TEMP				= MAX_CONTINUOUS_THERMAL_TEMP
 
 -- In the absence of proper Active Thermal Solution, to cool down( weak or dead fan? ),
 -- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown in 10s( for safety reasons.. )
@@ -232,47 +304,8 @@ setFanpwm( 130 )
 msleep( 200 )
 setFanpwm( 190 )
 
--- Fullfill a table with all pre-calculated PWM values, so that we wouldn't need to do that for "all eternity"..
--- Table Created using Linear Interpolated Method -- PWM_RATIO
--- Predefind Triggers Range were Active thermal Service stops/start Fan - QUIET,RUN
-PWM_RATIO={}
-QUIET={}
-RUN={}
-for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1 
-do
-	if( i >= 0 and i < MIN_THERMAL_TEMP )
-	then
-		PWM_RATIO[ i ]	= 0
-		QUIET[ i ]		= 120
-		RUN[ i ]			= 6
-	elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
-	then
-  		PWM_RATIO[ i ] = math.ceil( 40 + ( 215 / 21 ) * ( i - 39 ) )
-  		if ( i <= 45 )
-  		then
-  			QUIET[ i ]	= 90
-  			RUN[ i ]		= 10
-  		elseif( i <= 50 )
-  		then
-  			QUIET[ i ]	= 45
-  			RUN[ i ]		= 20
-  		elseif( i <= 55 )
-  		then
-    			QUIET[ i ]	= 40
-  			RUN[ i ]		= 30
-  		elseif( i <= 60 )
-  		then
-    			QUIET[ i ]	= 10
-  			RUN[ i ]		= 60
-  		end	
-  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
-  	then
-  		PWM_RATIO[ i ]	= 255
-  		QUIET[ i ]		= 6
-  		RUN[ i ]			= 120
-  		
-  	end
-end
+-- Build triggers to use
+buildTriggers()
 
 -- Loop to Active Control Temps..
 --
