@@ -187,13 +187,15 @@ function buildTriggers()
 	local ceil = math.ceil;
 	
 	-- Local table, with 2 diferent pwm 'Response Curves' functions
-	local fanSpec = {
-		smallerFan	= function( temp )
+	local function smallerFan( temp )
 			return ceil( 40 + ( 215 / 21 ) * ( temp - 39 ) )
-		end,
-		tallerFan	= function( temp )
+	end
+	local function tallerFan( temp )
 			return ceil( 40 + ( 215 / 31 ) * ( temp - 39 ) )
-		end
+	end
+	local fanSpec = {
+		smallerFan,
+		tallerFan
 	}
 	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
 	do
