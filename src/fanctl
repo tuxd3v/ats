@@ -183,10 +183,17 @@ end
 
 -- Predefind Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
 function buildTriggers()
+	-- Speed up the process of obtaining math.ceil(), bellow..
+	local ceil = math.ceil();
+	
 	-- Local table, with 2 diferent pwm 'Response Curves' functions
 	local fanSpec = {
-		smallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 21 ) * ( temp - 39 ) ) end,
-		tallerFan	= function( temp ) return math.ceil( 40 + ( 215 / 31 ) * ( temp - 39 ) ) end
+		smallerFan	= function( temp )
+			return ceil( 40 + ( 215 / 21 ) * ( temp - 39 ) )
+		end,
+		tallerFan	= function( temp )
+			return ceil( 40 + ( 215 / 31 ) * ( temp - 39 ) )
+		end
 	}
 	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
 	do
