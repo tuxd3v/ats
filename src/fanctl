@@ -184,7 +184,7 @@ end
 -- Predefind Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
 function buildTriggers()
 	-- Speed up the process of obtaining math.ceil(), bellow..
-	local ceil = math.ceil();
+	local ceil = math.ceil;
 	
 	-- Local table, with 2 diferent pwm 'Response Curves' functions
 	local fanSpec = {
