@@ -7,7 +7,9 @@ Add support for SysVinit systems.
 
 v0.1.7 - master
 improve start/stop trigger points. DONE Parcially( will depend on profiles feature..)
-Create 2 profiles for taller fans, with one point of configuration.It will then be easier to adjust fan power, speed,vibrations..Initial 2 targets{ 10mm tall fans, 20 mm tal fans }. NEXT TODO
+Create 2 profiles for taller fans, with one point of configuration.
+	It will then be easier to adjust fan power, speed,vibrations..Initial 2 targets{ 10mm tall fans, 20 mm tal fans }.Done Partially(Done only inside envelope to adjust fan, Quiet and Run times remain the same..)
+
 improve makefile, to stop systemd service, compile/install shared library, enable service, and start it after install process- DONE( systemd OK, not yet for SysVinit :( ... )
 
 v0.1.6 - released

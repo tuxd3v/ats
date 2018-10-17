@@ -35,11 +35,11 @@ require("sleep");
 --
 
 	-- Fan Pwm Value[ Integer ]
-	FAN_PWM   = 0
+	FAN_PWM		= 0
 	-- CPU  Thermal Zone[ Integer ]
-	THERMAL_0 = 65
+	THERMAL_0	= 65
 	-- GPU Thermal Zone [ Integer ]
-	THERMAL_1 = 64
+	THERMAL_1	= 64
 
 --- Active Solution, 2 profiles[ smallerfan,tallerfan ]
 --
@@ -47,7 +47,7 @@ require("sleep");
 --- Chose Fan profile,
 --  1 - smaller fan( ~10 mm taller )
 --  2 - talller fan( ~20 mm taller )
-	FANSPEC = 1
+	FANSPEC		= 1
 
 --- Entire Range of values, calculated on aplication startup, that will be used at runtime.
 --
@@ -178,10 +178,9 @@ end
 ---- Feature Functions
 ---
 
---- Function using Linear Interpolated Method
---
+--- Predefine Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
+--  Function using Linear Interpolated Method
 
--- Predefind Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
 function buildTriggers()
 	-- Speed up the process of obtaining math.ceil(), bellow..
 	local ceil = math.ceil;
