@@ -64,4 +64,4 @@ clean:
 
 .PHONY: purge
 purge:
-	cd / && rm -rf /root/fanctl
+	cd / && rm -rf ${OLDPWD}/fanctl
