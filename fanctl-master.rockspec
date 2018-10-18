@@ -1,6 +1,6 @@
 rockspec_format="1.0"
 package = "fanctl"
-version = "0.1-6"
+version = "master"
 description = {
 	summary	= "Active Thermal Service",
 	detailed		= [[
@@ -25,14 +25,14 @@ external_dependencies = {
 	LUA53				= { library = "liblua5.3.so" }
 }
 build = {
-	type			= "make",
+	type				= "make",
 	makefile			= "Makefile",
 	build_target		= "all",
-	build_pass		= true,
-	build_variables	= {},
+	build_pass			= true,
+	build_variables		= {},
 	install_target		= "install",
 	install_pass		= true,
 	install_variables	= {},
-	variables		= {},
-	modules			= { sleep = "src/sleep.c" }
+	variables			= {},
+	modules				= { sleep = "src/sleep.c" }
 }
