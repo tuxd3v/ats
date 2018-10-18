@@ -43,7 +43,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	apt-get install lua5.3 lua5.3-dev luarocks gcc make
 	
 	Nota:
-	You can also use git, to download, if you want to install manually.
+	You can also use git, to download, ( if you want to install manually ).
 
 ######    If you haven't already the Lua runtime installed, then made the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
@@ -58,7 +58,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ######    2. Install by release, check in Releases tab( ie: v0.1.6 ):
 	luarocks build  https://raw.githubusercontent.com/tuxd3v/fanctl/master/fanctl-0.1-6.rockspec
 
-######    3. Install manually, using another tool(ie: git ).
+######    3. Install manually, using make ( need to download first the code ie: with git, by browser).
 	make
 	make install
 	
