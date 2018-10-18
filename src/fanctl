@@ -335,7 +335,7 @@ then
 
 	while true
 	do
-		print( "Sleeping for[ seconds ]............. " .. QUIET[ TEMP ] )
+		print( "Stopping for[ seconds ]............. " .. QUIET[ TEMP ] )
 		print( "CPU Temperature[ max 70 °C ]........ " .. THERMAL_0 )
 		print( "GPU Temperature[ max 70 °C ]........ " .. THERMAL_1 )
 		print( "Fan PWM Duty Cicle value[ 0-255 ]... " .. FAN_PWM )
