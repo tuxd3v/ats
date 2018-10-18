@@ -1,6 +1,6 @@
 rockspec_format="1.0"
 package = "fanctl"
-version = "master"
+version = "0.0.0"
 description = {
 	summary	= "Active Thermal Service",
 	detailed		= [[
