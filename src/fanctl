@@ -330,7 +330,7 @@ buildTriggers( MIN_THERMAL_TEMP, MAX_CONTINUOUS_THERMAL_TEMP, ABSOLUTE_MAX_THERM
 --
 
 -- Check if fanctl will run for test, or a service..
-if ( arg[1] == "--test" or arg[1] == "-h" )
+if ( arg[1] == "--test" or arg[1] == "-t" )
 then
 
 	while true
