@@ -175,6 +175,13 @@ function getThermal()
 	return 1
 end
 
+---- Check if file exists and is ready for been open..[ boolean ]
+--
+function file_exists(name)
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+
 ---- Feature Functions
 ---
 
@@ -314,61 +321,125 @@ TEMP			= MAX_CONTINUOUS_THERMAL_TEMP
 -- Don't Start Fan with Big initial jump.. 
 setFanpwm( 130 )
 msleep( 200 )
-setFanpwm( 190 )
+INSTANT_RATIO = 190
+setFanpwm( INSTANT_RATIO )
 
 -- Build triggers to use
 buildTriggers( MIN_THERMAL_TEMP, MAX_CONTINUOUS_THERMAL_TEMP, ABSOLUTE_MAX_THERMAL_TEMP )
 
 -- Loop to Active Control Temps..
 --
-while true
-do
-	-- Sleeping with Fan OFF, until next cicle
-	sleep( QUIET[ TEMP ] )
-	
-	-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
-	getThermal()
-	-- Use  Biggest Thermal Value from THERMAL_{0,1}
-	if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
-	
-	-- Get PWM_RATIO from Table
-	INSTANT_RATIO = PWM_RATIO[ TEMP ]
-	
-	-- If temp doesnt change...don't update it..
-	if( INSTANT_RATIO ~= FAN_PWM )
-	then
-		if( FAN_PWM < 1 )
-		then
-			-- When stopped, it needs more power to start...
-			setFanpwm( 130 )
-			msleep( 200 )
-			setFanpwm( 190 )
-			sleep( 1 )
-		end
-		setFanpwm( INSTANT_RATIO )
-	end
-	
-	-- Temp Above threshold to Underclock Frequencies
-	if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
-	then
-		-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
-		os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
-		io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
-		io.write( string.format( "exit 1\n" ) )
-	end
-	
-	-- sleeping with Fan ON until next cycle
-	sleep( RUN[ TEMP ] )
-	-- Stop Fan
-	setFanpwm( 0 )
-end
 
+-- Check if fanctl will run for test, or a service..
+if ( arg[1] == "--test" or arg[1] == "-h" )
+then
+
+	while true
+	do
+		print "Sleeping for[ seconds ].... " .. QUIET[ TEMP ]
+		print "CPU Temperature[ max 70 °C ]... " .. THERMAL_0
+		print "GPU Temperature[ max 70 °C ]... " .. THERMAL_1
+		print "Fan PWM Duty Cicle value[ 0-255 ]... " .. INSTANT_RATIO
+		print "--------------------"
+		-- Sleeping with Fan OFF, until next cicle
+		sleep( QUIET[ TEMP ] )
+		
+		-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
+		getThermal()
+		-- Use  Biggest Thermal Value from THERMAL_{0,1}
+		if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
+		
+		-- Get PWM_RATIO from Table
+		INSTANT_RATIO = PWM_RATIO[ TEMP ]
+		
+		-- If temp doesnt change...don't update it..
+		if( INSTANT_RATIO ~= FAN_PWM )
+		then
+			if( FAN_PWM < 1 )
+			then
+				-- When stopped, it needs more power to start...
+				setFanpwm( 130 )
+				msleep( 200 )
+				setFanpwm( 190 )
+				sleep( 1 )
+			end
+			setFanpwm( INSTANT_RATIO )
+		end
+		
+		-- Temp Above threshold to Underclock Frequencies
+		if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
+		then
+			-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
+			os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
+			io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "exit 1\n" ) )
+		end
+		
+		-- sleeping with Fan ON until next cycle
+		print "Sleeping for[ seconds ].... " .. RUN[ TEMP ]
+		print "CPU Temperature[ max 70 °C ]... " .. THERMAL_0
+		print "GPU Temperature[ max 70 °C ]... " .. THERMAL_1
+		print "Fan PWM Duty Cicle value[ 0-255 ]... " .. INSTANT_RATIO
+		print "--------------------"
+		sleep( RUN[ TEMP ] )
+		-- Stop Fan
+		setFanpwm( 0 )
+	end
+
+elseif ( file_exists( "/var/run/systemd/units/invocation:fanctl.service" ) == false )
+then
+	while true
+	do
+		-- Sleeping with Fan OFF, until next cicle
+		sleep( QUIET[ TEMP ] )
+		
+		-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
+		getThermal()
+		-- Use  Biggest Thermal Value from THERMAL_{0,1}
+		if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
+		
+		-- Get PWM_RATIO from Table
+		INSTANT_RATIO = PWM_RATIO[ TEMP ]
+		
+		-- If temp doesnt change...don't update it..
+		if( INSTANT_RATIO ~= FAN_PWM )
+		then
+			if( FAN_PWM < 1 )
+			then
+				-- When stopped, it needs more power to start...
+				setFanpwm( 130 )
+				msleep( 200 )
+				setFanpwm( 190 )
+				sleep( 1 )
+			end
+			setFanpwm( INSTANT_RATIO )
+		end
+		
+		-- Temp Above threshold to Underclock Frequencies
+		if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
+		then
+			-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
+			os.execute( "sleep 10 && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
+			io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
+			io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
+			io.write( string.format( "exit 1\n" ) )
+		end
+		
+		-- sleeping with Fan ON until next cycle
+		sleep( RUN[ TEMP ] )
+		-- Stop Fan
+		setFanpwm( 0 )
+	end
+else
+	print "Stop Running Service first [ service fanctl stop ].."
+end
 os.exit( 1 );
