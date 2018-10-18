@@ -40,32 +40,32 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ### Debian/Ubuntu
 
 ### Install Dependencies.
-	apt-get install lua5.3 lua5.3-dev gcc make git
+	apt-get install lua5.3 lua5.3-dev luarocks gcc make
 	
 	Nota:
-	Git needed only to get the Code,( If you download with another tool, ignore it.. )
+	You can also use git, to download, if you want to install manually.
 
-######    Then made the Symbolic Link:
+######    If you haven't already the Lua runtime installed, then made the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 
-### Download/Compile/Configure/Install fanctl
-######    If you Have already fanctl Running with a previous release, then:
-	systemctl stop fanctl
+### Install fanctl
 
-	
-######    Change to /root Dir, then Go to Releases, get last one, by tag( ie: v0.1.6 ):
-	cd /root && git clone --branch v0.1.6 https://github.com/tuxd3v/fanctl.git && cd fanctl
+####      Several independent Options:
+
+######    1. Install from master( last code, but more prone to errors.. )
+	luarocks build  https://raw.githubusercontent.com/tuxd3v/fanctl/master/fanctl-master-0.rockspec
+
+######    2. Install by release, check in Releases tab( ie: v0.1.6 ):
+	luarocks build  https://raw.githubusercontent.com/tuxd3v/fanctl/master/fanctl-0.1-6.rockspec
+
+######    3. Install manually, using another tool(ie: git ).
 	make
 	make install
-
-######    After install, remove the downloaded code
+	
+    After instalation, remove the downloaded code
 	make purge
 
-
-#### Start the Service
-	systemctl start fanctl
-
-#### Check the Status
+#### After install, verify the end of the output for something like:
 	systemctl status fanctl
 
 	● fanctl.service - Active Thermal Fan Service
