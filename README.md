@@ -45,7 +45,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	Nota:
 	You can also use git, to download, ( if you want to install manually..step 3. ).
 
-######    If Lua runtime isn't already installed, then made the Symbolic Link:
+######    If doesn't exist, then create the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 
 ### Install fanctl
