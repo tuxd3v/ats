@@ -58,7 +58,7 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ######    2. Install by release, check in Releases tab( ie: v0.1.6 ):
 	luarocks build  https://raw.githubusercontent.com/tuxd3v/fanctl/master/fanctl-0.1-6.rockspec
 
-######    3. Install manually, using make ( need to download first the code ie: with git, by browser).
+######    3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
 	make
 	make install
 	
