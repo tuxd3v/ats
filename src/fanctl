@@ -181,7 +181,7 @@ end
 --- Predefine Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
 --  Function using Linear Interpolated Method
 
-function buildTriggers()
+function buildTriggers(mintemp, maxcontinuous, absolutmax )
 	-- Speed up the process of obtaining math.ceil(), bellow..
 	local ceil = math.ceil;
 	
@@ -196,14 +196,14 @@ function buildTriggers()
 		smallerFan,
 		tallerFan
 	}
-	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
+	for i = 0,( absolutmax + 10 ),1
 	do
-		if( i >= 0 and i < MIN_THERMAL_TEMP )
+		if( i >= 0 and i < mintemp )
 		then
 			PWM_RATIO[ i ]	= 0
 			QUIET[ i ]		= 120
 			RUN[ i ]		= 6
-		elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
+		elseif( i >= mintemp and i <= maxcontinuous )
 		then
 			-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
 	  		PWM_RATIO[ i ]	= fanSpec[ FANSPEC ]( i )
@@ -224,7 +224,7 @@ function buildTriggers()
 				QUIET[ i ]	= 10
 	  			RUN[ i ]	= 60
 	  		end	
-	  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
+	  	elseif ( i > maxcontinuous )
 	  	then
 	  		PWM_RATIO[ i ]	= 255
 	  		QUIET[ i ]		= 6
@@ -317,7 +317,7 @@ msleep( 200 )
 setFanpwm( 190 )
 
 -- Build triggers to use
-buildTriggers()
+buildTriggers( MIN_THERMAL_TEMP, MAX_CONTINUOUS_THERMAL_TEMP, ABSOLUTE_MAX_THERMAL_TEMP )
 
 -- Loop to Active Control Temps..
 --
