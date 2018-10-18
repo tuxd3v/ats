@@ -335,10 +335,10 @@ then
 
 	while true
 	do
-		print( "Sleeping for[ seconds ]............." .. QUIET[ TEMP ] )
-		print( "CPU Temperature[ max 70 °C ]........" .. THERMAL_0 )
-		print( "GPU Temperature[ max 70 °C ]........" .. THERMAL_1 )
-		print( "Fan PWM Duty Cicle value[ 0-255 ]..." .. FAN_PWM )
+		print( "Sleeping for[ seconds ]............. " .. QUIET[ TEMP ] )
+		print( "CPU Temperature[ max 70 °C ]........ " .. THERMAL_0 )
+		print( "GPU Temperature[ max 70 °C ]........ " .. THERMAL_1 )
+		print( "Fan PWM Duty Cicle value[ 0-255 ]... " .. FAN_PWM )
 		print "--------------------"
 		-- Sleeping with Fan OFF, until next cicle
 		sleep( QUIET[ TEMP ] )
@@ -383,7 +383,7 @@ then
 		end
 		
 		-- sleeping with Fan ON until next cycle
-		print( "Running for[ seconds ]..............." .. RUN[ TEMP ] )
+		print( "Running for[ seconds ].............. " .. RUN[ TEMP ] )
 		print( "CPU Temperature[ max 70 °C ]........ " .. THERMAL_0 )
 		print( "GPU Temperature[ max 70 °C ]........ " .. THERMAL_1 )
 		print( "Fan PWM Duty Cicle value[ 0-255 ]... " .. FAN_PWM )
