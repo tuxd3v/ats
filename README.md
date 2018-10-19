@@ -48,15 +48,16 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 ######    If doesn't exist, then create the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
 ######    Provide Lua with locations of needed Libraries.
-cat \<\<HERE \>\> /etc/luarocks/config.lua\n
-variables={\n
-        UNISTD_INCDIR   = "/usr/include",\n
-        LUALIB_INCDIR   = "/usr/include/lua5.3",\n
-        LAUXLIB_INCDIR  = "/usr/include/lua5.3",\n
-        LUA_INCDIR      = "/usr/include/lua5.3",\n
-        LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"\n
-}\n
-HERE\n
+!!!plain
+cat \<\<HERE \>\> /etc/luarocks/config.lua
+variables={
+        UNISTD_INCDIR   = "/usr/include",
+        LUALIB_INCDIR   = "/usr/include/lua5.3",
+        LAUXLIB_INCDIR  = "/usr/include/lua5.3",
+        LUA_INCDIR      = "/usr/include/lua5.3",
+        LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
+}
+HERE
 
 ### Install fanctl
 
