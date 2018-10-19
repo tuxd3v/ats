@@ -2,7 +2,6 @@
 
 
 Improve rockspec to create a rock, so that it could be easilly downloaded.
-Add  "--test" option, so that it would be possible, to get CPU,GPU temps, PWM issued, and fanctl state, on terminal.
 Add support for SysVinit systems.
 
 v0.1.7 - master
@@ -10,6 +9,7 @@ improve start/stop trigger points. DONE Parcially( will depend on profiles featu
 Create 2 profiles for small and taller fans, with one point of configuration.
 	It will then be easier to adjust fan power, speed,vibrations..
 	Initial 2 targets{ 10mm tall, 20 mm tall fans }.Done Partially(Done only inside envelope to adjust fan, PWM,Quiet and Run values remain the same outside..)
+Add  "--test" option, so that it would be possible, to get CPU,GPU temps, PWM issued, and fanctl state, on terminal.WIP( needs better implementation..but works ok )
 improve makefile, to stop systemd service, compile/install shared library, enable service,
 	and start it after install process- DONE( systemd OK, not yet for SysVinit :( ... )
 
