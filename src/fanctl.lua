@@ -96,7 +96,7 @@ function getConditions(  therm0_ctl, therm1_ctl, fan_ctl )
 	return 0
 end
 
--- Set Fan PWM value[ integer ]
+--- Set Fan PWM value[ integer ]
 -- 
 function setFanpwm( value )
     local RETURN = "N/A";
@@ -119,7 +119,7 @@ function setFanpwm( value )
     return 1
 end
 
--- Get Fan PWM value[ integer ]
+--- Get Fan PWM value[ integer ]
 -- 
 function getFanpwm()
 	local RETURN = "N/A";
@@ -138,7 +138,7 @@ function getFanpwm()
 	return 1
 end
 
--- Get Thernal Values[ integer ]
+--- Get Thernal Values[ integer ]
 -- 
 function getThermal()
 	local RETURN = "N/A";
@@ -175,13 +175,14 @@ function getThermal()
 	return 1
 end
 
----- Check if file exists and is ready for been open..[ boolean ]
+--- Check if file exists and is ready for been open..[ boolean ]
 --
 function file_exists(name)
    local f=io.open(name,"r")
    if f~=nil then io.close(f) return true else return false end
 end
 
+----
 ---- Feature Functions
 ---
 
@@ -243,8 +244,8 @@ end
 ----
 ---- Variables and Functions to Deamonize.
 ---
---
 
+-- will be used with SysVinit systems..
 function createLock()
 	local RETURN = "N/A"
 	local handle = io.open( "/var/lock/fanctl.lock" , "r")
@@ -262,12 +263,15 @@ function createLock()
 	return 1
 end
 
----- MAIN ----
-----
---
 
+----
+---- MAIN ----
+---
+
+----
 ---- Check Configurations
 --
+
 -- if( createLock() == 1 ){
 --	print( "fanctl is already running.." )
 --	print( "exit 1" )
@@ -285,54 +289,60 @@ then
 	os.exit(1)
 end
 
----- Temperature Parameters
+--- Temperature Parameters
 --
--- By Experience, without Underclock, with cpufreq Scalling 'Ondemand',
--- And with all CPUs at 100%, the temperature should not grow more than ~57/58C,
--- But it depends of the HeatSink used and also the Fan characteristics..and the environment around..
+
+--[[ By Experience, without Underclock, with cpufreq Scalling 'Ondemand',
+   And with all CPUs at 100%, the temperature should not grow more than ~57/58C,
+   But it depends of the HeatSink used and also the Fan characteristics..and the environment around..
+   
+   Nota:
+   For Safety Reasons,
+   It Starts with 'MAX_CONTINUOUS_THERMAL_TEMP' limit, in the worst case cenario, we could not be able to read correctly the temps initially...
+   
+   In the absence of proper Active Thermal Solution, to cool down( weak or dead fan? ),
+   It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, were then, it Shutdown in 10s( for safety reasons.. )
+]]
 
 -- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
 ABSOLUTE_MAX_THERMAL_TEMP	= 70
-
 -- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
 MAX_CONTINUOUS_THERMAL_TEMP	= 60
 -- Min Temperature  threshold to activate Fan
 MIN_THERMAL_TEMP			= 39
 
----- PWM Parameters
+-- Initial Temperature
+TEMP						= MAX_CONTINUOUS_THERMAL_TEMP
+
+
+--- PWM Parameters
 --
+
 -- Min PWM alue, to Stop Fan.
-STOP_FAN_PWM	= 0
+STOP_FAN_PWM				= 0
 -- Max PWM value possible
-MAX_FAN_PWM		= 255
--- Adjust conform your Fan specs, some neds greater values, others work with less current
-MIN_FAN_PWM		= 30
+MAX_FAN_PWM					= 255
+-- Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. )
+MIN_FAN_PWM					= 30
 
----- Initial Temperature
--- For Safety Reasons,
--- It Starts with 'MAX_CONTINUOUS_THERMAL_TEMP' limit, because we could not be able to read correctly the temps...
--- 
-TEMP			= MAX_CONTINUOUS_THERMAL_TEMP
-
--- In the absence of proper Active Thermal Solution, to cool down( weak or dead fan? ),
--- It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, then were it Shutdown in 10s( for safety reasons.. )
-
-
--- Don't Start Fan with Big initial jump.. 
+-- Start Fan, by 2 diferent PWM duty cycle Power Steps .. 
 setFanpwm( 130 )
 msleep( 200 )
 setFanpwm( 190 )
 
--- Build triggers to use
+-- Build triggers to use( PWM = F( TEMP ) )
 buildTriggers( MIN_THERMAL_TEMP, MAX_CONTINUOUS_THERMAL_TEMP, ABSOLUTE_MAX_THERMAL_TEMP )
 
--- Loop to Active Control Temps..
---
 
--- Check if fanctl will run for test, or a service..
+----
+---- Loop to Active Control Temps..
+---
+
+--- Check if fanctl will run for test, or a service..
+--
 if ( arg[1] == "--test" or arg[1] == "-t" )
 then
-
+	local INSTANT_RATIO;
 	while true
 	do
 		print( "Stopping for[ seconds ]............. " .. QUIET[ TEMP ] )
@@ -395,6 +405,7 @@ then
 
 elseif ( file_exists( "/var/run/systemd/units/invocation:fanctl.service" ) == false )
 then
+	local INSTANT_RATIO;
 	while true
 	do
 		-- Sleeping with Fan OFF, until next cicle
@@ -439,6 +450,6 @@ then
 		setFanpwm( 0 )
 	end
 else
-	print "Stop Running Service first [ service fanctl stop ].."
+	print "Stop fanctl Service first [ service fanctl stop ].."
 end
 os.exit( 1 );
