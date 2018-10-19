@@ -433,7 +433,7 @@ then
 			setFanpwm( INSTANT_RATIO )
 		end
 		
-		-- Temp Above threshold to Underclock Frequencies
+		-- Temp Above Threshold to ShutDown..
 		if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
 		then
 			-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
