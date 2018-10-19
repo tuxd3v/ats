@@ -55,6 +55,7 @@ variables={
         LAUXLIB_INCDIR  = "/usr/include/lua5.3",
         LUA_INCDIR      = "/usr/include/lua5.3",
         LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
+}
 HERE
 
 ### Install fanctl
