@@ -208,19 +208,6 @@ function shutDown( seconds )
 	io.write( string.format( "exit 1\n" ) )
 end
 
---- Check if file exists and is ready for been open..[ boolean ]
---
-function file_exists(name)
-	local handle = io.open( name, "r" )
-	if( handle ~= nil )
-	then
-		io.close( handle )
-		return true
-	else
-		return false
-	end
-end
-
 ----
 ---- Feature Functions
 ---
@@ -302,7 +289,6 @@ function createLock()
 	return 1
 end
 
-
 ----
 ---- MAIN ----
 ---
@@ -329,12 +315,15 @@ end
 --	os.exit(1);
 --}
 
+-- Assigning SysFs Locations for control..
 THERMAL0_CTL	= "/sys/class/thermal/thermal_zone0/temp"
 THERMAL1_CTL	= "/sys/class/thermal/thermal_zone1/temp"
 FAN_CTL			= "/sys/class/hwmon/hwmon0/pwm1"
-if( getConditions( therm0_ctl, therm1_ctl, fan_ctl ) == 1 )
+
+-- Check in Initial conditions are valid
+-- By that we mean if ATS, can properly support Active Thermal System, on the present SysFs..
+if( getConditions() == 1 )
 then
-	io.write( string.format("getConditions: Warning, Couldnt get sysfs Locations:\n%s\n%s\n%s\n\n", therm0_ctl, therm1_ctl, fan_ctl ))
 	io.write( string.format("getConditions: Warning, Values { THERMAL0_CTL, THERMAL1_CTL, FAN_CTL }: %s, %s, %s\n", THERMAL0_CTL, THERMAL1_CTL, FAN_CTL ))
 	io.write( string.format("exit 1\n"))
 	os.exit( 1 )
@@ -354,7 +343,7 @@ buildTriggers()
 
 --- Check if fanctl will run for test, or a service..
 --
-if ( file_exists( "/var/run/systemd/units/invocation:fanctl.service" ) == false )
+if ( symlink_exists( "/var/run/systemd/units/invocation:fanctl.service" ) == nil )
 then
 	local INSTANT_RATIO
 	if ( arg[1] == "--test" or arg[1] == "-t" )

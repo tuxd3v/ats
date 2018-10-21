@@ -3,6 +3,10 @@
 */
 
 #include <unistd.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -28,12 +32,32 @@ static int sleep_c( lua_State *L )
 	sleep( secs );
 	return 0;   /* No items returned */
 }
+/*
+* Check if a a SymLink exists,
+* add "_c" on declaration
+*/
+static int symlink_exists_c( lua_State *L )
+{
+	/* unfortunatly, to hold the struct on lstat syscall..*/
+	struct stat buffer;
+	/* Get Top lua stack element, and pass const pointer to lstat */
+	if ( ! lstat( lua_tostring( L, -1 ), &buffer ) ) {
+		/* Push the result into the stack*/
+		lua_pushboolean ( L, 1 );
+	}else{
+		/* Push nil into stack*/
+		lua_pushnil(L);
+	}
+	/* Return the number of return values pushed onto the stack.*/
+    return 1;
+}
 
-/* Register both functions */
+
+/* Register the functions */
 int luaopen_ats( lua_State *L )
 {
-	lua_register( L, "msleep", msleep_c );  
+	lua_register( L, "symlink_exists", symlink_exists_c );
+	lua_register( L, "msleep", msleep_c );
 	lua_register( L, "sleep", sleep_c );
 	return 0;
 }
-
