@@ -42,5 +42,5 @@ build = {
 	install_pass		= true,
 	install_variables	= {},
 	variables			= {},
-	modules				= { sleep = "src/sleep.c" }
+	modules				= { ats = "src/ats.c" }
 }
