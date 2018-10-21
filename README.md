@@ -47,7 +47,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ######    If doesn't exist, then create the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
-######    Provide Lua with locations of needed Libraries.
+######    Provide Lua with locations of needed Libraries( nedded if you install by step 1, or 2..).
 
 	cat <<HERE >> /etc/luarocks/config.lua
 	variables={
