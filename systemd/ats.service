@@ -1,5 +1,5 @@
 [Unit]
-Description=Active Thermal Fan Service
+Description=ATS - Active Thermal Service
 After=local-fs.target
 StartLimitIntervalSec=0
 
@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=8
 User=root
-ExecStart=/usr/sbin/fanctl
+ExecStart=/usr/sbin/ats
 
 [Install]
 WantedBy=basic.target

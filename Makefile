@@ -5,7 +5,7 @@ LDIR		:= /usr/lib/aarch64-linux-gnu/lua/5.3
 SYSTEMDIR	:= /lib/systemd/system
 
 # Shared Library
-NAME		:= sleep
+NAME		:= ats
 MAJOR		:= 0
 MINOR		:= 1
 VERSION	:= $(MAJOR).$(MINOR)
@@ -17,7 +17,7 @@ CFLAGS		:= -c -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
 LDFLAGS	:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 
 # source code
-SRCS		:= sleep.c
+SRCS		:= ats.c
 SRCS_PATH	:= src/
 SRCS		:= $(addprefix $(SRCS_PATH),$(SRCS))
 OBJS		:= $(SRCS:.c=.o)
@@ -39,22 +39,22 @@ $(NAME).so.$(VERSION): $(OBJS)
 
 .PHONY: install
 install:
-	if [ -L "/var/run/systemd/units/invocation:fanctl.service" ];then	\
-		systemctl stop fanctl;						\
+	if [ -L "/var/run/systemd/units/invocation:ats.service" ];then	\
+		systemctl stop ats;											\
 	fi
-	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)fanctl
-	install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/fanctl.service
+	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)ats
+	install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
 	if [ ! -d $(LDIR) ];then	\
-		mkdir -p $(LDIR);	\
+		mkdir -p $(LDIR);		\
 	fi
 	install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
 	if [ -L $(LDIR)/$(NAME).so ];then	\
-		rm -f $(LDIR)/$(NAME).so;	\
+		rm -f $(LDIR)/$(NAME).so;		\
 	fi
 	ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
-	systemctl enable fanctl
-	systemctl start fanctl
-	systemctl status fanctl
+	systemctl enable ats
+	systemctl start ats
+	systemctl status ats
 
 
 .PHONY: clean
@@ -64,4 +64,4 @@ clean:
 
 .PHONY: purge
 purge:
-	cd / && rm -rf ${OLDPWD}/fanctl
+	cd / && rm -rf ${OLDPWD}/ats

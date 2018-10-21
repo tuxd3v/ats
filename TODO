@@ -5,6 +5,7 @@ Improve rockspec to create a rock, so that it could be easilly downloaded.
 Add support for SysVinit systems.
 
 v0.1.7 - master
+fanctl rename to 'ats'- Active Thermal Service - DONE
 improve start/stop trigger points. DONE Parcially( will depend on profiles feature..)
 Create 2 profiles for small and taller fans, with one point of configuration.
 	It will then be easier to adjust fan power, speed,vibrations..

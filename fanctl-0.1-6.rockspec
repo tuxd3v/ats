@@ -1,19 +1,19 @@
 rockspec_format			= "1.0"
-package					= "fanctl"
+package					= "ats"
 version					= "0.1-6"
 description = {
 	summary	= "Active Thermal Service",
 	detailed			= [[
 		This tool, provide support for Rockpro64, Active thermal Service( Fan Control ).
 	]],
-	homepage			= "https://github.com/tuxd3v/fanctl",
+	homepage			= "https://github.com/tuxd3v/ats",
 	license				= "See License..",
 	maintainer			= "tuxd3v <tuxd3v@sapo.pt>"
 }
 source = {
-   url					= "https://github.com/tuxd3v/fanctl/archive/v0.1.6.tar.gz",
+   url					= "https://github.com/tuxd3v/ats/archive/v0.1.6.tar.gz",
    file					= "v0.1.6.tar.gz",
-   dir					= "fanctl-0.1.6"
+   dir					= "ats-0.1.6"
 }
 dependencies = {
 	supported_platforms	= "linux"

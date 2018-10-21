@@ -1,12 +1,12 @@
-# fanctl
+# ATS - Active Thermal Service
 
-Active Fan Thermal tool, to Control Processor Temperature on RockPro64 Single Board Computer,
+Active Fan Thermal Service tool, to Control Processor Temperature on RockPro64 Single Board Computer,
 
 But Could be adapted to other boards too..
 This tool is system Agnostic.
 
 The Control is Made via SysFS, based in the Lua Scripting Language.
-You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
+You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ### Characteristics:
 
@@ -59,15 +59,15 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	}
 	HERE
 
-### Install fanctl
+### Install ats
 
 ####      Several independent Options:
 
 ######    1. Install from master( last code, but more prone to errors.. )
-	luarocks build  https://raw.githubusercontent.com/tuxd3v/fanctl/master/fanctl-master-0.rockspec
+	luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec
 
 ######    2. Install by release, check in Releases tab( ie: v0.1.6 ):
-	luarocks build  https://raw.githubusercontent.com/tuxd3v/fanctl/master/fanctl-0.1-6.rockspec
+	luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-6.rockspec
 
 ######    3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
 	make
@@ -77,15 +77,15 @@ You can Adapt the file fanctl, if you want( its configured  for RockPro64 )
 	make purge
 
 #### After install, verify the end of the output for something like:
-	systemctl status fanctl
+	systemctl status ats
 
-	● fanctl.service - Active Thermal Fan Service
-	   Loaded: loaded (/lib/systemd/system/fanctl.service; enabled; vendor preset: enabled)
+	● ats.service - Active Thermal Fan Service
+	   Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
 	   Active: active (running) since Thu 2018-09-13 20:29:54 WEST; 3s ago
 	 Main PID: 29133 (lua)
 		Tasks: 1 (limit: 4915)
-	   CGroup: /system.slice/fanctl.service
-		       └─29133 lua /usr/sbin/fanctl
+	   CGroup: /system.slice/ats.service
+		       └─29133 lua /usr/sbin/ats
 
 	Sep 13 20:29:54 rockpro64 systemd[1]: Started Active Thermal Fan Service.
 

@@ -30,7 +30,7 @@ static int sleep_c( lua_State *L )
 }
 
 /* Register both functions */
-int luaopen_sleep( lua_State *L )
+int luaopen_ats( lua_State *L )
 {
 	lua_register( L, "msleep", msleep_c );  
 	lua_register( L, "sleep", sleep_c );

@@ -15,49 +15,73 @@
 
 ---- Require Sleep Functions to dynamic link against
 --
-require("sleep");
+require("ats");
 
 ----
 ---- Thermal Global Variables
 ---
 
----   Path locations for control..
+---   Path Locations for Control..
 --
 
-	-- CPU Thermal Zone[ String ]
-	THERMAL0_CTL = "N/A";
-	-- GPU Thermal Zone[ String ]
-	THERMAL1_CTL = "N/A";
-	-- FAN Control[ String ]
-	FAN_CTL      = "N/A";
+-- CPU Thermal Zone[ String ]
+THERMAL0_CTL	= "N/A";
+-- GPU Thermal Zone[ String ]
+THERMAL1_CTL	= "N/A";
+-- FAN Control[ String ]
+FAN_CTL			= "N/A";
 
----   Update thermal,pwm values..
+--- Temperature Control Constants
 --
 
-	-- Fan Pwm Value[ Integer ]
-	FAN_PWM		= 0
-	-- CPU  Thermal Zone[ Integer ]
-	THERMAL_0	= 65
-	-- GPU Thermal Zone [ Integer ]
-	THERMAL_1	= 64
+-- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
+ABSOLUTE_MAX_THERMAL_TEMP	= 70
+-- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
+MAX_CONTINUOUS_THERMAL_TEMP	= 60
+-- Min Temperature  threshold to activate Fan
+MIN_THERMAL_TEMP			= 39
+
+--- PWM Parameters Constants
+--
+ 
+-- Min PWM value, to Stop Fan.
+STOP_FAN_PWM	= 0
+-- Max PWM value possible
+MAX_FAN_PWM		= 255
+
+-- Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. )
+MIN_FAN_PWM		= 30
 
 --- Active Solution, 2 profiles[ smallerfan,tallerfan ]
 --
 
---- Chose Fan profile,
+-- Chose Fan Profile,
 --  1 - smaller fan( ~10 mm taller )
 --  2 - talller fan( ~20 mm taller )
-	FANSPEC		= 1
+FANSPEC	= 1
 
 --- Entire Range of values, calculated on aplication startup, that will be used at runtime.
 --
 
-	-- PWM ratio, calculated based on interpolated values inside normal envelope, and some other values outside[ Global table of integer types ]
-	PWM_RATIO={}
-	-- Sleep timer( in seconds ), used for sleeping with Fan Stoped[ Global table of integer types ]
-	QUIET={}
-	-- Sleep timer( in seconds ), used for sleeping with Fan Running[ Global table of integer types ]
-	RUN={}
+-- PWM ratio, calculated based on interpolated values inside normal envelope, and some other values outside[ Global table of integer types ]
+PWM_RATIO	= {}
+-- Sleep timer( in seconds ), used for sleeping with Fan Stoped[ Global table of integer types ]
+QUIET		= {}
+-- Sleep timer( in seconds ), used for sleeping with Fan Running[ Global table of integer types ]
+RUN			= {}
+
+--- Thermal values readed..
+--
+
+-- CPU  Thermal Zone[ Integer ], Initial value
+THERMAL_0	= MAX_CONTINUOUS_THERMAL_TEMP
+-- GPU Thermal Zone [ Integer ], Initial value
+THERMAL_1	= MAX_CONTINUOUS_THERMAL_TEMP
+
+-- Temperature Value( CPU or GPU ), Initial value
+TEMP		= THERMAL_0
+-- Fan Pwm Value[ Integer ], Initial value
+FAN_PWM		= STOP_FAN_PWM
 
 ----
 ---- Core Functions
@@ -65,32 +89,30 @@ require("sleep");
 
 --- Find Device sysfs location
 --
-function getConditions(  therm0_ctl, therm1_ctl, fan_ctl )
- 	local handle = io.open( therm0_ctl , "r")
+function getConditions()
+	local open   = io.open
+ 	local handle = open( THERMAL0_CTL , "r")
 	if ( handle ~= nil )
 	then
-		THERMAL0_CTL = therm0_ctl
 		handle:close()
 	else
 		THERMAL0_CTL = "ERROR"
 		return 1
 	end
- 	handle = io.open( therm1_ctl , "r")
+ 	handle = open( THERMAL1_CTL , "r")
 	if ( handle ~= nil )
 	then
-		THERMAL1_CTL = therm1_ctl
 		handle:close()
 	else
 		THERMAL1_CTL = "ERROR"
 		return 1
 	end
- 	handle = io.open( fan_ctl , "r")
+ 	handle = open( FAN_CTL , "r")
 	if ( handle ~= nil )
 	then
-		FAN_CTL = fan_ctl
 		handle:close()
 	else
-		FAN_CTL = "ERROR"
+		FAN_CTL		= "ERROR"
 		return 1
 	end
 	return 0
@@ -99,13 +121,13 @@ end
 --- Set Fan PWM value[ integer ]
 -- 
 function setFanpwm( value )
-    local RETURN = "N/A";
+    local RETURN = "N/A"
 	local handle = io.open( FAN_CTL , "w")
 	if ( handle ~= nil )
 	then
-		RETURN = handle:write( value .. "" )
+		RETURN = handle:write( value, "" )
 		handle:close()
-		if( RETURN ~= nil or RETURN ~= "N/A" )
+		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			getFanpwm()
 			if( tonumber( FAN_PWM ) == value )
@@ -122,8 +144,8 @@ end
 --- Get Fan PWM value[ integer ]
 -- 
 function getFanpwm()
-	local RETURN = "N/A";
-	local handle = io.open( FAN_CTL , "r")
+	local RETURN	= "N/A";
+	local handle	= io.open( FAN_CTL , "r")
 	if ( handle ~= nil )
 	then
 		RETURN = handle:read("*a")
@@ -134,15 +156,16 @@ function getFanpwm()
 			return 0
 		end
 	end
-	FAN_PWM = 0
-	return 1
+	FAN_PWM	= 255
+	return 
 end
 
 --- Get Thernal Values[ integer ]
--- 
+--
 function getThermal()
 	local RETURN = "N/A";
-	local handle = io.open( THERMAL0_CTL , "r" )
+	local open	= io.open
+	local handle = open( THERMAL0_CTL, "r" )
 	if ( handle ~= nil )
 	then
 		RETURN = handle:read( "*a" )
@@ -151,13 +174,13 @@ function getThermal()
 		then
 			THERMAL_0 = tonumber( RETURN  // 1000 )
 		else
-			THERMAL_0 = 65
+			THERMAL_0 = MAX_CONTINUOUS_THERMAL_TEMP
 		end
 	else
-			THERMAL_0 = 65
+			THERMAL_0 = MAX_CONTINUOUS_THERMAL_TEMP
 	end
 	RETURN = "N/A";
-	handle = io.open( THERMAL1_CTL .. "", "r" )
+	handle = open( THERMAL1_CTL, "r" )
 	if ( handle ~= nil )
 	then
 		RETURN = handle:read( "*a" )
@@ -167,10 +190,10 @@ function getThermal()
 			THERMAL_1 = tonumber( RETURN  // 1000 )
 			return 0
 		else
-			THERMAL_1 = 65
+			THERMAL_1 = MAX_CONTINUOUS_THERMAL_TEMP
 		end
 	else
-		THERMAL_1 = 65
+		THERMAL_1 = MAX_CONTINUOUS_THERMAL_TEMP
 	end
 	return 1
 end
@@ -188,8 +211,14 @@ end
 --- Check if file exists and is ready for been open..[ boolean ]
 --
 function file_exists(name)
-   local f=io.open(name,"r")
-   if f~=nil then io.close(f) return true else return false end
+	local handle = io.open( name, "r" )
+	if( handle ~= nil )
+	then
+		io.close( handle )
+		return true
+	else
+		return false
+	end
 end
 
 ----
@@ -199,9 +228,9 @@ end
 --- Predefine Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
 --  Function using Linear Interpolated Method
 
-function buildTriggers(mintemp, maxcontinuous, absolutmax )
+function buildTriggers()
 	-- Speed up the process of obtaining math.ceil(), bellow..
-	local ceil = math.ceil;
+	local ceil = math.ceil
 	
 	-- Local table, with 2 diferent pwm 'Response Curves' functions
 	local function smallerFan( temp )
@@ -214,14 +243,14 @@ function buildTriggers(mintemp, maxcontinuous, absolutmax )
 		smallerFan,
 		tallerFan
 	}
-	for i = 0,( absolutmax + 10 ),1
+	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
 	do
-		if( i >= 0 and i < mintemp )
+		if( i >= 0 and i < MIN_THERMAL_TEMP )
 		then
 			PWM_RATIO[ i ]	= 0
 			QUIET[ i ]		= 120
 			RUN[ i ]		= 6
-		elseif( i >= mintemp and i <= maxcontinuous )
+		elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
 		then
 			-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
 	  		PWM_RATIO[ i ]	= fanSpec[ FANSPEC ]( i )
@@ -242,7 +271,7 @@ function buildTriggers(mintemp, maxcontinuous, absolutmax )
 				QUIET[ i ]	= 10
 	  			RUN[ i ]	= 60
 	  		end	
-	  	elseif ( i > maxcontinuous )
+	  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
 	  	then
 	  		PWM_RATIO[ i ]	= 255
 	  		QUIET[ i ]		= 6
@@ -255,7 +284,7 @@ end
 ---- Variables and Functions to Deamonize.
 ---
 
--- will be used with SysVinit systems..
+-- Will be used with SysVinit systems..
 function createLock()
 	local RETURN = "N/A"
 	local handle = io.open( "/var/lock/fanctl.lock" , "r")
@@ -278,30 +307,6 @@ end
 ---- MAIN ----
 ---
 
-----
----- Check Configurations
---
-
--- if( createLock() == 1 ){
---	print( "fanctl is already running.." )
---	print( "exit 1" )
---	os.exit(1);
---}
-
-therm0_ctl = "/sys/class/thermal/thermal_zone0/temp"
-therm1_ctl = "/sys/class/thermal/thermal_zone1/temp"
-fan_ctl    = "/sys/class/hwmon/hwmon0/pwm1"
-if( getConditions( therm0_ctl, therm1_ctl, fan_ctl ) == 1 )
-then
-	io.write( string.format("getConditions: Warning, Couldnt get sysfs Locations:\n%s\n%s\n%s\n\n", therm0_ctl, therm1_ctl, fan_ctl ))
-	io.write( string.format("getConditions: Warning, Values { THERMAL0_CTL, THERMAL1_CTL, FAN_CTL }: %s, %s, %s\n", THERMAL0_CTL, THERMAL1_CTL, FAN_CTL ))
-	io.write( string.format("exit 1\n"))
-	os.exit(1)
-end
-
---- Temperature Parameters
---
-
 --[[ By Experience, without Underclock, with cpufreq Scalling 'Ondemand',
    And with all CPUs at 100%, the temperature should not grow more than ~57/58C,
    But it depends of the HeatSink used and also the Fan characteristics..and the environment around..
@@ -314,34 +319,34 @@ end
    It will adjust temps only until 'ABSOLUTE_MAX_THERMAL_TEMP' were reached, were then, it Shutdown in 10s( for safety reasons.. )
 ]]
 
--- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
-ABSOLUTE_MAX_THERMAL_TEMP	= 70
--- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
-MAX_CONTINUOUS_THERMAL_TEMP	= 60
--- Min Temperature  threshold to activate Fan
-MIN_THERMAL_TEMP			= 39
-
--- Initial Temperature
-TEMP						= MAX_CONTINUOUS_THERMAL_TEMP
-
-
---- PWM Parameters
+----
+---- Check Configurations
 --
 
--- Min PWM alue, to Stop Fan.
-STOP_FAN_PWM				= 0
--- Max PWM value possible
-MAX_FAN_PWM					= 255
--- Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. )
-MIN_FAN_PWM					= 30
+-- if( createLock() == 1 ){
+--	print( "fanctl is already running.." )
+--	print( "exit 1" )
+--	os.exit(1);
+--}
+
+THERMAL0_CTL	= "/sys/class/thermal/thermal_zone0/temp"
+THERMAL1_CTL	= "/sys/class/thermal/thermal_zone1/temp"
+FAN_CTL			= "/sys/class/hwmon/hwmon0/pwm1"
+if( getConditions( therm0_ctl, therm1_ctl, fan_ctl ) == 1 )
+then
+	io.write( string.format("getConditions: Warning, Couldnt get sysfs Locations:\n%s\n%s\n%s\n\n", therm0_ctl, therm1_ctl, fan_ctl ))
+	io.write( string.format("getConditions: Warning, Values { THERMAL0_CTL, THERMAL1_CTL, FAN_CTL }: %s, %s, %s\n", THERMAL0_CTL, THERMAL1_CTL, FAN_CTL ))
+	io.write( string.format("exit 1\n"))
+	os.exit( 1 )
+end
 
 -- Start Fan, by 2 diferent PWM duty cycle Power Steps .. 
 setFanpwm( 130 )
 msleep( 200 )
 setFanpwm( 190 )
 
--- Build triggers to use( PWM = F( TEMP ) )
-buildTriggers( MIN_THERMAL_TEMP, MAX_CONTINUOUS_THERMAL_TEMP, ABSOLUTE_MAX_THERMAL_TEMP )
+-- Build triggers to use( INSTANT_RATIO = F( TEMP ) )
+buildTriggers()
 
 ----
 ---- Loop to Active Control Temps..
@@ -356,7 +361,7 @@ then
 	then
 		while true
 		do
-			io.write( string.format( "Stopping for[ seconds ]............. %d\nCPU Temperature[ max 70 °C ]........ %d\nGPU Temperature[ max 70 °C ]........ %d\nFan PWM Duty Cycle value[ 0-255 ]... %d\n--------------------\n",QUIET[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
+			io.write( string.format( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",QUIET[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
 			-- Sleeping with Fan OFF, until nesxt cicle
 			sleep( QUIET[ TEMP ] )
 
@@ -388,8 +393,8 @@ then
 				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
 				shutDown( 10 )
 			end
-			io.write( string.format( "Running for[ seconds ].............. %d\nCPU Temperature[ max 70 °C ]........ %d\nGPU Temperature[ max 70 °C ]........ %d\nFan PWM Duty Cycle value[ 0-255 ]... %d\n--------------------\n",RUN[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
-			-- sleeping with Fan ON until next cycle
+			io.write( string.format( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",RUN[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
+			-- Sleeping with Fan ON until next cycle
 			sleep( RUN[ TEMP ] )
 			-- Stop Fan
 			setFanpwm( 0 )
@@ -429,7 +434,7 @@ then
 				shutDown( 10 )
 			end
 			
-			-- sleeping with Fan ON until next cycle
+			-- Sleeping with Fan ON until next cycle
 			sleep( RUN[ TEMP ] )
 			-- Stop Fan
 			setFanpwm( 0 )
