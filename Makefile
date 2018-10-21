@@ -7,7 +7,7 @@ SYSTEMDIR	:= /lib/systemd/system
 # Shared Library
 NAME		:= ats
 MAJOR		:= 0
-MINOR		:= 1
+MINOR		:= 2
 VERSION	:= $(MAJOR).$(MINOR)
 
 DEPS		:= lua5.3

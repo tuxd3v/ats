@@ -341,9 +341,9 @@ buildTriggers()
 ---- Loop to Active Control Temps..
 ---
 
---- Check if fanctl will run for test, or a service..
+--- Check if fanctl is already running as a service..
 --
-if ( symlink_exists( "/var/run/systemd/units/invocation:fanctl.service" ) == nil )
+if ( symlink_exists( "/var/run/systemd/units/invocation:ats.service" ) == nil )
 then
 	local INSTANT_RATIO
 	if ( arg[1] == "--test" or arg[1] == "-t" )
