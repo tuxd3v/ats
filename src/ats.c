@@ -32,6 +32,7 @@ static int sleep_c( lua_State *L )
 	sleep( secs );
 	return 0;   /* No items returned */
 }
+
 /*
 * Check if a a SymLink exists,
 * add "_c" on declaration
@@ -51,7 +52,6 @@ static int symlink_exists_c( lua_State *L )
 	/* Number of return values pushed onto the stack.*/
     return 1;
 }
-
 
 /* Register the functions */
 int luaopen_ats( lua_State *L )
