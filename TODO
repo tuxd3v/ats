@@ -1,8 +1,8 @@
 
 
-
 Improve rockspec to create a rock, so that it could be easilly downloaded.
 Add support for SysVinit systems.
+
 
 v0.1.7 - master
 Code Refactoring - Change project name from fanctl to ATS - Active Thermal Service.WIP..
