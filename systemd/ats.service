@@ -1,0 +1,14 @@
+[Unit]
+Description=ATS - Active Thermal Service
+After=local-fs.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=8
+User=root
+ExecStart=/usr/sbin/ats
+
+[Install]
+WantedBy=basic.target

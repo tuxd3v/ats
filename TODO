@@ -1,0 +1,36 @@
+
+
+
+Improve rockspec to create a rock, so that it could be easilly downloaded.
+Add support for SysVinit systems.
+
+v0.1.7 - master
+Code Refactoring - Change project name from fanctl to ATS - Active Thermal Service.WIP..
+fanctl rename to 'ats'- Active Thermal Service - DONE
+improve start/stop trigger points. DONE Parcially( will depend on profiles feature..)
+Create 2 profiles for small and taller fans, with one point of configuration.
+	It will then be easier to adjust fan power, speed,vibrations..
+	Initial 2 targets{ 10mm tall, 20 mm tall fans }.Done Partially(Done only inside envelope to adjust fan, PWM,Quiet and Run values remain the same outside..)
+Add  "--test" option, so that it would be possible, to get CPU,GPU temps, PWM issued, and fanctl state, on terminal.WIP( needs better implementation..but works ok )
+improve makefile, to stop systemd service, compile/install shared library, enable service,
+	and start it after install process- DONE( systemd OK, not yet for SysVinit :( ... )
+
+v0.1.6 - released
+Start/Stop trip points. - DONE
+improve makefile, to do the work needed on systemd service, and install process, including creating new symlinks, which lead to do not have broken links.. - DONE
+Create initial rockspec, so that it will be easier to download/compile/install from master...in one simple command. DONE
+
+v0.1.5 - released
+Simplify the looping process code, speed it up.. DONE
+Change Curve response, adjust it do be calculated before, the looping process start, will improove speed amd less resources used..DONE
+Improve Makefile 'all' target.DONE
+Improve Makefile 'install' target.DONE
+Improve Makefile 'clean' target.DONE
+Add Target 'purge' to Makefile( to remove the code after installation, used with manual instalation...git clone method.. ), see README. DONE
+
+v0.1.4 - released
+rewrite all parts were fork+exec were taking place, and use new Library module code. DONE
+add Shalid library module in C language for sleeping operations. DONE
+Create makefile, so that fanctl will be sleeping, triggering a preemptive exit of program, and freeing CPU for other tasks. DONE.
+improve fanctl, so that it will only update values of diferent ones required. DONE.
+( ... ). Done.
