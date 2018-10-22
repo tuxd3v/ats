@@ -343,11 +343,11 @@ buildTriggers()
 
 --- Check if fanctl is already running as a service..
 --
-if ( symlink_exists( "/var/run/systemd/units/invocation:ats.service" ) ~ = true )
+if ( arg[1] == "--test" or arg[1] == "-t" )
 then
-	local INSTANT_RATIO
-	if ( arg[1] == "--test" or arg[1] == "-t" )
+	if ( symlink_exists( "/var/run/systemd/units/invocation:ats.service" ) ~= true )
 	then
+		local INSTANT_RATIO
 		while true
 		do
 			io.write( string.format( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",QUIET[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
@@ -389,47 +389,47 @@ then
 			setFanpwm( 0 )
 		end
 	else
-		while true
-		do
-			-- Sleeping with Fan OFF, until next cicle
-			sleep( QUIET[ TEMP ] )
-			
-			-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
-			getThermal()
-			-- Use  Biggest Thermal Value from THERMAL_{0,1}
-			if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
-			
-			-- Get PWM_RATIO from Table
-			INSTANT_RATIO = PWM_RATIO[ TEMP ]
-			
-			-- If temp doesnt change...don't update it..
-			if( INSTANT_RATIO ~= FAN_PWM )
-			then
-				if( FAN_PWM < 1 )
-				then
-					-- When stopped, it needs more power to start...
-					setFanpwm( 130 )
-					msleep( 200 )
-					setFanpwm( 190 )
-					sleep( 1 )
-				end
-				setFanpwm( INSTANT_RATIO )
-			end
-			
-			-- Temp Above Threshold to ShutDown..
-			if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
-			then
-				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
-				shutDown( 10 )
-			end
-			
-			-- Sleeping with Fan ON until next cycle
-			sleep( RUN[ TEMP ] )
-			-- Stop Fan
-			setFanpwm( 0 )
-		end
+		print "Stop fanctl Service first [ service fanctl stop ].."
 	end
 else
-	print "Stop fanctl Service first [ service fanctl stop ].."
+	while true
+	do
+		-- Sleeping with Fan OFF, until next cicle
+		sleep( QUIET[ TEMP ] )
+		
+		-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
+		getThermal()
+		-- Use  Biggest Thermal Value from THERMAL_{0,1}
+		if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
+		
+		-- Get PWM_RATIO from Table
+		INSTANT_RATIO = PWM_RATIO[ TEMP ]
+		
+		-- If temp doesnt change...don't update it..
+		if( INSTANT_RATIO ~= FAN_PWM )
+		then
+			if( FAN_PWM < 1 )
+			then
+				-- When stopped, it needs more power to start...
+				setFanpwm( 130 )
+				msleep( 200 )
+				setFanpwm( 190 )
+				sleep( 1 )
+			end
+			setFanpwm( INSTANT_RATIO )
+		end
+		
+		-- Temp Above Threshold to ShutDown..
+		if( TEMP >= ABSOLUTE_MAX_THERMAL_TEMP )
+		then
+			-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
+			shutDown( 10 )
+		end
+		
+		-- Sleeping with Fan ON until next cycle
+		sleep( RUN[ TEMP ] )
+		-- Stop Fan
+		setFanpwm( 0 )
+	end
 end
 os.exit( 1 );

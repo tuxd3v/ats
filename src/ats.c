@@ -41,14 +41,14 @@ static int symlink_exists_c( lua_State *L )
 	/* unfortunatly, to hold the struct on lstat syscall..*/
 	struct stat buffer;
 	/* Get Top lua stack element, and pass const pointer to lstat */
-	if ( ! lstat( lua_tostring( L, -1 ), &buffer ) ) {
+	if ( lstat( lua_tostring( L, -1 ), &buffer ) == 0 ) {
 		/* Push the result into the stack*/
 		lua_pushboolean ( L, 1 );
 	}else{
 		/* Push nil into stack*/
 		lua_pushnil(L);
 	}
-	/* Return the number of return values pushed onto the stack.*/
+	/* Number of return values pushed onto the stack.*/
     return 1;
 }
 
