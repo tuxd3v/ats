@@ -345,7 +345,7 @@ buildTriggers()
 --
 if ( arg[1] == "--test" or arg[1] == "-t" )
 then
-	if ( symlink_exists( "/var/run/systemd/units/invocation:ats.service" ) ~= true )
+	if ( checkSymlink( "/var/run/systemd/units/invocation:ats.service" ) ~= true )
 	then
 		local INSTANT_RATIO
 		while true

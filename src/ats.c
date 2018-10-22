@@ -37,7 +37,7 @@ static int sleep_c( lua_State *L )
 * Check if a a SymLink exists,
 * add "_c" on declaration
 */
-static int symlink_exists_c( lua_State *L )
+static int checkSymlink_c( lua_State *L )
 {
 	/* unfortunatly, to hold the struct on lstat syscall..*/
 	struct stat buffer;
@@ -56,7 +56,7 @@ static int symlink_exists_c( lua_State *L )
 /* Register the functions */
 int luaopen_ats( lua_State *L )
 {
-	lua_register( L, "symlink_exists", symlink_exists_c );
+	lua_register( L, "checkSymlink", checkSymlink_c );
 	lua_register( L, "msleep", msleep_c );
 	lua_register( L, "sleep", sleep_c );
 	return 0;
