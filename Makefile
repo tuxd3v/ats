@@ -37,27 +37,27 @@ $(NAME).so.$(VERSION): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $<
 
 
-.PHONY: install
+.PHONY:	install
 install:
-	if [ -L "/var/run/systemd/units/invocation:ats.service" ];then	\
+	@if [ -L "/var/run/systemd/units/invocation:ats.service" ];then	\
 		systemctl stop ats;											\
 	fi
-	install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)ats
-	install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
-	if [ ! -d $(LDIR) ];then	\
-		mkdir -p $(LDIR);		\
+	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)ats
+	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
+	@if [ ! -d $(LDIR) ];then						\
+		mkdir -p $(LDIR);						\
+	elif [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then	\
+		rm -f $(LDIR)/$(NAME).so*;					\
 	fi
-	install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
-	if [ -L $(LDIR)/$(NAME).so ];then	\
-		rm -f $(LDIR)/$(NAME).so;		\
-	fi
-	ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
-	systemctl enable ats
-	systemctl start ats
+	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
+	@ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
+	@systemctl enable ats
+	@systemctl start ats
+	@sleep 1
 	systemctl status ats
 
 
-.PHONY: clean
+.PHONY:	clean
 clean:
 	rm $(OBJS)
 	rm $(NAME).so.$(VERSION)
