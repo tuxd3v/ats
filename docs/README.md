@@ -10,10 +10,10 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 
 #### Table of contents
-* [Characteristics](#Characteristics)
-* [Requirements](#Requirements)
-* [Install](#Install)
-* [Run Test](#Run Test)
+* [Characteristics](#characteristics)
+* [Requirements](#requirements)
+* [Install](#install)
+* [Run Test](#run test)
 
 
 ### Characteristics:
