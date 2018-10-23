@@ -123,6 +123,5 @@ You can execute in **test mode**( to see state values ),
 ----
 ATS             : tuxd3v
 
-Fan Icon	: ```
-                  [ freepik ] | https://www.flaticon.com/authors/freepik
-                  ```
+Fan Icon	: `[ freepik ] | https://www.flaticon.com/authors/freepik`
+
