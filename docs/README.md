@@ -123,7 +123,7 @@ You can execute in **test mode**( to see state values ),
 ----
 ATS             : tuxd3v
 
-Fan Icon	: ```javascript
+Fan Icon	: ```lua
                   [ freepik ] https://www.flaticon.com/authors/freepik
                   ```
 
