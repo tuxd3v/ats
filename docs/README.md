@@ -40,10 +40,10 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ### Debian/Ubuntu
 
 ### Install Dependencies.
-`apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+ * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
 
-Nota:
-You can also use git, to download, ( if you want to install manually..step 3. ).
+ Nota:
+ You can also use git, to download, ( if you want to install manually..step 3. ).
 
 ######    If doesn't exist, then create the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
@@ -64,7 +64,7 @@ You can also use git, to download, ( if you want to install manually..step 3. ).
 #### Several independent Options:
 
 ###### 1. Install from master( last code, but more prone to errors.. )
- `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
+ * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
 
 ###### 2. Install by release, check in Releases tab( ie: v0.1.6 ):
  * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-6.rockspec`
