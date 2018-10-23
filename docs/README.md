@@ -61,20 +61,20 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ### Install ats
 
-####      Several independent Options:
+#### Several independent Options:
 
-######    1. Install from master( last code, but more prone to errors.. )
-	luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec
+###### 1. Install from master( last code, but more prone to errors.. )
+ `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
 
-######    2. Install by release, check in Releases tab( ie: v0.1.6 ):
-	luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-6.rockspec
+###### 2. Install by release, check in Releases tab( ie: v0.1.6 ):
+ * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-6.rockspec`
 
-######    3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
-	make
-	make install
+###### 3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
+ * make
+ * make install
 	
-    After instalation, remove the downloaded code
-	make purge
+ After instalation, remove the downloaded code
+ * make purge
 
 #### After install, verify the end of the output for something like:
 	systemctl status ats
