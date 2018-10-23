@@ -49,15 +49,15 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
 ###### 3. Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
- *	cat <<HERE >> /etc/luarocks/config.lua
-	variables={
-		    UNISTD_INCDIR   = "/usr/include",
-		    LUALIB_INCDIR   = "/usr/include/lua5.3",
-		    LAUXLIB_INCDIR  = "/usr/include/lua5.3",
-		    LUA_INCDIR      = "/usr/include/lua5.3",
-		    LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
-	}
-	HERE
+ * ```cat <<HERE >> /etc/luarocks/config.lua
+      variables={
+                 UNISTD_INCDIR   = "/usr/include",
+                 LUALIB_INCDIR   = "/usr/include/lua5.3",
+                 LAUXLIB_INCDIR  = "/usr/include/lua5.3",
+                 LUA_INCDIR      = "/usr/include/lua5.3",
+                 LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
+      }
+      HERE```
 
 ### Install
 
@@ -72,7 +72,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ###### 3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
  * make
  * make install
-	
+
  After instalation, remove the downloaded code
  * make purge
 
@@ -100,6 +100,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * `service ats start`
 4. Check if service started
 * `service ats status`
+
 
 
 That's it!!!
