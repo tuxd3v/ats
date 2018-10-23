@@ -39,19 +39,17 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ### Debian/Ubuntu
 
-### Install Dependencies.
+###### 1. Install Dependencies.
  * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+	Nota:
+	You can also use git, to download, ( if you want to install manually..step 3. ).
 
- Nota:
- You can also use git, to download, ( if you want to install manually..step 3. ).
+###### 2. If doesn't exist, then create the Symbolic Link:
+ * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
-###### If doesn't exist, then create the Symbolic Link:
+###### 3. Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
 
-`ln -s /usr/bin/lua5.3 /usr/bin/lua`
-
-###### Provide Lua with locations of needed Libraries( nedded if you install by step 1, or 2..).
-
-`cat <<HERE >> /etc/luarocks/config.lua
+ * >cat <<HERE >> /etc/luarocks/config.lua
 variables={
 	    UNISTD_INCDIR   = "/usr/include",
 	    LUALIB_INCDIR   = "/usr/include/lua5.3",
@@ -59,7 +57,7 @@ variables={
 	    LUA_INCDIR      = "/usr/include/lua5.3",
 	    LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
 }
-HERE`
+HERE
 
 ### Install
 
