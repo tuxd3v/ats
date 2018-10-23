@@ -14,6 +14,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run Test](#run-test)
+* [Credits](#credits)
 
 
 ### Characteristics:
@@ -118,6 +119,10 @@ You can execute in **test mode**( to see state values ),
 4. Check if service started
  * `service ats status`
 
+### Credits
+----
+ATS             : tuxd3v
+![freepik        :](https://www.flaticon.com/authors/freepik)
 
 
 That's it!!!
