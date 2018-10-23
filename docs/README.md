@@ -41,6 +41,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ###### 1. Install Dependencies.
  * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+ 
 	Nota:
 	You can also use git, to download, ( if you want to install manually..step 3. ).
 
@@ -48,16 +49,15 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
 ###### 3. Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
-
- * >cat <<HERE >> /etc/luarocks/config.lua
-variables={
-	    UNISTD_INCDIR   = "/usr/include",
-	    LUALIB_INCDIR   = "/usr/include/lua5.3",
-	    LAUXLIB_INCDIR  = "/usr/include/lua5.3",
-	    LUA_INCDIR      = "/usr/include/lua5.3",
-	    LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
-}
-HERE
+ *	cat <<HERE >> /etc/luarocks/config.lua
+	variables={
+		    UNISTD_INCDIR   = "/usr/include",
+		    LUALIB_INCDIR   = "/usr/include/lua5.3",
+		    LAUXLIB_INCDIR  = "/usr/include/lua5.3",
+		    LUA_INCDIR      = "/usr/include/lua5.3",
+		    LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
+	}
+	HERE
 
 ### Install
 
