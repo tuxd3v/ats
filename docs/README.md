@@ -43,6 +43,7 @@ First, you need to install its depedencies..
 
 ###### 1. Install Dependencies.
  * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+ 
  `Nota:`
  `You can also use git, to download, ( if you want to install manually..step 3. ).`
 
