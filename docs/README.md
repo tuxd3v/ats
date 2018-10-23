@@ -13,7 +13,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * [Characteristics](#characteristics)
 * [Requirements](#requirements)
 * [Install](#install)
-* [Run Test](#run test)
+* [Run Test](#run-test)
 
 
 ### Characteristics:
