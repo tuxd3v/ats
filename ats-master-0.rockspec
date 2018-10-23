@@ -25,6 +25,8 @@ external_dependencies = {
 	platforms = {
 		linux = {
 			UNISTD	= { header	= "unistd.h"		},
+			STAT	= { header	= "sys/stat.h"		},
+			TYPES	= { header	= "sys/types.h"		},
 			LUALIB	= { header	= "lualib.h"		},
 			LAUXLIB	= { header	= "lauxlib.h"		},
 			LUA	= { header	= "lua.h"		},

@@ -65,11 +65,13 @@ To use ATS: First, you need to install its depedencies..
    ```sh
    cat <<HERE >> /etc/luarocks/config.lua
    variables={
-           UNISTD_INCDIR   = "/usr/include",
-           LUALIB_INCDIR   = "/usr/include/lua5.3",
-           LAUXLIB_INCDIR  = "/usr/include/lua5.3",
-           LUA_INCDIR      = "/usr/include/lua5.3",
-           LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
+		UNISTD_INCDIR   = "/usr/include",
+		STAT_INCDIR	= "/usr/include/aarch64-linux-gnu",
+		TYPES_INCDIR	= "/usr/include/aarch64-linux-gnu",
+		LUALIB_INCDIR   = "/usr/include/lua5.3",
+		LAUXLIB_INCDIR  = "/usr/include/lua5.3",
+		LUA_INCDIR      = "/usr/include/lua5.3",
+		LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
    }
    HERE
    ```
