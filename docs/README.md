@@ -30,7 +30,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 4. ```lua
    Temp >= 70°C,
      System will shutdown in 10 Seconds..
-   ```	
+   ```
 	Nota:
 	RockChip has done its tests on a Board, at 80°C,they rate it as the maximum.
 	But that temps are not good to maintain Continuously,
@@ -46,6 +46,7 @@ To use ATS: First, you need to install its depedencies..
 
 ###### 1. Install Dependencies.
  * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+ 
 	Nota:
 	You can also use git, to download, ( if you want to install manually..step 3. ).
 
