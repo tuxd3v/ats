@@ -40,10 +40,10 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ### Debian/Ubuntu
 
 ### Install Dependencies.
-	apt-get install lua5.3 lua5.3-dev luarocks gcc make
-	
-	Nota:
-	You can also use git, to download, ( if you want to install manually..step 3. ).
+`apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+
+Nota:
+You can also use git, to download, ( if you want to install manually..step 3. ).
 
 ######    If doesn't exist, then create the Symbolic Link:
 	ln -s /usr/bin/lua5.3 /usr/bin/lua
@@ -92,11 +92,9 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 #### Run Some tests..
 ###### You can run some tests( to see state values ),
  1. Stop the service first:
-  * `service ats stop`
+   * `service ats stop`
  2. Start ATS in test mode:
-  * `ats --test`
-  
-   **or**
+   * `ats --test` , **or**
    * `ats -t`
  3. After tests, start ATS again as a service:
    * `service ats start`
