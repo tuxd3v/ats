@@ -73,7 +73,7 @@ To use ATS: First, you need to install its depedencies..
    HERE
    ```
 
-### Install ATS
+### Install
 ----
 Several independent Options: Master, Release and Manual.
 
