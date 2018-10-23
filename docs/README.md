@@ -74,11 +74,12 @@ Several independent Options: Master, Release and Manuall.
  * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-6.rockspec`
 
 ###### 3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
- * make
- * make install
-
- After instalation, remove the downloaded code
- * make purge
+1. Run 'all' target
+ *  `make`
+2. Run 'install' target
+ * `make install`
+3. Run 'purge' target( remove only the downloaded code )
+ * `make purge`
 
 #### After install, verify the end of the output for something like:
 	systemctl status ats
