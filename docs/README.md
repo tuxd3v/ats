@@ -96,7 +96,7 @@ Several independent Options: Master, Release and Manuall.
 
 #### Run test
 ---
-You run in execute in **test mode**( to see state values ),
+You can execute in **test mode**( to see state values ),
 
 1. Stop the service first:
  * `service ats stop`
