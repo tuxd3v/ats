@@ -96,14 +96,14 @@ Several independent Options: Master, Release and Manuall.
 #### Run Some tests..
 ###### You can run some tests( to see state values ),
 1. Stop the service first:
-* `service ats stop`
+ * `service ats stop`
 2. Start in test mode( 2 equal options, **pick only one** .. to exit, just press ctrl+c keys ):
-* `ats --test`
-* `ats -t`
+ * `ats --test`
+ * `ats -t`
 3. After tests, start as a service:
-* `service ats start`
+ * `service ats start`
 4. Check if service started
-* `service ats status`
+ * `service ats status`
 
 
 
