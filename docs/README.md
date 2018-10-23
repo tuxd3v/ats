@@ -93,7 +93,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ###### You can run some tests( to see state values ),
 1. Stop the service first:
  * `service ats stop`
-2. Start ATS in test mode( 2 equal options, **pick only one** ..):
+2. Start in test mode( 2 equal options, **pick only one** .. to exit, just press ctrl+c keys ):
  * `ats --test`
  * `ats -t`
 3. After tests, start ATS again as a service:
