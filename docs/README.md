@@ -95,9 +95,11 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * service ats stop
 	
 2. Start ats in test mode:
-* ats --test
-**or**	
-* ats -t
+* `ats --test`
+
+**or**
+
+* `ats -t`
 
 That's it!!!
 
