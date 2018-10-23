@@ -9,7 +9,7 @@ The Control is Made via SysFS, based in the Lua Scripting Language.
 You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ### Characteristics:
----
+----
 #####  Curve Response of PWM to Temperature:
 
 ![Response of PWM to Temperature Curve:](https://github.com/tuxd3v/ats/blob/master/docs/PWM_curve_response_3.png)
@@ -39,7 +39,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 
 ## Requirements:
----
+----
 To use ATS: First, you need to install its depedencies..
 
 ### Debian/Ubuntu
@@ -66,7 +66,7 @@ To use ATS: First, you need to install its depedencies..
    ```
 
 ### Install ATS
----
+----
 Several independent Options: Master, Release and Manual.
 
 ###### 1. Install from master( last code, but more prone to errors.. )
@@ -97,7 +97,7 @@ Several independent Options: Master, Release and Manual.
 	Sep 13 20:29:54 rockpro64 systemd[1]: Started Active Thermal Fan Service.
 
 #### Run Test
----
+----
 You can execute in **test mode**( to see state values ),
 
 1. Stop the service first:
