@@ -1,5 +1,5 @@
 # ATS - Active Thermal Service
-
+---
 Active Fan Thermal Service tool, to Control Processor Temperature on RockPro64 Single Board Computer,
 
 But Could be adapted to other boards too..
@@ -26,7 +26,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
    ```
 3. ```lua
    60°C < Temp < 70°C,
-     Fan set do Maximum Value..
+     Fan set to Maximum Value..
 4. ```lua
    Temp >= 70°C,
      System will shutdown in 10 Seconds..
@@ -46,10 +46,8 @@ To use ATS: First, you need to install its depedencies..
 
 ###### 1. Install Dependencies.
  * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
-   ```
-   Nota:
-   You can also use git, to download, ( if you want to install manually..step 3. ).
-   ```
+	Nota:
+	You can also use git, to download, ( if you want to install manually..step 3. ).
 
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
