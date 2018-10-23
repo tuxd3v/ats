@@ -8,6 +8,14 @@ This tool is system Agnostic.
 The Control is Made via SysFS, based in the Lua Scripting Language.
 You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
+
+#### Table of contents
+* [Characteristics](#Characteristics)
+* [Requirements](#Requirements)
+* [Install](#Install ATS)
+* [Run Test](#Run Test)
+
+
 ### Characteristics:
 ----
 #####  Curve Response of PWM to Temperature:
