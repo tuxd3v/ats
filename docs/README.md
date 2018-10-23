@@ -75,11 +75,11 @@ Several independent Options: Master, Release and Manuall.
 
 ###### 3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
 1. Run 'all' target
- *  `make`
+  *  `make`
 2. Run 'install' target
- * `make install`
+  * `make install`
 3. Run 'purge' target( remove only the downloaded code )
- * `make purge`
+  * `make purge`
 
 #### After install, verify the end of the output for something like:
 	systemctl status ats
