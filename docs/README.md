@@ -88,7 +88,7 @@ Several independent Options: Master, Release and Manual.
     *  `make`
  2. Run 'install' target
     * `make install`
- 3. Run 'purge' target( remove only the downloaded code )
+ 3. Run 'purge' target( the downloaded code is removed, **not** the installed one.. )
     * `make purge`
 
 #### After install, verify the end of the output for something like:
