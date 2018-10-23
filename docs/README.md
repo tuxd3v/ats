@@ -10,25 +10,27 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 ### Characteristics:
 ---
-
 #####  Curve Response of PWM to Temperature:
 
 ![Response of PWM to Temperature Curve:](https://github.com/tuxd3v/ats/blob/master/docs/PWM_curve_response_3.png)
 
 ##### Explanation:
     
-	1. Temp < 39°C,
-		Fan will Stop
-
-	2. 39°C <= Temp <= 60°C,
-		Fan is Adjusted, acordingly like in the Chart, 'PWM Curve Response'
-
-	3. 60°C < Temp < 70°C,
-		Fan set do Maximum Value..
-
-	4. Temp >= 70°C,
-		System will shutdown in 10 Seconds..
-		
+1. ```lua
+   Temp < 39°C,
+     Fan will Stop
+   ```
+2. ```lua
+   39°C <= Temp <= 60°C,
+     Fan is Adjusted, acordingly like in the Chart, 'PWM Curve Response'
+   ```
+3. ```lua
+   60°C < Temp < 70°C,
+     Fan set do Maximum Value..
+4. ```lua
+   Temp >= 70°C,
+     System will shutdown in 10 Seconds..
+   ```	
 	Nota:
 	RockChip has done its tests on a Board, at 80°C,they rate it as the maximum.
 	But that temps are not good to maintain Continuously,
@@ -66,7 +68,7 @@ To use ATS: First, you need to install its depedencies..
 
 ### Install ATS
 ---
-Several independent Options: Master, Release and Manuall.
+Several independent Options: Master, Release and Manual.
 
 ###### 1. Install from master( last code, but more prone to errors.. )
  * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
