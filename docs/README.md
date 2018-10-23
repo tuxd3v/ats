@@ -1,4 +1,4 @@
-# ATS - Active Thermal Service
+## ATS - Active Thermal Service
 ---
 Active Fan Thermal Service tool, to Control Processor Temperature on RockPro64 Single Board Computer,
 
@@ -12,7 +12,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 #### Table of contents
 * [Characteristics](#Characteristics)
 * [Requirements](#Requirements)
-* [Install](#Install ATS)
+* [Install](#Install)
 * [Run Test](#Run Test)
 
 
