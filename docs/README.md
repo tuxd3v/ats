@@ -36,6 +36,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 
 ## Requirements:
+---
 To use ATS,
 First, you need to install its depedencies..
 
@@ -45,7 +46,7 @@ First, you need to install its depedencies..
  * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
    ```
    Nota:
-   `You can also use git, to download, ( if you want to install manually..step 3. ).
+   You can also use git, to download, ( if you want to install manually..step 3. ).
    ```
 
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
@@ -64,8 +65,9 @@ First, you need to install its depedencies..
    ```
 
 ### Install ATS
-
-#### Several independent Options:
+---
+Several independent Options,
+Master, Release and Manuall.
 
 ###### 1. Install from master( last code, but more prone to errors.. )
  * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
