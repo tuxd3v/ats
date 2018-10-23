@@ -90,16 +90,14 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 	Sep 13 20:29:54 rockpro64 systemd[1]: Started Active Thermal Fan Service.
 
 #### Run Some tests..
-######	You can run some tests, to see ATS state,
-For that, stop the service first:
-
-	* service ats stop
+###### You can run some tests, to see ATS state,
+1. For that, stop the service first:
+* service ats stop
 	
-Start ats in test mode:
-
-	* ats --test
-	or	
-	* ats -t
+2. Start ats in test mode:
+* ats --test
+**or**	
+* ats -t
 
 That's it!!!
 
