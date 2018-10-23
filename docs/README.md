@@ -36,6 +36,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 
 
 ## Requirements:
+To use ATS, first, you need to install its depedencies..
 
 ### Debian/Ubuntu
 
@@ -51,7 +52,6 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ###### 3. Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
  * ```sh
    cat <<HERE >> /etc/luarocks/config.lua
-   ```lua
    variables={
            UNISTD_INCDIR   = "/usr/include",
            LUALIB_INCDIR   = "/usr/include/lua5.3",
@@ -59,7 +59,6 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
            LUA_INCDIR      = "/usr/include/lua5.3",
            LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
    }
-   ```
    HERE
    ```
 
