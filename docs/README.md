@@ -93,8 +93,10 @@ Several independent Options: Master, Release and Manuall.
 
 	Sep 13 20:29:54 rockpro64 systemd[1]: Started Active Thermal Fan Service.
 
-#### Run Some tests..
-###### You can run some tests( to see state values ),
+#### Run test
+---
+You run in execute in **test mode**( to see state values ),
+
 1. Stop the service first:
  * `service ats stop`
 2. Start in test mode( 2 equal options, **pick only one** .. to exit, just press ctrl+c keys ):
