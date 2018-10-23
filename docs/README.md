@@ -93,12 +93,13 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ######	You can run some tests, to see ATS state,
 For that, stop the service first:
 
-	`service ats stop`
+	* service ats stop
 	
 Start ats in test mode:
-	*`ats --test`	
+
+	* ats --test
 	or	
-	*`ats -t`
+	* ats -t
 
 That's it!!!
 
