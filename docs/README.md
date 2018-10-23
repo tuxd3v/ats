@@ -122,7 +122,7 @@ You can execute in **test mode**( to see state values ),
 ### Credits
 ----
 ATS             : tuxd3v
-![freepik        :](https://www.flaticon.com/authors/freepik)
+Fan Icon	: ![ freepik ](https://www.flaticon.com/authors/freepik)
 
 
 That's it!!!
