@@ -3,7 +3,7 @@ package		= "ats"
 version		= "0.1-6"
 description = {
 	summary		= "Active Thermal Service",
-	detailed			= [[
+	detailed	= [[
 		This tool, provide support for Rockpro64, Active thermal Service( Fan Control ).
 	]],
 	homepage	= "https://github.com/tuxd3v/ats",
