@@ -1,4 +1,4 @@
-# <p align="bottom"><img height="64" width="64" src="https://github.com/tuxd3v/ats/blob/master/docs/fan.svg" /> | ATS - Active Thermal Service</p>
+# <p align="bottom"><img height="50" width="50" src="https://github.com/tuxd3v/ats/blob/master/docs/fan.svg" /> | ATS - Active Thermal Service</p>
 ---
 Active Fan Thermal Service tool, to Control Processor Temperature on RockPro64 Single Board Computer,
 
