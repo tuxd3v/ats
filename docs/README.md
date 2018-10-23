@@ -38,6 +38,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ## Requirements:
 ---
 To use ATS,
+
 First, you need to install its depedencies..
 
 ### Debian/Ubuntu
@@ -67,6 +68,7 @@ First, you need to install its depedencies..
 ### Install ATS
 ---
 Several independent Options,
+
 Master, Release and Manuall.
 
 ###### 1. Install from master( last code, but more prone to errors.. )
