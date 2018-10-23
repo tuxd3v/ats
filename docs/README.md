@@ -49,7 +49,8 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
 ###### 3. Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
- * ```cat <<HERE >> /etc/luarocks/config.lua
+ * ```
+   cat <<HERE >> /etc/luarocks/config.lua
    variables={
            UNISTD_INCDIR   = "/usr/include",
            LUALIB_INCDIR   = "/usr/include/lua5.3",
