@@ -54,7 +54,7 @@ To use ATS: First, you need to install its depedencies..
 ### Debian/Ubuntu
 
 ###### 1. Install Dependencies.
- * ```sh
+ * ```lua
    apt-get install lua5.3 lua5.3-dev luarocks gcc make
    ```
  
