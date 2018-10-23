@@ -45,19 +45,21 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
  Nota:
  You can also use git, to download, ( if you want to install manually..step 3. ).
 
-######    If doesn't exist, then create the Symbolic Link:
-	ln -s /usr/bin/lua5.3 /usr/bin/lua
-######    Provide Lua with locations of needed Libraries( nedded if you install by step 1, or 2..).
+###### If doesn't exist, then create the Symbolic Link:
 
-	cat <<HERE >> /etc/luarocks/config.lua
-	variables={
-		    UNISTD_INCDIR   = "/usr/include",
-		    LUALIB_INCDIR   = "/usr/include/lua5.3",
-		    LAUXLIB_INCDIR  = "/usr/include/lua5.3",
-		    LUA_INCDIR      = "/usr/include/lua5.3",
-		    LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
-	}
-	HERE
+`ln -s /usr/bin/lua5.3 /usr/bin/lua`
+
+###### Provide Lua with locations of needed Libraries( nedded if you install by step 1, or 2..).
+
+`cat <<HERE >> /etc/luarocks/config.lua
+variables={
+	    UNISTD_INCDIR   = "/usr/include",
+	    LUALIB_INCDIR   = "/usr/include/lua5.3",
+	    LAUXLIB_INCDIR  = "/usr/include/lua5.3",
+	    LUA_INCDIR      = "/usr/include/lua5.3",
+	    LUA53_LIBDIR    = "/usr/lib/aarch64-linux-gnu"
+}
+HERE`
 
 ### Install
 
@@ -92,14 +94,14 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 #### Run Some tests..
 ###### You can run some tests( to see state values ),
 1. Stop the service first:
- * `service ats stop`
+* `service ats stop`
 2. Start in test mode( 2 equal options, **pick only one** .. to exit, just press ctrl+c keys ):
- * `ats --test`
- * `ats -t`
-3. After tests, start ATS again as a service:
- * `service ats start`
+* `ats --test`
+* `ats -t`
+3. After tests, start as a service:
+* `service ats start`
 4. Check if service started
- * `service ats status`
+* `service ats status`
 
 
 That's it!!!
