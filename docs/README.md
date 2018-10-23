@@ -96,11 +96,9 @@ For that, stop the service first:
 	`service ats stop`
 	
 Start ats in test mode:
-	`ats --test`
-	
-or
-	
-	`ats -t`
+	*`ats --test`	
+	or	
+	*`ats -t`
 
 That's it!!!
 
