@@ -48,11 +48,12 @@ First, you need to install its depedencies..
 	
 	You can also use git, to download, ( if you want to install manually..step 3. ).
 
-###### 2. If doesn't exist, then create the Symbolic Link:
- * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
+ * If doesn't exist, then create the Symbolic Link:
+ 
+ `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
-###### 3. Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
- * ```sh
+ * Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
+   ```sh
    cat <<HERE >> /etc/luarocks/config.lua
    variables={
            UNISTD_INCDIR   = "/usr/include",
@@ -64,7 +65,7 @@ First, you need to install its depedencies..
    HERE
    ```
 
-### Install
+### Install ATS
 
 #### Several independent Options:
 
