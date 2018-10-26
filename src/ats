@@ -132,9 +132,16 @@ PROFILE = {
 				  		end
 	  				elseif ( i > self.MAX_CONTINUOUS_THERMAL_TEMP )
 	  				then
+	  					self.pwm_ratio[ i ]	= self.MAX_FAN_PWM
+	  					
+	  					if( i < ( self.ABSOLUTE_MAX_THERMAL_TEMP - 5 ) )
+						then
 							self.quiet_timers[ i ]	= 6
 							self.run_timers[ i ]	= 120
-							self.pwm_ratio[ i ]	= self.MAX_FAN_PWM
+						else
+							self.quiet_timers[ i ]	= 3
+							self.run_timers[ i ]	= 160
+						end
 					end
 --					print( "QTIMERS[" .. i .. "] = " .. self.quiet_timers[ i ] .."" )
 				end
