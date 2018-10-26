@@ -40,28 +40,37 @@ $(NAME).so.$(VERSION): $(OBJS)
 
 .PHONY:	install
 install:
-	@if [ -L "/var/run/systemd/units/invocation:ats.service" ];then	\
-		systemctl stop ats;					\
+	@if [ -L "/var/run/systemd/units/invocation:ats.service" ];then									\
+		systemctl stop ats;													\
 	fi
+	@echo "Install ATS Tool ..................: ats in /usr/sbin"
 	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)ats
+	@echo "Install ATS Service File ..........: ats.service in ${SERVICE_PATH}"
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
 	@if [ ! -d $(LDIR) ];then													\
+		set -x;															\
 		mkdir -p $(LDIR);													\
+		set +x;															\
 	elif [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then								\
-		rm -f $(LDIR)/$(NAME).so*												\
-	elif [ -L $(LDIR)/fanctl.so ] || [ -L $(LDIR)/sleep.so  || [ -f $(LDIR)/fanctl.so.?.? ] || [ -f $(LDIR)/sleep.so.?.? ];then	\
-		systemctl stop fanctl 1> /dev/null 2>&1											\
-		journalctl -u fanctl --rotate 1> /dev/null 2>&1										\
-		sync && sleep 1														\
-		journalctl -u fanctl --vacuum-time=1s 	1> /dev/null 2>&1								\
-		find /{lib/systemd/system,usr/{sbin,lib/$(gcc -dumpmachine)/lua/5.3,sbin}} \( -name fanctl -o -name sleep.so\* -o -name fanctl.service \) -exec rm -v {} \;	\
-	fi
+		echo "Remove older ATS Library ..........: ${NAME}.so.* from ${LDIR}";							\
+		rm -f $(LDIR)/$(NAME).so*;												\
+	elif [ -L $(LDIR)/fanctl.so ] || [ -L $(LDIR)/sleep.so ] || [ -f $(LDIR)/fanctl.so.?.? ] || [ -f $(LDIR)/sleep.so.?.? ];then	\
+		echo "V0.1.6 or older detected, Removing it from System..";								\
+		systemctl stop fanctl 1> /dev/null 2>&1;										\
+		journalctl -u fanctl --rotate 1> /dev/null 2>&1;									\
+		sync && sleep 1;													\
+		journalctl -u fanctl --vacuum-time=1s 	1> /dev/null 2>&1;								\
+		find /{lib/systemd/system,usr/{sbin,lib/${TRIPLET}/lua/5.3,sbin}} -name fanctl -o -name sleep.so\* -o -name fanctl.service -exec rm -v {} \;	\
+	;fi
+	@echo "Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR}"
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
+	@echo "Create soname symLink .............: ${NAME}.so in ${LDIR}"
 	@ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
 	@systemctl enable ats
+	@echo "Starting ATS Service.."
 	@systemctl start ats
 	@sleep 1
-	systemctl status ats
+	@systemctl status ats
 
 
 .PHONY:	clean
