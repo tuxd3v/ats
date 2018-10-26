@@ -46,7 +46,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 	They rate the CPU at -20°C <= Absolute Maximum <= 85°C( 125°C were junction temperature will start to cause damage permanently )..
 	The CPU should make a emergency shutdown at around 85°C, so better operate lower..
 
-	For reliability, high temperatures are not good to maintain Continuously( they also make some provisions to that in the datasheet.. ),
+	For reliability, high temperatures are not good to maintain Continuously( Rockchip also make some provisions to that in the datasheet.. ),
 	So I decided to take some precaution measures here, shutting down at 70°C, for the sake of reliability..
 
 
