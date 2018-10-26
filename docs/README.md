@@ -2,7 +2,7 @@
 ---
 Active Fan Thermal Service tool, to Control Processor Temperature on RockPro64 Single Board Computer,
 
-But Could be adapted to other boards too..
+But could be adapted to other boards too..
 This tool is system Agnostic.
 
 The Control is Made via SysFS, based in the Lua Scripting Language.
@@ -41,9 +41,12 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
      System will shutdown in 10 Seconds..
    ```
 	Nota:
-	RockChip has done its tests on a Board, at 80°C,they rate it as the maximum.
-	But that temps are not good to maintain Continuously,
-	So I decided to take some precaution measures here, shutting down at 70°C.
+	RockChip has done its tests on a Board, at 80°C,they rate the CPU at 125°C absolute maximum(  were junction temperature will start to cause damage permanetly )..
+	For Permanent use they rate it at 85 °C max( also it should make a emergency shutdown at around 85°C ).
+
+	But this temps are not good to maintain Continuously( they also make some provisions to that in the datasheet.. ),
+	So I decided to take some precaution measures here, shutting down at 70°C, for the sake of reliability.
+	Honestly speaking, you should not get past 60, in continuous environment..
 
 
 

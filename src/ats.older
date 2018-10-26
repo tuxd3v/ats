@@ -10,7 +10,7 @@
 
 ---- Tests Done
 --
--- This tool was tested 24x7, for more than 3 months, under Full Load, with:
+-- This tool was tested 24x7, for more than a month, under Full Load, with:
 -- < Minimal Debian Strech release > by ayufan
 
 ---- Require Sleep Functions to dynamic link against
@@ -21,7 +21,7 @@ require( "ats" );
 ---- Thermal Global Variables
 ---
 
----  Path Locations for Control..
+---   Path Locations for Control..
 --
 
 -- CPU Thermal Zone[ String ]
@@ -31,134 +31,79 @@ THERMAL1_CTL	= "N/A";
 -- FAN Control[ String ]
 FAN_CTL		= "N/A";
 
+--- Temperature Control Constants
+--
 
---- Profile Content
+-- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
+ABSOLUTE_MAX_THERMAL_TEMP	= 70
+-- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
+MAX_CONTINUOUS_THERMAL_TEMP	= 60
+-- Min Temperature  threshold to activate Fan
+MIN_THERMAL_TEMP		= 39
+
+--- PWM Parameters Constants
+--
+ 
+-- Min PWM value, to Stop Fan.
+STOP_FAN_PWM	= 0
+-- Max PWM value possible
+MAX_FAN_PWM	= 255
+
+-- Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. )
+MIN_FAN_PWM	= 30
+
+--- Active Solution, 2 profiles[ smallerfan,tallerfan ]
+--
+
+-- Chose Fan Profile,
+--  profile1 - smaller fan( ~10 mm taller )
+--  profile2 - talller fan( ~20 mm taller )
+FANSPEC	= "profile1"
+
+--- Entire Range of values, calculated on aplication startup, that will be used at runtime.
 --
 
 PROFILE = {
 	-- Speed up the process of obtaining math.ceil()
-	ceil				= math.ceil,
-	
-	--- Temperature Control Constants
-	--
-
-	-- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
-	ABSOLUTE_MAX_THERMAL_TEMP	= 70,
-	-- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
-	MAX_CONTINUOUS_THERMAL_TEMP	= 60,
-	-- Min Temperature  threshold to activate Fan
-	MIN_THERMAL_TEMP		= 39,
-	
-	--- PWM Parameters Constants
-	--
-	
-	-- Min PWM value, to Stop Fan.
-	STOP_FAN_PWM			= 0,
-	-- Max PWM value possible
-	MAX_FAN_PWM			= 255,
-	-- Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. )
-	MIN_FAN_PWM			= 30,
-	
-	--- Active Solution, 2 profiles[ smallerfan, tallerfan ]
-	--
-	-- Chose Fan Profile,
-	--  profile1 - smaller fan( ~10 mm taller )
-	--  profile2 - talller fan( ~20 mm taller )
-	FANSPEC				= "profile1",
-	
-	-- Function to calculate pwm values, using interpolated methods, based on profile
-	setProfile_pwm	= function ( self, x )
-				local p = self.FANSPEC
+	ceil		= math.ceil,
+	profile		= function ( self, x, p )
 				if( p == "profile1" )
 				then
-					return self.ceil( 40 + ( 215 / 21 ) * ( x - 39 ) )
+					return self.ceil( ( 40 + 215 / 21 ) * ( x - 39 ) )
 				elseif( p == "profile2" )
 				then
-					return self.ceil( 40 + ( 215 / 31 ) * ( x - 39 ) )
+					return self.ceil( ( 40 + 215 / 31 ) * ( x - 39 ) )
 				end
-	end,
-	-- Function get pwm ratio
-	getPratio		= function( self, t )
-				return self.pwm_ratio[ t ]
-	end,
-	-- Function to get quiet timers, during which fan will stop
-	getQtimer	= function( self, t )
-				return self.quiet_timers[ t ]
-	end,
-	-- Function to get run timers, during which fan will run
-	getRtimer	= function( self, t )
-				return self.run_timers[ t ]
-	end,
-	-- Function to set run timers, during which fan will run
-	setTriggers	= function( self, x )
-				for i = x,( self.ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
-				do
-					if( i < self.MIN_THERMAL_TEMP )
-					then
-						self.pwm_ratio[ i ]		= self.STOP_FAN_PWM
-						if( i <= 35 )
-						then
-							self.quiet_timers[ i ]	= 180
-							self.run_timers[ i ]	= 6
-							
-						else
-							self.quiet_timers[ i ]	= 120
-							self.run_timers[ i ]	= 6
-						end
-					elseif( i >= self.MIN_THERMAL_TEMP and i <= self.MAX_CONTINUOUS_THERMAL_TEMP )
-					then
-						-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
-						self.pwm_ratio[ i ]		= self.setProfile_pwm( self, i )
-						if ( i <= 45 )
-				  		then
-							self.quiet_timers[ i ]	= 90
-							self.run_timers[ i ]	= 10
-							
-				  		elseif( i <= 50 )
-				  		then
-							self.quiet_timers[ i ]	= 45
-							self.run_timers[ i ]	= 20
-							
-				  		elseif( i <= 55 )
-				  		then
-							self.quiet_timers[ i ]	= 40
-							self.run_timers[ i ]	= 30
-							
-				  		elseif( i <= 60 )
-				  		then
-							self.quiet_timers[ i ]	= 10
-							self.run_timers[ i ]	= 60
-							
-				  		end
-	  				elseif ( i > self.MAX_CONTINUOUS_THERMAL_TEMP )
-	  				then
-							self.quiet_timers[ i ]	= 6
-							self.run_timers[ i ]	= 120
-							self.pwm_ratio[ i ]	= self.MAX_FAN_PWM
-					end
---					print( "QTIMERS[" .. i .. "] = " .. self.quiet_timers[ i ] .."" )
-				end
-	end,
+			end,
+	-- Function to lalculate pwm_ratio inside normal envelope..
+	set_ratio	= function( self, x, profile )
+				self.pwm_ratio[ x ] = self.profile( self, x, profile )
+			end,
+	-- Function to set quiet timers, during which fan will stop
+	set_quiet	= function( self, i, x )
+				self.quiet[ i ] = x
+			end,
 	-- PWM ratio, calculated based on interpolated values inside normal envelope, and some other values outside[ Global table of integer types ]
 	pwm_ratio	= {},
-	-- Sleep timer( in seconds ), sleeping with Fan Stoped[ Global table of integer types ]
-	quiet_timers	= {},
+	-- Sleep timer( in seconds ), used for sleeping with Fan Stoped[ Global table of integer types ]
+	quiet		= {},
 	-- Sleep timer( in seconds ), used for sleeping with Fan Running[ Global table of integer types ]
-	run_timers	= {}
+	run		= {}
+
 }
 
 --- Thermal values readed..
 --
 
 -- CPU  Thermal Zone[ Integer ], Initial value
-THERMAL_0	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
+THERMAL_0	= MAX_CONTINUOUS_THERMAL_TEMP
 -- GPU Thermal Zone [ Integer ], Initial value
-THERMAL_1	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
+THERMAL_1	= MAX_CONTINUOUS_THERMAL_TEMP
 
 -- Temperature Value( CPU or GPU ), Initial value
 TEMP		= THERMAL_0
 -- Fan Pwm Value[ Integer ], Initial value
-FAN_PWM		= PROFILE.STOP_FAN_PWM
+FAN_PWM		= STOP_FAN_PWM
 
 
 ----
@@ -287,6 +232,63 @@ function shutDown( seconds )
 end
 
 ----
+---- Feature Functions
+---
+
+--- Predefine Triggers Range, were Active thermal Service stops/start Fan - QUIET,RUN
+--  Function using Linear Interpolated Method
+
+function buildTriggers()
+	local tempdiff
+	local profile	= FANSPEC
+	-- Speed up the process of obtaining PROFILE.ratio()
+	local ratio	= PROFILE.ratio
+
+	if( profile ~= "profile2" )
+	then
+		tempdiff = ( 60 - 39 )
+	else
+		tempdiff = ( 70 - 39 )
+	end
+
+	for i = 0,( ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
+	do
+		if( i >= 0 and i < MIN_THERMAL_TEMP )
+		then
+			PROFILE.pwm_ratio[ i ]	= 0
+			PROFILE:set_quiet( i, 120 )
+			PROFILE.run[ i ]	= 6
+		elseif( i >= MIN_THERMAL_TEMP and i <= MAX_CONTINUOUS_THERMAL_TEMP )
+		then
+			-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
+	  		PROFILE:set_ratio( i, profile )
+	  		if ( i <= 45 )
+	  		then
+	  			PROFILE:set_quiet( i, 90 )
+	  			PROFILE.run[ i ]	= 10
+	  		elseif( i <= 50 )
+	  		then
+	  			PROFILE:set_quiet( i, 45 )
+	  			PROFILE.run[ i ]	= 20
+	  		elseif( i <= 55 )
+	  		then
+				PROFILE:set_quiet( i, 40 )
+	  			PROFILE.run[ i ]	= 30
+	  		elseif( i <= 60 )
+	  		then
+				PROFILE:set_quiet( i, 10 )
+	  			PROFILE.run[ i ]	= 60
+	  		end	
+	  	elseif ( i > MAX_CONTINUOUS_THERMAL_TEMP )
+	  	then
+	  		PROFILE.pwm_ratio[ i ]	= MAX_FAN_PWM
+	  		PROFILE:set_quiet( i, 6 )
+	  		PROFILE.run[ i ]	= 120
+	  	end
+	end
+end
+
+----
 ---- Variables and Functions to Deamonize.
 ---
 
@@ -339,8 +341,6 @@ THERMAL0_CTL	= "/sys/class/thermal/thermal_zone0/temp"
 THERMAL1_CTL	= "/sys/class/thermal/thermal_zone1/temp"
 FAN_CTL		= "/sys/class/hwmon/hwmon0/pwm1"
 
--- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
-ABSOLUTE_MAX_THERMAL_TEMP	= 70
 
 -- Check in Initial conditions are valid
 -- By that we mean if ATS, can properly support Active Thermal System, on the present SysFs..
@@ -356,13 +356,8 @@ setFanpwm( 130 )
 msleep( 200 )
 setFanpwm( 190 )
 
--- Build triggers - arg: minimal Temp[ INTEGER ]
--- PWM duty Cycle
--- PWM		= P( TEMP )
--- Fan Stop	= Q( TEMP )
--- Fan Active	= R( TEMP )
--- min: -20 °C ..see datasheet
-PROFILE:setTriggers( -20 )
+-- Build triggers to use( INSTANT_RATIO = F( TEMP ) )
+buildTriggers()
 
 ----
 ---- Loop to Active Control Temps..
@@ -375,14 +370,11 @@ then
 	if ( checkSymlink( "/var/run/systemd/units/invocation:ats.service" ) ~= true )
 	then
 		local INSTANT_RATIO
---		local pwm_ratio = PROFILE.pwm_ratio
---		local quiet	= PROFILE.quiet
---		local run	= PROFILE.run
 		while true
 		do
-			io.write( string.format( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", PROFILE:getQtimer( TEMP ), THERMAL_0, THERMAL_1, FAN_PWM ) )
+			io.write( string.format( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", PROFILE.quiet[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
 			-- Sleeping with Fan OFF, until nesxt cicle
-			sleep( PROFILE:getQtimer( TEMP ) )
+			sleep( PROFILE.quiet[ TEMP ] )
 
 			-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
 			getThermal()
@@ -390,7 +382,7 @@ then
 			if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
 
 			-- Get PWM_RATIO from Table
-			INSTANT_RATIO = PROFILE:getPratio( TEMP )
+			INSTANT_RATIO = PROFILE.pwm_ratio[ TEMP ]
 
 			-- If temp doesnt change...don't update it..
 			if( INSTANT_RATIO ~= FAN_PWM )
@@ -412,9 +404,9 @@ then
 				-- Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP'
 				shutDown( 10 )
 			end
-			io.write( string.format( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", PROFILE:getRtimer( TEMP ), THERMAL_0, THERMAL_1, FAN_PWM ) )
+			io.write( string.format( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", PROFILE.run[ TEMP ], THERMAL_0, THERMAL_1, FAN_PWM ) )
 			-- Sleeping with Fan ON until next cycle
-			sleep( PROFILE:getRtimer( TEMP ) )
+			sleep( PROFILE.run[ TEMP ] )
 			-- Stop Fan
 			setFanpwm( 0 )
 		end
@@ -422,14 +414,10 @@ then
 		print "Stop fanctl Service first [ service fanctl stop ].."
 	end
 else
-	local INSTANT_RATIO
---	local pwm_ratio = PROFILE.pwm_ratio
---	local quiet	= PROFILE.quiet
---	local run	= PROFILE.run
 	while true
 	do
 		-- Sleeping with Fan OFF, until next cicle
-		sleep( PROFILE:getQtimer( TEMP ) )
+		sleep( PROFILE.quiet[ i ] )
 
 		-- Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values
 		getThermal()
@@ -437,7 +425,7 @@ else
 		if( THERMAL_0 > THERMAL_1 ) then TEMP = THERMAL_0 else TEMP = THERMAL_1 end
 
 		-- Get PWM_RATIO from Table
-		INSTANT_RATIO = PROFILE:getPratio( TEMP ) 
+		INSTANT_RATIO = PROFILE.pwm_ratio[ TEMP ]
 
 		-- If temp doesnt change...don't update it..
 		if( INSTANT_RATIO ~= FAN_PWM )
@@ -461,7 +449,7 @@ else
 		end
 
 		-- Sleeping with Fan ON until next cycle
-		sleep( PROFILE:getRtimer( TEMP ) )
+		sleep( PROFILE.run[ i ] )
 
 		-- Stop Fan
 		setFanpwm( 0 )

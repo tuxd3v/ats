@@ -41,14 +41,20 @@ $(NAME).so.$(VERSION): $(OBJS)
 .PHONY:	install
 install:
 	@if [ -L "/var/run/systemd/units/invocation:ats.service" ];then	\
-		systemctl stop ats;											\
+		systemctl stop ats;					\
 	fi
 	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)ats
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
-	@if [ ! -d $(LDIR) ];then						\
-		mkdir -p $(LDIR);						\
-	elif [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then	\
-		rm -f $(LDIR)/$(NAME).so*;					\
+	@if [ ! -d $(LDIR) ];then													\
+		mkdir -p $(LDIR);													\
+	elif [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then								\
+		rm -f $(LDIR)/$(NAME).so*												\
+	elif [ -L $(LDIR)/fanctl.so ] || [ -L $(LDIR)/sleep.so  || [ -f $(LDIR)/fanctl.so.?.? ] || [ -f $(LDIR)/sleep.so.?.? ;then	\
+		systemctl stop fanctl 1> /dev/null 2>&1											\
+		journalctl -u fanctl --rotate 1> /dev/null 2>&1										\
+		sync && sleep 1														\
+		journalctl -u fanctl --vacuum-time=1s 	1> /dev/null 2>&1								\
+		find /{lib/systemd/system,usr/{sbin,lib/$(gcc -dumpmachine)/lua/5.3,sbin}} \( -name fanctl -o -name sleep.so\* -o -name fanctl.service \) -exec rm -v {} \;	\
 	fi
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
 	@ln -s $(LDIR)/$(NAME).so.$(VERSION) $(LDIR)/$(NAME).so
