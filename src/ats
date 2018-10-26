@@ -13,7 +13,7 @@
 -- This tool was tested 24x7, for more than 3 months, under Full Load, with:
 -- < Minimal Debian Strech release > by ayufan
 
----- Require Sleep Functions to dynamic link against
+---- Require ATS module, to dynamic lynk against..
 --
 require( "ats" );
 
@@ -116,7 +116,7 @@ PROFILE = {
 							
 				  		elseif( i <= 50 )
 				  		then
-							self.quiet_timers[ i ]	= 45
+							self.quiet_timers[ i ]	= 50
 							self.run_timers[ i ]	= 20
 							
 				  		elseif( i <= 55 )
