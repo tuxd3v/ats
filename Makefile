@@ -58,12 +58,12 @@ install:
 		fi;																		\
 		if [ -L $(LDIR)/fanctl.so ] || [ -L $(LDIR)/sleep.so ] || [ -f $(LDIR)/fanctl.so.?.? ] || [ -f $(LDIR)/sleep.so.?.? ];then			\
 			echo "V0.1.6 or older detected, Removing it from System..";										\
-			systemctl stop fanctl 1> /dev/null 2>&1;												\
-			systemctl disable fanctl 1> /dev/null 2>&1;												\
-			journalctl -u fanctl --rotate 1> /dev/null 2>&1;											\
+			( systemctl stop fanctl 1> /dev/null 2>&1 );												\
+			( systemctl disable fanctl 1> /dev/null 2>&1 );												\
+			( journalctl -u fanctl --rotate 1> /dev/null 2>&1 );											\
 			sync && sleep 1;															\
-			journalctl -u fanctl --vacuum-time=1s 	1> /dev/null 2>&1;										\
-			find /{lib/systemd/system,usr/{sbin,lib/${TRIPLET}/lua/5.3}} -name fanctl -o -name sleep.so\* -o -name fanctl.service -exec rm -v {} \;	\
+			( journalctl -u fanctl --vacuum-time=1s 1> /dev/null 2>&1 );										\
+			find /lib/systemd/system /usr/sbin /usr/lib/${TRIPLET}/lua/5.3 \( -name fanctl -o -name sleep.so\* -o -name fanctl.service  -o -name fanctl.so\* \) -exec rm -v {} \;	\
 		;fi																		\
 	fi
 	@echo "Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR}"
