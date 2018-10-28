@@ -89,7 +89,7 @@ PROFILE = {
 	getRtimer	= function( self, t )
 				return self.run_timers[ t ]
 	end,
-	-- Function to set run timers, during which fan will run
+	-- Function to set quiet,run timers and pwm values
 	setTriggers	= function( self, x )
 				for i = x,( self.ABSOLUTE_MAX_THERMAL_TEMP + 10 ),1
 				do
