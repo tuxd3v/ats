@@ -67,7 +67,7 @@ PROFILE = {
 	FANSPEC				= "profile1",
 	
 	-- Function to calculate pwm values, using interpolated methods, based on profile
-	setProfile_pwm	= function ( self, x )
+	getProfile_pwm	= function ( self, x )
 				local p = self.FANSPEC
 				if( p == "profile1" )
 				then
@@ -78,7 +78,7 @@ PROFILE = {
 				end
 	end,
 	-- Function get pwm ratio
-	getPratio		= function( self, t )
+	getPratio	= function( self, t )
 				return self.pwm_ratio[ t ]
 	end,
 	-- Function to get quiet timers, during which fan will stop
@@ -108,7 +108,7 @@ PROFILE = {
 					elseif( i >= self.MIN_THERMAL_TEMP and i <= self.MAX_CONTINUOUS_THERMAL_TEMP )
 					then
 						-- Calculate PWM values based on 2 functions with diferent pwm 'Response Curves'
-						self.pwm_ratio[ i ]		= self.setProfile_pwm( self, i )
+						self.pwm_ratio[ i ]		= self.getProfile_pwm( self, i )
 						if ( i <= 45 )
 				  		then
 							self.quiet_timers[ i ]	= 90
