@@ -143,7 +143,6 @@ PROFILE = {
 							self.run_timers[ i ]	= 160
 						end
 					end
---					print( "QTIMERS[" .. i .. "] = " .. self.quiet_timers[ i ] .."" )
 				end
 	end,
 	-- PWM ratio, calculated based on interpolated values inside normal envelope, and some other values outside[ Global table of integer types ]
