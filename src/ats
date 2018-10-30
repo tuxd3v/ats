@@ -248,9 +248,9 @@ end
 --
 function getThermal()
 	-- CPU  Thermal Zone[ Integer ], Initial value
-	local THERMAL_0	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
+	-- local THERMAL_0	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
 	-- GPU Thermal Zone [ Integer ], Initial value
-	local THERMAL_1	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
+	-- local THERMAL_1	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
 
 	-- Temperature Value( CPU or GPU ), Initial value
 	TEMP		= THERMAL_0
