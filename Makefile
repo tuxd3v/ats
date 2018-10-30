@@ -14,7 +14,7 @@ VERSION	:= $(MAJOR).$(MINOR)
 DEPS		:= lua5.3
 
 CC		:= gcc # Compiller
-CFLAGS		:= -c -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+CFLAGS		:= -c -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags, armv8-a+crc, tune for Big.Litle a72+a53
 LDFLAGS	:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 
 # source code
