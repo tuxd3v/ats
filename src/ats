@@ -149,7 +149,7 @@ PROFILE = {
 	pwm_ratio	= {},
 	-- Sleep timer( in seconds ), sleeping with Fan Stoped[ Global table of integer types ]
 	quiet_timers	= {},
-	-- Sleep timer( in seconds ), used for sleeping with Fan Running[ Global table of integer types ]
+	-- Run timer( in seconds ), used for sleeping with Fan Running[ Global table of integer types ]
 	run_timers	= {}
 }
 
@@ -257,13 +257,12 @@ function getThermal()
 	-- Fan Pwm Value[ Integer ], Initial value
 	FAN_PWM		= PROFILE.STOP_FAN_PWM
 
-	local RETURN = "N/A";
-	local open	= io.open
-	local handle = open( THERMAL0_CTL, "r" )
-	if ( handle ~= nil )
+	local RETURN	= "N/A";
+	local handler	= io.open( THERMAL0_CTL, "r" )
+	if ( handler ~= nil )
 	then
-		RETURN = handle:read( "*a" )
-		handle:close()
+		RETURN = handler:read( "*a" )
+		handler:close()
 		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			THERMAL_0 = tonumber( RETURN  // 1000 )
@@ -274,11 +273,11 @@ function getThermal()
 			THERMAL_0 = MAX_CONTINUOUS_THERMAL_TEMP
 	end
 	RETURN = "N/A";
-	handle = open( THERMAL1_CTL, "r" )
-	if ( handle ~= nil )
+	handler = io.open( THERMAL1_CTL, "r" )
+	if ( handler ~= nil )
 	then
-		RETURN = handle:read( "*a" )
-		handle:close()
+		RETURN = handler:read( "*a" )
+		handler:close()
 		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			THERMAL_1 = tonumber( RETURN  // 1000 )
