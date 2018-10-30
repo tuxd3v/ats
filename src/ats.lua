@@ -161,8 +161,8 @@ THERMAL_0	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
 -- GPU Thermal Zone [ Integer ], Initial value
 THERMAL_1	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
 
--- Temperature Value( CPU or GPU ), Initial value
-TEMP		= THERMAL_0
+-- Temperature Value( CPU or GPU ), Initial value 65°C
+TEMP		= THERMAL_0 + 6
 -- Fan Pwm Value[ Integer ], Initial value
 FAN_PWM		= PROFILE.STOP_FAN_PWM
 
@@ -247,23 +247,13 @@ end
 --- Get Thernal Values[ integer ]
 --
 function getThermal()
-	-- CPU  Thermal Zone[ Integer ], Initial value
-	local THERMAL_0	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
-	-- GPU Thermal Zone [ Integer ], Initial value
-	local THERMAL_1	= PROFILE.MAX_CONTINUOUS_THERMAL_TEMP
-
-	-- Temperature Value( CPU or GPU ), Initial value
-	TEMP		= THERMAL_0
-	-- Fan Pwm Value[ Integer ], Initial value
-	FAN_PWM		= PROFILE.STOP_FAN_PWM
-
 	local RETURN = "N/A";
 	local open	= io.open
-	local handle = open( THERMAL0_CTL, "r" )
-	if ( handle ~= nil )
+	local handler = open( THERMAL0_CTL, "r" )
+	if ( handler ~= nil )
 	then
-		RETURN = handle:read( "*a" )
-		handle:close()
+		RETURN = handler:read( "*a" )
+		handler:close()
 		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			THERMAL_0 = tonumber( RETURN  // 1000 )
@@ -274,11 +264,11 @@ function getThermal()
 			THERMAL_0 = MAX_CONTINUOUS_THERMAL_TEMP
 	end
 	RETURN = "N/A";
-	handle = open( THERMAL1_CTL, "r" )
-	if ( handle ~= nil )
+	handler = open( THERMAL1_CTL, "r" )
+	if ( handler ~= nil )
 	then
-		RETURN = handle:read( "*a" )
-		handle:close()
+		RETURN = handler:read( "*a" )
+		handler:close()
 		if( RETURN ~= nil and RETURN ~= "N/A" )
 		then
 			THERMAL_1 = tonumber( RETURN  // 1000 )
@@ -355,7 +345,7 @@ THERMAL0_CTL	= "/sys/class/thermal/thermal_zone0/temp"
 THERMAL1_CTL	= "/sys/class/thermal/thermal_zone1/temp"
 FAN_CTL		= "/sys/class/hwmon/hwmon0/pwm1"
 
--- Max Temperatue Allowed on CPU, Above this Threshold, machine will shutdown
+-- Max Temperature Allowed on CPU, Above this Threshold, machine will shutdown
 ABSOLUTE_MAX_THERMAL_TEMP	= 70
 
 -- Check in Initial conditions are valid
