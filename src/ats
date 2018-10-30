@@ -435,7 +435,7 @@ then
 			setFanpwm( 0 )
 		end
 	else
-		print "Stop fanctl Service first [ service fanctl stop ].."
+		print "Stop ATS Service first [ service ats stop ].."
 	end
 else
 	local INSTANT_RATIO
