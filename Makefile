@@ -49,20 +49,20 @@ install:
 	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=$(BINDIR) $(SRCS_PATH)ats
 	@echo "Install ATS Service File ..........: ats.service in ${SERVICE_PATH}"
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
-	@if [ ! -d $(LDIR) ];then																\
-		mkdir -pv $(LDIR);																\
-	else																			\
-		if [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then										\
-			echo "Remove previous ATS Library .......: ${NAME}.so.* from ${LDIR}";									\
-			rm -f $(LDIR)/$(NAME).so*;														\
-		fi;																		\
-		if [ -L $(LDIR)/fanctl.so ] || [ -f $(LDIR)/fanctl.so.?.? ] || [ -L $(LDIR)/sleep.so ] || [ -f $(LDIR)/sleep.so.?.? ];then			\
-			echo "V0.1.6 or older detected, Removing it from System..";										\
-			systemctl stop fanctl 1> /dev/null 2>&1;												\
-			systemctl disable fanctl 1> /dev/null 2>&1 && journalctl -u fanctl --rotate 1> /dev/null 2>&1;						\
-			sleep 1 && sync && journalctl -u fanctl --vacuum-time=1s 1> /dev/null 2>&1;								\
-			find /lib/systemd/system /usr/sbin /usr/lib/${TRIPLET}/lua/5.3 \( -name fanctl -o -name fanctl.so\* -o -name fanctl.service -o -name sleep.so\* \) -exec rm -v {} \;	\
-		;fi																		\
+	@if [ ! -d $(LDIR) ];then																								\
+		mkdir -pv $(LDIR);																								\
+	else																											\
+		if [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then																		\
+			echo "Remove previous ATS Library .......: ${NAME}.so.* from ${LDIR}";																	\
+			rm -f $(LDIR)/$(NAME).so*;																						\
+		fi;																										\
+		if [ -L $(LDIR)/fanctl.so ] || [ -f $(LDIR)/fanctl.so.?.? ] || [ -L $(LDIR)/sleep.so ] || [ -f $(LDIR)/sleep.so.?.? ] || [ -L $(LDIR)/ats.so ] || [ -f $(LDIR)/ats.so.?.? ];then				\
+			echo "V0.1.6 or older detected, Removing it from System..";																		\
+			systemctl stop fanctl 1> /dev/null 2>&1;																				\
+			systemctl disable fanctl 1> /dev/null 2>&1 && journalctl -u fanctl --rotate 1> /dev/null 2>&1;														\
+			sleep 1 && sync && journalctl -u fanctl --vacuum-time=1s 1> /dev/null 2>&1;																\
+			find /lib/systemd/system /usr/sbin /usr/lib/${TRIPLET}/lua/5.3 \( -name fanctl -o -name fanctl.so\* -o -name fanctl.service -o -name sleep.so\* -o -name ats -o -name ats.so\* \) -exec rm -v {} \;	\
+		;fi																										\
 	fi
 	@echo "Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR}"
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(LDIR) $(NAME).so.$(VERSION)
