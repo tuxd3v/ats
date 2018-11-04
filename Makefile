@@ -2,14 +2,16 @@
 IDIR		:= /usr/include/lua5.3
 # destination PATHs
 TRIPLET		:= $(shell gcc -dumpmachine)
-LDIR		:= /usr/lib/$(TRIPLET)/lua/5.3
+#LDIR		:= /usr/lib/$(TRIPLET)/lua/5.3
+LDIR		:= /usr/local/lib/lua/5.3
+BINDIR		:= /usr/local/sbin
 SYSTEMDIR	:= /lib/systemd/system
 
 # Shared Library
 NAME		:= ats
 MAJOR		:= 0
 MINOR		:= 2
-VERSION	:= $(MAJOR).$(MINOR)
+VERSION		:= $(MAJOR).$(MINOR)
 
 DEPS		:= lua5.3
 
@@ -44,13 +46,11 @@ install:
 		systemctl stop ats;						\
 	fi
 	@echo "Install ATS Tool ..................: ats in /usr/sbin"
-	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=/usr/sbin $(SRCS_PATH)ats
+	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=$(BINDIR) $(SRCS_PATH)ats
 	@echo "Install ATS Service File ..........: ats.service in ${SERVICE_PATH}"
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
 	@if [ ! -d $(LDIR) ];then																\
-		set -x;																		\
-		mkdir -p $(LDIR);																\
-		set +x;																		\
+		mkdir -pv $(LDIR);																\
 	else																			\
 		if [ -L $(LDIR)/$(NAME).so ] || [ -f $(LDIR)/$(NAME).so.?.? ];then										\
 			echo "Remove previous ATS Library .......: ${NAME}.so.* from ${LDIR}";									\

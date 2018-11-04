@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=8
 User=root
-ExecStart=/usr/sbin/ats
+ExecStart=/usr/local/sbin/ats
 
 [Install]
 WantedBy=basic.target
