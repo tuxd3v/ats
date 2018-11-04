@@ -65,7 +65,7 @@ To use ATS: First, you need to install its depedencies..
 
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
- * Provide Lua with locations of needed Libraries( needed only, if you install by steps 1, or 2 ..**see Install** section below ).
+ * Provide Lua with locations of needed Libraries( needed only, if you install by steps 2 ..**see Install** section below ).
    ```sh
    cat <<HERE >> /etc/luarocks/config.lua
    variables = {
