@@ -6,7 +6,7 @@ Add support for SysVinit systems.
 
 v0.2.0 - master
 bump ats version to 0.2.0. WIP
-find a way to detect TRIPLET in luarocks, external dependencies... WIP
+find a way to detect TRIPLET in luarocks, external dependencies... DONE( Done in the heredocument to aknowledge luarocks config about the target arch-toolchain-os.OK!! )
 Add version string switch, to the project. WIP
 
 Rewrite a portion of the code, that would simplify the workflow of looping process, profiles selection etc. DONE
