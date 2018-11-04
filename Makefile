@@ -45,7 +45,7 @@ install:
 	@if [ -L "/var/run/systemd/units/invocation:ats.service" ];then		\
 		systemctl stop ats;						\
 	fi
-	@echo "Install ATS Tool ..................: ats in /usr/sbin"
+	@echo "Install ATS Tool ..................: ats in ${BINDIR}"
 	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=$(BINDIR) $(SRCS_PATH)ats
 	@echo "Install ATS Service File ..........: ats.service in ${SERVICE_PATH}"
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=$(SYSTEMDIR) $(SERVICE_PATH)/ats.service
