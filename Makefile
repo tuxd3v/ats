@@ -16,7 +16,8 @@ VERSION		:= $(MAJOR).$(MINOR)
 DEPS		:= lua5.3
 
 CC		:= gcc # Compiller
-CFLAGS		:= -c -march=armv8-a+simd+crypto+crc -mtune=cortex-a72.cortex-a53 -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags, armv8-a+crc, tune for Big.Litle a72+a53
+# In future, -march=armv8-a+simd+crypto+crc 
+CFLAGS		:= -c -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags, armv8-a+crc, tune for Big.Litle a72+a53
 LDFLAGS	:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 
 # source code
@@ -33,7 +34,7 @@ all   : $(NAME).so.$(VERSION)
 
 
 $(OBJS): $(SRCS)
-	$(CC) ${CFLAGS} -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
 
 $(NAME).so.$(VERSION): $(OBJS)
@@ -61,7 +62,7 @@ install:
 			systemctl stop fanctl 1> /dev/null 2>&1;																				\
 			systemctl disable fanctl 1> /dev/null 2>&1 && journalctl -u fanctl --rotate 1> /dev/null 2>&1;														\
 			sleep 1 && sync && journalctl -u fanctl --vacuum-time=1s 1> /dev/null 2>&1;																\
-			find /lib/systemd/system /usr/sbin ${LDIR_OLD} \( -name fanctl -o -name fanctl.so\* -o -name fanctl.service -o -name sleep.so\* -o -name ats -o -name ats.so\* \) -exec rm -v {} \;	\
+			find /lib/systemd/system /usr/sbin ${LDIR_OLD} \( -name fanctl -o -name fanctl.so\* -o -name fanctl.service -o -name sleep.so\* -o -name ats -o -name ats.so\* \) -exec rm -v {} \;			\
 		;fi																										\
 	fi
 	@echo "Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR}"
