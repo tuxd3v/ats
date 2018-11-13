@@ -64,6 +64,7 @@ PROFILE = {
 	-- Chose Fan Profile,
 	--  profile1 - smaller fan( ~10 mm taller )
 	--  profile2 - talller fan( ~20 mm taller )
+	--  profile3 - NasCase fan( ~80*70*20mm, CFM 25.15 CFM, 12v, 0.10A )
 	FANSPEC				= "profile1",
 	
 	-- Function to calculate pwm values, using interpolated methods, based on profile
