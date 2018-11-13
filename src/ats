@@ -47,7 +47,7 @@ PROFILE = {
 	-- Max Temperature Allowed for adjusting fan pwm( On this threshold, and above, fan is always on MaxValue )
 	MAX_CONTINUOUS_THERMAL_TEMP	= 60,
 	-- Min Temperature  threshold to activate Fan
-	MIN_THERMAL_TEMP		= 39,
+	MIN_THERMAL_TEMP		= 40,
 	
 	--- PWM Parameters Constants
 	--
@@ -57,7 +57,7 @@ PROFILE = {
 	-- Max PWM value possible
 	MAX_FAN_PWM			= 255,
 	-- Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. )
-	MIN_FAN_PWM			= 30,
+	MIN_FAN_PWM			= 40,
 	
 	--- Active Solution, 2 profiles[ smallerfan, tallerfan ]
 	--
@@ -67,14 +67,17 @@ PROFILE = {
 	FANSPEC				= "profile1",
 	
 	-- Function to calculate pwm values, using interpolated methods, based on profile
-	getProfile_pwm	= function ( self, x )
+	getProfile_pwm	= function ( self, t )
 				local p = self.FANSPEC
 				if( p == "profile1" )
 				then
-					return self.ceil( 40 + ( 215 / 21 ) * ( x - 39 ) )
+					return self.ceil( 40 + ( 215 / 20 ) * ( t - 40 ) )
 				elseif( p == "profile2" )
 				then
-					return self.ceil( 40 + ( 215 / 31 ) * ( x - 39 ) )
+					return self.ceil( 40 + ( 215 / 30 ) * ( t - 40 ) )
+				elseif( p == "profile3" )
+				then
+					return self.ceil( 40 + ( 215 / 40 ) * ( t - 40 ) ) 
 				end
 	end,
 	-- Function get pwm ratio
