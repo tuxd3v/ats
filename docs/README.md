@@ -65,21 +65,6 @@ To use ATS: First, you need to install its depedencies..
 
  * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
- * Provide Lua with locations of needed Libraries( needed only, if you install by steps 2 ..**see Install** section below ).
-   ```sh
-   cat <<HERE >> /etc/luarocks/config.lua
-   variables = {
-       UNISTD_INCDIR   = "/usr/include",
-       STAT_INCDIR     = "/usr/include/$( gcc -dumpmachine )",
-       TYPES_INCDIR    = "/usr/include/$( gcc -dumpmachine )",
-       LUALIB_INCDIR   = "/usr/include/lua5.3",
-       LAUXLIB_INCDIR  = "/usr/include/lua5.3",
-       LUA_INCDIR      = "/usr/include/lua5.3",
-       LUA53_LIBDIR    = "/usr/lib/$( gcc -dumpmachine )"
-   }
-   HERE
-   ```
-
 ### Install
 ----
 Several independent Options: Master, Release and Manual.
