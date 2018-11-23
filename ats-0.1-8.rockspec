@@ -11,7 +11,7 @@ description = {
 	maintainer	= "tuxd3v <tuxd3v@sapo.pt>"
 }
 source = {
-	url		= "https://github.com/tuxd3v/ats/archive/v0.1.7.tar.gz",
+	url		= "https://github.com/tuxd3v/ats/archive/v0.1.8.tar.gz",
 	file		= "v0.1.8.tar.gz",
 	dir		= "ats-0.1.8"
 }
