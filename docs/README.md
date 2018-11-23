@@ -118,6 +118,8 @@ You can execute in **test mode**( to see state values ),
    CGroup: /system.slice/ats.service
            └─21040 lua /usr/local/sbin/ats
 
+Nov 23 01:43:10 rockpro64 systemd[1]: Started ATS - Active Thermal Service.
+
 #### Check ATS version
 ----
 Check which version you have installed:
