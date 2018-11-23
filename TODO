@@ -1,27 +1,22 @@
 
+
 Improve rockspec to create a rock, so that it could be easilly downloaded.
 Add support for SysVinit systems.
 
-v0.2.0 - Master
-Bump Version to 0.2.0 WIP
-Remove external dependencies from rockspec WIP
-Add /etc/ats.conf file for User Config WIP
-Change rockspec to install Modules on Correct path..
-	see: https://github.com/luarocks/luarocks/issues/937 WIP
-Implement Funcionalities in C Shared Library backend, and let Lua Frontend Cleaner WIP
 
-v0.1.7 - Release
-bump ats version to 1.7.0. Done
+v0.1.0 - master
+bump ats version to 1.7.0. WIP
 find a way to detect TRIPLET in luarocks, external dependencies... DONE( Done in the heredocument to aknowledge luarocks config about the target arch-toolchain-os.OK!! )
-Add version string switch, to the project. DONE
+Add version string switch, to the project. WIP
+
 Rewrite a portion of the code, that would simplify the workflow of looping process, profiles selection etc. DONE
-rename sleep.so.0.1 to ats and bump version to 0.1.7, add function to check for symLinks. Done
+rename sleep.so.0.1 to ats and bump version to 0.2, add function to check for symLinks. Done
 Code Refactoring - Change project name from fanctl to ATS - Active Thermal Service. DONE
 fanctl rename to 'ats'- Active Thermal Service - DONE
-improve start/stop trigger points. DONE ( done particularly on 40-60°C, 3 trigger zones, 3 profiles{ profile1, profile2, profile3 } )
-Create 2 profiles for small and taller fans, with one point of configuration.
+improve start/stop trigger points. DONE ( done particularly on 39-60°C, 2 new trigger zones, 2 profiles{ profile1, profile2 } )
+Create 3 profiles for small and taller fans, with one point of configuration.
 	It will then be easier to adjust fan power, speed,vibrations..
-	Initial 2 targets{ 10mm tall, 20 mm tall fans }. Done PARTIALY ( Done on 40-60°C, PWM,Quiet and Run values are equal on all profiles outside that range.. )
+	Initial 2 targets{ 10mm tall, 20 mm tall fans, and bigger }. Done PARTIALY ( Done on 40-60°C, PWM,Quiet and Run values are equal on all profiles outside that range.. )
 Add  " --test | -t " option, so that it would be possible, to get CPU,GPU temps, PWM issued, and fanctl state, on terminal. DONE( needs better implementation..but works ok )
 improve makefile, to stop systemd service, compile/install shared library, enable service,
 	and start it after install process, remove if exists older versions, better detect target TRIPLET - DONE( systemd OK, not yet for SysVinit :( ... )
