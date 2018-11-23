@@ -110,6 +110,14 @@ You can execute in **test mode**( to see state values ),
 4. Check if service started
  * `service ats status`
 
+ ● ats.service - ATS - Active Thermal Service
+     Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2018-11-23 01:37:25 WET; 20s ago
+   Main PID: 20606 (lua)
+      Tasks: 1 (limit: 4642)
+     CGroup: /system.slice/ats.service
+           └─20606 lua /usr/local/sbin/ats
+
 #### Check ATS version
 ----
 Check which version you have installed:
