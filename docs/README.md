@@ -58,12 +58,12 @@ To use ATS: First, you need to install its depedencies..
 ### Debian/Ubuntu
 
 ###### 1. Install Dependencies.
- * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
+    * `apt-get install lua5.3 lua5.3-dev luarocks gcc make`
  
 	Nota:
 	You can also use git, to download, ( if you want to install manually..step 3. ).
 
- * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
+    * `ln -s /usr/bin/lua5.3 /usr/bin/lua`
 
 ### Install
 ----
@@ -100,15 +100,15 @@ Several independent Options: Master, Release and Manual.
 ----
 You can execute in **test mode**( to see state values ),
 
-1. Stop the service first:
- * `service ats stop`
-2. Start in test mode( 2 similar options, **pick only one** .. to exit, just press ctrl+c keys ):
- * `ats -t`
- * `ats --test`
-3. After tests, start as a service:
- * `service ats start`
-4. Check if service started
- * `service ats status`
+ 1. Stop the service first:
+    * `service ats stop`
+ 2. Start in test mode( 2 similar options, **pick only one** .. to exit, just press ctrl+c keys ):
+    * `ats -t`
+    * `ats --test`
+ 3. After tests, start as a service:
+    * `service ats start`
+ 4. Check if service started
+    * `service ats status`
 
 #### Check ATS version
 ----
