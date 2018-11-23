@@ -17,6 +17,9 @@
 --
 require( "ats" );
 
+-- Version String
+VERSION = "0.1.7"
+
 ----
 ---- Thermal Global Variables
 ---
@@ -64,7 +67,7 @@ PROFILE = {
 	-- Chose Fan Profile,
 	--  profile1 - smaller fan( ~10 mm taller )
 	--  profile2 - talller fan( ~20 mm taller )
-	--  profile3 - NasCase fan( ~80*70*20mm, CFM 25.15 CFM, 12v, 0.10A )
+	--  profile3 - NAS Case fan( ~80*70*20mm, CFM 25.15 CFM, 12v, 0.10A )
 	FANSPEC				= "profile1",
 	
 	-- Function to calculate pwm values, using interpolated methods, based on profile
@@ -440,6 +443,10 @@ then
 	else
 		print "Stop ATS Service first [ service ats stop ].."
 	end
+elseif( arg[1] == "--version" or arg[1] == "-v" )
+then
+	print( "ATS - .. Active Termal Service.." )
+	print( "    - .. Version: " .. VERSION )
 else
 	local INSTANT_RATIO
 --	local pwm_ratio = PROFILE.pwm_ratio
