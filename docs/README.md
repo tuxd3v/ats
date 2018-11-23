@@ -86,15 +86,15 @@ Several independent Options: Master, Release and Manual.
 #### After install, verify the end of the output for something like:
 	systemctl status ats
 
-	● ats.service - Active Thermal Fan Service
+	● ats.service - ATS - Active Thermal Service
 	   Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
-	   Active: active (running) since Thu 2018-09-13 20:29:54 WEST; 3s ago
-	 Main PID: 29133 (lua)
-		Tasks: 1 (limit: 4915)
+	   Active: active (running) since Fri 2018-11-23 01:43:10 WET; 47s ago
+	 Main PID: 21040 (lua)
+	    Tasks: 1 (limit: 4642)
 	   CGroup: /system.slice/ats.service
-		       └─29133 lua /usr/sbin/ats
+		   └─21040 lua /usr/local/sbin/ats
 
-	Sep 13 20:29:54 rockpro64 systemd[1]: Started Active Thermal Fan Service.
+	Nov 23 01:43:10 rockpro64 systemd[1]: Started ATS - Active Thermal Service.
 
 #### Run Test
 ----
@@ -109,16 +109,6 @@ You can execute in **test mode**( to see state values ),
  * `service ats start`
 4. Check if service started
  * `service ats status`
-
-● ats.service - ATS - Active Thermal Service
-   Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
-   Active: active (running) since Fri 2018-11-23 01:43:10 WET; 47s ago
- Main PID: 21040 (lua)
-    Tasks: 1 (limit: 4642)
-   CGroup: /system.slice/ats.service
-           └─21040 lua /usr/local/sbin/ats
-
-Nov 23 01:43:10 rockpro64 systemd[1]: Started ATS - Active Thermal Service.
 
 #### Check ATS version
 ----
