@@ -14,7 +14,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run Test](#run-test)
-* [Version](#check-version)
+* [Version](#check-ats-version)
 * [Credits](#credits)
 
 ### Characteristics:
