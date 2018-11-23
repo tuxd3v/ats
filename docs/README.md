@@ -103,8 +103,8 @@ You can execute in **test mode**( to see state values ),
 1. Stop the service first:
  * `service ats stop`
 2. Start in test mode( 2 similar options, **pick only one** .. to exit, just press ctrl+c keys ):
- * `ats --test`
  * `ats -t`
+ * `ats --test`
 3. After tests, start as a service:
  * `service ats start`
 4. Check if service started
