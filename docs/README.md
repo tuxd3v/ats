@@ -26,7 +26,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ##### Explanation:
     
 1. ```lua
-   Temp < 39°C,
+   Temp < 40°C,
      Fan will Stop
    ```
 2. ```lua
@@ -109,14 +109,13 @@ You can execute in **test mode**( to see state values ),
  * `service ats start`
 4. Check if service started
  * `service ats status`
-
- ● ats.service - ATS - Active Thermal Service
-     Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
-     Active: active (running) since Fri 2018-11-23 01:37:25 WET; 20s ago
-   Main PID: 20606 (lua)
-      Tasks: 1 (limit: 4642)
-     CGroup: /system.slice/ats.service
-           └─20606 lua /usr/local/sbin/ats
+● ats.service - ATS - Active Thermal Service
+   Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
+   Active: active (running) since Fri 2018-11-23 01:43:10 WET; 47s ago
+ Main PID: 21040 (lua)
+    Tasks: 1 (limit: 4642)
+   CGroup: /system.slice/ats.service
+           └─21040 lua /usr/local/sbin/ats
 
 #### Check ATS version
 ----
