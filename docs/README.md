@@ -14,8 +14,8 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run Test](#run-test)
+* [Version](#check-version)
 * [Credits](#credits)
-
 
 ### Characteristics:
 ----
@@ -30,7 +30,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
      Fan will Stop
    ```
 2. ```lua
-   39°C <= Temp <= 60°C,
+   40°C <= Temp <= 60°C,
      Fan is Adjusted, acordingly like in the Chart, 'PWM Curve Response'
    ```
 3. ```lua
@@ -72,8 +72,8 @@ Several independent Options: Master, Release and Manual.
 ###### 1. Install from master( last code, but more prone to errors.. )
  * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
 
-###### 2. Install by release, check in Releases tab( ie: v0.1.6 ):
- * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-6.rockspec`
+###### 2. Install by release, check in Releases tab( ie: v0.1.8 ):
+ * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-8.rockspec`
 
 ###### 3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
  1. Run 'all' target
@@ -110,6 +110,12 @@ You can execute in **test mode**( to see state values ),
 4. Check if service started
  * `service ats status`
 
+#### Check ATS version
+----
+Check which version you have installed:
+ * `ats -v`
+ * `ats --version`
+ 
 ### Credits
 ----
 ATS             : tuxd3v
