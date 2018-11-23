@@ -109,6 +109,7 @@ You can execute in **test mode**( to see state values ),
  * `service ats start`
 4. Check if service started
  * `service ats status`
+
 ● ats.service - ATS - Active Thermal Service
    Loaded: loaded (/lib/systemd/system/ats.service; enabled; vendor preset: enabled)
    Active: active (running) since Fri 2018-11-23 01:43:10 WET; 47s ago
