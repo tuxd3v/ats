@@ -21,7 +21,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ----
 #####  Curve Response of PWM to Temperature:
 
-![Response of PWM to Temperature Curve:](https://github.com/tuxd3v/ats/blob/master/docs/PWM_curve_response_3.png)
+![Response of PWM to Temperature Curve:](https://github.com/tuxd3v/ats/blob/master/docs/response_curve.png)
 
 ##### Explanation:
     
