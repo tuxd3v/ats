@@ -15,7 +15,7 @@ VERSION = "0.2.0"
 if( arg[1] == "--version" or arg[1] == "-v" )
 then
 	print( "ATS --- Active Termal Service.." )
-	print( "    --  Copyright © 2018 Carlos Domingues" )
+	print( "    --  Copyright © 2018 Carlos Domingues<tuxd3v@sapo.pt>" )
 	print( "    --  Version: " .. VERSION )
 	os.exit( 0 )
 end
