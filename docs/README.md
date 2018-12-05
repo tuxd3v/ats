@@ -26,18 +26,18 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 ##### Explanation:
     
 1. ```lua
-   Temp < 39°C,
+   Temp < 40°C,
      Fan will Stop
    ```
 2. ```lua
-   39°C <= Temp <= 60°C,
+   40°C <= Temp <= 60°C,
      Fan is Adjusted, acordingly like in the Chart, 'PWM Curve Response'
    ```
 3. ```lua
    60°C < Temp < 70°C,
      Fan set to Maximum Value..
 4. ```lua
-   Temp >= 70°C,
+    -20°C >= Temp >= 70°C,
      System will shutdown in 10 Seconds..
    ```
 	Nota:
