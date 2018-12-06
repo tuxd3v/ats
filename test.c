@@ -53,6 +53,8 @@ int main( int argc, char ** argv ){
 		lua_pushboolean ( L, 1 );
 		tloop( L );
 	}
-	
+	/* Free space from Lua State L */
+	lua_close(L);
+
 	return 0;
 }
