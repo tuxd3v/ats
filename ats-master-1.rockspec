@@ -1,6 +1,6 @@
 rockspec_format	= "1.0"
 package		= "ats"
-version		= "master_next-0"
+version		= "master-1"
 description = {
 	summary		= "Active Thermal Service",
 	detailed		= [[
