@@ -66,15 +66,12 @@ To use ATS: First, you need to install its depedencies..
 
 ### Install
 ----
-Several independent Options: Master, Release and Manual.
+2 independent Options: Master_nest, or Manual.
 
 ###### 1. Install from master( last code, but more prone to errors.. )
-   * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
+   * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master_next-0.rockspec`
 
-###### 2. Install by release, check in Releases tab( ie: v0.1.8 ):
-   * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.1-8.rockspec`
-
-###### 3. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
+###### 2. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
  1. Run 'all' target
     *  `make`
  2. Run 'install' target
