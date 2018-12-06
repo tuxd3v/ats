@@ -1,6 +1,6 @@
 rockspec_format	= "1.0"
 package		= "ats"
-version		= "master-0"
+version		= "master_next-0"
 description = {
 	summary		= "Active Thermal Service",
 	detailed		= [[
@@ -12,7 +12,7 @@ description = {
 }
 source = {
 	url	= "git://github.com/tuxd3v/ats",
-	branch	= "master"
+	branch	= "master_next"
 }
 dependencies = {
 	supported_platforms	= "linux",
