@@ -23,19 +23,6 @@ dependencies = {
 		Because dependency check is provided in table var 'external_dependencies' bellow..
 	]]
 }
-external_dependencies = {
-	platforms = {
-		linux = {
-			UNISTD	= { header	= "unistd.h"		},
-			STAT	= { header	= "sys/stat.h"		},
-			TYPES	= { header	= "sys/types.h"		},
-			LUALIB	= { header	= "lualib.h"		},
-			LAUXLIB	= { header	= "lauxlib.h"		},
-			LUA	= { header	= "lua.h"		},
-			LUA53	= { library	= "liblua5.3.so"	}
-		}
-	}
-}
 build = {
 	type			= "make",
 	makefile		= "Makefile",
