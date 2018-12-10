@@ -299,6 +299,11 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get ALWAYS_ON value on ats structure */
 		ats.profile.ALWAYS_ON = ( unsigned char ) lua_toboolean( L, -1 );
+		if( ! ats.profile.ALWAYS_ON ){
+			printf( "info:    'ALWAYS_ON' = false\n");
+		}else {
+			printf( "info:    'ALWAYS_ON' = true\n");
+		}
 		/* Free Stack ALWAYS_ON Value*/
 		lua_pop( L, 1 );
 
