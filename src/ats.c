@@ -458,10 +458,6 @@ static int loop_c( lua_State *L ){
 		}
 	}else{
 		for(;;){
-			if( verbose )
-				printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
-																												Qtimer[ temp ],
-																												thermal_[ 0 ],
 																												thermal_[ 1 ],																											pwm );
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
 			getThermal();
