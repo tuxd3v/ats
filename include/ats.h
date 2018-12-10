@@ -32,6 +32,10 @@ struct Cooling {
 	/* Adjust conform your Fan specs, some neds greater values, others work with less current( currently not being used .. ) */
 	unsigned char MIN_PWM;
 
+	/*** ON_OFF Cycling Control Constants
+	**/
+	unsigned char ALWAYS_ON;
+
 	/*** Timers and Instant_PWM_ratio( TEMP )
 	**/
 

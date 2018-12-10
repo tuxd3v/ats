@@ -1,6 +1,7 @@
 
 
 v0.2.0 - master
+Add option for 'allways on' - DONE
 Improve rockspec to create a rock, so that it could be easilly downloaded. WIP
 Add support for SysVinit systems. WIP
 

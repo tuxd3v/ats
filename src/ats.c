@@ -293,6 +293,15 @@ static int initCore_c( lua_State *L ){
 		/* Free Stack MIN_PWM Value*/
 		lua_pop( L, 1 );
 
+		/* Put on top, key ALWAYS_ON */
+		lua_pushstring( L, "ALWAYS_ON" );
+		/* Get on top, value pair for key ALWAYS_ON*/
+		lua_gettable( L, -2 );
+		/* Get ALWAYS_ON value on ats structure */
+		ats.profile.ALWAYS_ON = ( unsigned char ) lua_isboolean( L, -1 );
+		/* Free Stack ALWAYS_ON Value*/
+		lua_pop( L, 1 );
+
 		/* Put on top, key PROFILE_NAME */
 		lua_pushstring( L, "PROFILE_NAME" );
 		/* Get on top, value pair for key PROFILE_NAME*/
@@ -407,43 +416,78 @@ static int loop_c( lua_State *L ){
 	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
 	temp = absolute_max_thermal_temp;
 
-	for(;;){
-		if( verbose )
-			printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
-																											Qtimer[ temp ],
-																											thermal_[ 0 ],
-																											thermal_[ 1 ],
-																											pwm );
-		/* Sleeping with Fan OFF, until next cicle */
-		sleep( Qtimer[ temp ] );
+	/* Looping cycle.. */
+	if( ! ats.profile.ALWAYS_ON ){
+		for(;;){
+			if( verbose )
+				printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Qtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],
+																												pwm );
+			/* Sleeping with Fan OFF, until next cicle */
+			sleep( Qtimer[ temp ] );
 
-		/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
-		getThermal();
+			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
+			getThermal();
 
-		instant_ratio = Pratio[ temp ];
+			instant_ratio = Pratio[ temp ];
 
-		/* If temp doesn't change...don't update it..*/
-		if( instant_ratio != pwm )
-			setPwm( instant_ratio );
+			/* If temp doesn't change...don't update it..*/
+			if( instant_ratio != pwm )
+				setPwm( instant_ratio );
 
-		/* Temp Above Threshold to ShutDown.. */
-		if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
-			/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
-			/* push false on stack( return false to lua ) */
-			lua_pushboolean ( L, 0 );
-			break;
+			/* Temp Above Threshold to ShutDown.. */
+			if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
+				/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
+				/* push false on stack( return false to lua ) */
+				lua_pushboolean ( L, 0 );
+				break;
+			}
+			if( verbose )
+				printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Rtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],
+																												pwm );
+			/* Sleeping with Fan ON until next cycle */
+			sleep( Rtimer[ temp ] );
+
+			/* Stop Fan */
+			setPwm( 0 );
 		}
-		if( verbose )
-			printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
-																											Rtimer[ temp ],
-																											thermal_[ 0 ],
-																											thermal_[ 1 ],
-																											pwm );
-		/* Sleeping with Fan ON until next cycle */
-		sleep( Rtimer[ temp ] );
+	}else{
+		for(;;){
+			if( verbose )
+				printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Qtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],																											pwm );
+			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
+			getThermal();
 
-		/* Stop Fan */
-		setPwm( 0 );
+			instant_ratio = Pratio[ temp ];
+
+			/* If temp doesn't change...don't update it..*/
+			if( instant_ratio != pwm )
+				setPwm( instant_ratio );
+
+			/* Temp Above Threshold to ShutDown.. */
+			if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
+				/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
+				/* push false on stack( return false to lua ) */
+				lua_pushboolean ( L, 0 );
+				break;
+			}
+			if( verbose )
+				printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Rtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],
+																												pwm );
+			/* Sleeping with Fan ON until next cycle */
+			sleep( Rtimer[ temp ] );
+		}
 	}
 	return 1;
 }
