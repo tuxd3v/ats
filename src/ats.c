@@ -270,7 +270,7 @@ static int initCore_c( lua_State *L ){
 			ats.profile.MAX_PWM = ( unsigned char ) number;
 			printf( "info:    'MAX_PWM' = %d\n", ats.profile.MAX_PWM );
 		} else {
-			printf( "warn:    'MAX_PWM' outside range[ %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
+			printf( "warn:    'MAX_PWM' outside range] %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
 													ats.ABSOLUTE_MAX_PWM );
 			ats.profile.MAX_PWM = ats.ABSOLUTE_MAX_PWM;
 		}
@@ -287,7 +287,7 @@ static int initCore_c( lua_State *L ){
 			ats.profile.MIN_PWM = ( unsigned char ) number;
 			printf( "info:    'MIN_PWM' = %d\n", ats.profile.MIN_PWM );
 		} else {
-			printf( "warn:    'MIN_PWM' outside range[ %d, %d ]\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
+			printf( "warn:    'MIN_PWM' outside range] %d, %d [\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
 			ats.profile.MIN_PWM = 40;
 		}
 		/* Free Stack MIN_PWM Value*/
