@@ -106,7 +106,7 @@ static void setTriggers( ats_t *self ){
 			/* *( pwm_ratio0 + i ) = self->profile.getProfile_pwm( self, i ); */
 			
 			/* Get float to String, then convert String to integer*/
-			snprintf( number, 6, "%3.2f", ( float ) ( self->profile.MIN_PWM + ( ( ( self->ABSOLUTE_MAX_PWM - self->profile.MIN_PWM ) * 1.0 ) / ( self->profile.MAX_CONTINUOUS_THERMAL_TEMP - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) * ( i - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) );
+			snprintf( number, 6, "%3.2f", ( float ) ( self->profile.MIN_PWM + ( ( ( self->MAX_PWM - self->profile.MIN_PWM ) * 1.0 ) / ( self->profile.MAX_CONTINUOUS_THERMAL_TEMP - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) * ( i - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) );
 			Pratio[ i ] =  ( unsigned char ) atoi( number );
 			printf( "info:    'Pratio[ %d ]' = %d\n", i, Pratio[ i ] );
 			
