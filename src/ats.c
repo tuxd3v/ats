@@ -458,7 +458,7 @@ static int loop_c( lua_State *L ){
 		}
 	}else{
 		for(;;){
-																												thermal_[ 1 ],																											pwm );
+
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
 			getThermal();
 
