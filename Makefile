@@ -99,8 +99,8 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 
 .PHONY:	install
 install:
-	@if [ -L "/var/run/systemd/units/invocation:ats.service" ];then		\
-		systemctl stop ats;						\
+	@if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/var/run/systemd/units/invocation:fanctl.service" ];then	\
+		systemctl stop ats;													\
 	fi
 	@echo "Install ATS Tool ..................: ats in ${BINDIR}"
 	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=${BINDIR} ${SRCS_PATH}/ats

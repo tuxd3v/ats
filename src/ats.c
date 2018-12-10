@@ -409,7 +409,11 @@ static int loop_c( lua_State *L ){
 
 	for(;;){
 		if( verbose )
-			printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", Qtimer[ temp ], thermal_[ 0 ], thermal_[ 1 ], pwm );
+			printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																											Qtimer[ temp ],
+																											thermal_[ 0 ],
+																											thermal_[ 1 ],
+																											pwm );
 		/* Sleeping with Fan OFF, until next cicle */
 		sleep( Qtimer[ temp ] );
 
@@ -419,9 +423,8 @@ static int loop_c( lua_State *L ){
 		instant_ratio = Pratio[ temp ];
 
 		/* If temp doesn't change...don't update it..*/
-		if( instant_ratio != pwm ){
+		if( instant_ratio != pwm )
 			setPwm( instant_ratio );
-		}
 
 		/* Temp Above Threshold to ShutDown.. */
 		if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
@@ -431,7 +434,11 @@ static int loop_c( lua_State *L ){
 			break;
 		}
 		if( verbose )
-			printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", Rtimer[ temp ], thermal_[ 0 ], thermal_[ 1 ], pwm );
+			printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																											Rtimer[ temp ],
+																											thermal_[ 0 ],
+																											thermal_[ 1 ],
+																											pwm );
 		/* Sleeping with Fan ON until next cycle */
 		sleep( Rtimer[ temp ] );
 
@@ -508,8 +515,8 @@ int luaopen_ats ( lua_State *L ) {
 }
 */
 
-/*** CTest frontend
- * */
+/*********************** LUA C API Test.c Frontend **************************
+**/
 
 /**
 * Function to initialize ATS Backend
@@ -732,9 +739,8 @@ int tloop( lua_State *L ){
 		instant_ratio = Pratio[ temp ];
 
 		/* If temp doesn't change...don't update it..*/
-		if( instant_ratio != pwm ){
+		if( instant_ratio != pwm )
 			setPwm( instant_ratio );
-		}
 
 		/* Temp Above Threshold to ShutDown.. */
 		if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
