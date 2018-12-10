@@ -298,7 +298,7 @@ static int initCore_c( lua_State *L ){
 		/* Get on top, value pair for key ALWAYS_ON*/
 		lua_gettable( L, -2 );
 		/* Get ALWAYS_ON value on ats structure */
-		ats.profile.ALWAYS_ON = ( unsigned char ) lua_isboolean( L, -1 );
+		ats.profile.ALWAYS_ON = ( unsigned char ) lua_toboolean( L, -1 );
 		/* Free Stack ALWAYS_ON Value*/
 		lua_pop( L, 1 );
 
