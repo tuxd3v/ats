@@ -106,7 +106,7 @@ static void setTriggers( ats_t *self ){
 			/* *( pwm_ratio0 + i ) = self->profile.getProfile_pwm( self, i ); */
 			
 			/* Get float to String, then convert String to integer*/
-			snprintf( number, 6, "%3.2f", ( float ) ( self->profile.MIN_PWM + ( ( ( self->ABSOLUTE_MAX_PWM - self->profile.MIN_PWM ) * 1.0 ) / ( self->profile.MAX_CONTINUOUS_THERMAL_TEMP - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) * ( i - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) );
+			snprintf( number, 6, "%3.2f", ( float ) ( self->profile.MIN_PWM + ( ( ( self->profile.MAX_PWM - self->profile.MIN_PWM ) * 1.0 ) / ( self->profile.MAX_CONTINUOUS_THERMAL_TEMP - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) * ( i - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) );
 			Pratio[ i ] =  ( unsigned char ) atoi( number );
 			printf( "info:    'Pratio[ %d ]' = %d\n", i, Pratio[ i ] );
 			
@@ -150,7 +150,7 @@ static int initCore_c( lua_State *L ){
 	double number;
 	/* Theoretically speaking, we received a Table...is this a table? */
 	if ( lua_istable( L, -1 ) ) {
-		printf("info:'SYSTEM' Table\n");
+		printf( "info:'SYSTEM' Table\n" );
 
 		/* Looking up based on the key */
 		/* Add key we're interested in to the stack*/
@@ -199,7 +199,7 @@ static int initCore_c( lua_State *L ){
 		lua_pop( L, 1 );
 
 		/* Put on top, key THERMAL1_CTL */
-		lua_pushstring(L,"THERMAL1_CTL");
+		lua_pushstring( L,"THERMAL1_CTL" );
 		/* Get on top, value pair for key THERMAL1_CTL*/
 		lua_gettable( L, -2 );
 		/* Get THERMAL1_CTL value */
@@ -270,7 +270,7 @@ static int initCore_c( lua_State *L ){
 			ats.profile.MAX_PWM = ( unsigned char ) number;
 			printf( "info:    'MAX_PWM' = %d\n", ats.profile.MAX_PWM );
 		} else {
-			printf( "warn:    'MAX_PWM' outside range[ %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
+			printf( "warn:    'MAX_PWM' outside range] %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
 													ats.ABSOLUTE_MAX_PWM );
 			ats.profile.MAX_PWM = ats.ABSOLUTE_MAX_PWM;
 		}
@@ -287,10 +287,24 @@ static int initCore_c( lua_State *L ){
 			ats.profile.MIN_PWM = ( unsigned char ) number;
 			printf( "info:    'MIN_PWM' = %d\n", ats.profile.MIN_PWM );
 		} else {
-			printf( "warn:    'MIN_PWM' outside range[ %d, %d ]\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
+			printf( "warn:    'MIN_PWM' outside range] %d, %d [\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
 			ats.profile.MIN_PWM = 40;
 		}
 		/* Free Stack MIN_PWM Value*/
+		lua_pop( L, 1 );
+
+		/* Put on top, key ALWAYS_ON */
+		lua_pushstring( L, "ALWAYS_ON" );
+		/* Get on top, value pair for key ALWAYS_ON*/
+		lua_gettable( L, -2 );
+		/* Get ALWAYS_ON value on ats structure */
+		ats.profile.ALWAYS_ON = ( unsigned char ) lua_toboolean( L, -1 );
+		if( ! ats.profile.ALWAYS_ON ){
+			printf( "info:    'ALWAYS_ON' = false\n");
+		}else {
+			printf( "info:    'ALWAYS_ON' = true\n");
+		}
+		/* Free Stack ALWAYS_ON Value*/
 		lua_pop( L, 1 );
 
 		/* Put on top, key PROFILE_NAME */
@@ -407,36 +421,74 @@ static int loop_c( lua_State *L ){
 	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
 	temp = absolute_max_thermal_temp;
 
-	for(;;){
-		if( verbose )
-			printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", Qtimer[ temp ], thermal_[ 0 ], thermal_[ 1 ], pwm );
-		/* Sleeping with Fan OFF, until next cicle */
-		sleep( Qtimer[ temp ] );
+	/* Looping cycle.. */
+	if( ! ats.profile.ALWAYS_ON ){
+		for(;;){
+			if( verbose )
+				printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Qtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],
+																												pwm );
+			/* Sleeping with Fan OFF, until next cicle */
+			sleep( Qtimer[ temp ] );
 
-		/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
-		getThermal();
+			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
+			getThermal();
 
-		instant_ratio = Pratio[ temp ];
+			instant_ratio = Pratio[ temp ];
 
-		/* If temp doesn't change...don't update it..*/
-		if( instant_ratio != pwm ){
-			setPwm( instant_ratio );
+			/* If temp doesn't change...don't update it..*/
+			if( instant_ratio != pwm )
+				setPwm( instant_ratio );
+
+			/* Temp Above Threshold to ShutDown.. */
+			if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
+				/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
+				/* push false on stack( return false to lua ) */
+				lua_pushboolean ( L, 0 );
+				break;
+			}
+			if( verbose )
+				printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Rtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],
+																												pwm );
+			/* Sleeping with Fan ON until next cycle */
+			sleep( Rtimer[ temp ] );
+
+			/* Stop Fan */
+			setPwm( 0 );
 		}
+	}else{
+		for(;;){
 
-		/* Temp Above Threshold to ShutDown.. */
-		if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
-			/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
-			/* push false on stack( return false to lua ) */
-			lua_pushboolean ( L, 0 );
-			break;
+			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
+			getThermal();
+
+			instant_ratio = Pratio[ temp ];
+
+			/* If temp doesn't change...don't update it..*/
+			if( instant_ratio != pwm )
+				setPwm( instant_ratio );
+
+			/* Temp Above Threshold to ShutDown.. */
+			if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
+				/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
+				/* push false on stack( return false to lua ) */
+				lua_pushboolean ( L, 0 );
+				break;
+			}
+			if( verbose )
+				printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n",
+																												Rtimer[ temp ],
+																												thermal_[ 0 ],
+																												thermal_[ 1 ],
+																												pwm );
+			/* Sleeping with Fan ON until next cycle */
+			sleep( Rtimer[ temp ] );
 		}
-		if( verbose )
-			printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", Rtimer[ temp ], thermal_[ 0 ], thermal_[ 1 ], pwm );
-		/* Sleeping with Fan ON until next cycle */
-		sleep( Rtimer[ temp ] );
-
-		/* Stop Fan */
-		setPwm( 0 );
 	}
 	return 1;
 }
@@ -508,248 +560,17 @@ int luaopen_ats ( lua_State *L ) {
 }
 */
 
-/*** CTest frontend
- * */
+/*********************** LUA C API Test.c Frontend **************************
+**/
 
 /**
 * Function to initialize ATS Backend
 */
 int tinitCore( lua_State *L ){
-	double number;
-	/* Theoretically speaking, we received a Table...is this a table? */
-	if ( lua_istable( L, -1 ) ) {
-		printf("info:'SYSTEM' Table\n");
-
-		/* Looking up based on the key */
-		/* Add key we're interested in to the stack*/
-		lua_pushstring( L, "BOARD" );
-		lua_gettable( L, -2 );
-		if ( lua_istable( L, -1 ) ) {
-			printf( "info:    'BOARD' Table\n" );
-			/* Put on top, key NAME*/
-			lua_pushstring( L, "NAME" );
-			/* Get on top, value pair for key NAME*/
-			lua_gettable( L, -2 );
-			/* Get NAME value */
-			ats.NAME = lua_tostring( L, -1 );
-			printf( "info:        'NAME' = %s\n", ats.NAME );
-			/* Free Stack NAME Value*/
-			lua_pop( L, 1 );
-
-			/* Put on top, key CPU*/
-			lua_pushstring(L,"CPU");
-			/* Get on top, value pair for key NAME*/
-			lua_gettable( L, -2 );
-			/* Get CPU value */
-			ats.CPU = lua_tostring( L, -1 );
-			printf( "info:        'CPU'  = %s\n", ats.CPU );
-			/* Free BOARD TABLE from Stack top*/
-			lua_pop( L, 2 );
-		} else {
-			/* Free BOARD TABLE key from Stack top*/
-			lua_pop( L, 1 );
-
-			printf( "warn:    UPS.. there are problems with SYSTEM config table.\n     Expecting a BOARD table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
-			stackTrace( L );
-
-			/* push false on stack( return false to lua ) */
-			lua_pushboolean ( L, 0 );
-			return 1;
-		}
-		/* Put on top, key THERMAL0_CTL */
-		lua_pushstring( L,"THERMAL0_CTL" );
-		/* Get on top, value pair for key THERMAL0_CTL*/
-		lua_gettable( L, -2 );
-		/* Get THERMAL0_CTL value */
-		ats.THERMAL0_CTL = lua_tostring( L, -1 );
-		printf( "info:    'THERMAL0_CTL' = %s\n", ats.THERMAL0_CTL );
-		/* Free Stack THERMAL0_CTL Value*/
-		lua_pop( L, 1 );
-
-		/* Put on top, key THERMAL1_CTL */
-		lua_pushstring(L,"THERMAL1_CTL");
-		/* Get on top, value pair for key THERMAL1_CTL*/
-		lua_gettable( L, -2 );
-		/* Get THERMAL1_CTL value */
-		ats.THERMAL1_CTL = lua_tostring( L, -1 );
-		printf( "info:    'THERMAL1_CTL' = %s\n", ats.THERMAL1_CTL );
-		/* Free Stack THERMAL1_CTL Value*/
-		lua_pop( L, 1 );
-
-		/* Put on top, key PWM_CTL */
-		lua_pushstring( L, "PWM_CTL" );
-		/* Get on top, value pair for key PWM_CTL*/
-		lua_gettable( L, -2 );
-		/* Get PWM_CTL value */
-		ats.PWM_CTL = lua_tostring( L, -1 );
-		printf( "info:    'PWM_CTL' = %s\n", ats.PWM_CTL );
-		/* Free Stack PWM_CTL Value*/
-		lua_pop( L, 1 );
-
-		/* ATS Limits */
-		ats.ABSOLUTE_MAX_THERMAL_TEMP	= 70;
-		ats.ABSOLUTE_MIN_THERMAL_TEMP	= -20;
-		ats.ABSOLUTE_MAX_PWM		= 255;
-		ats.ABSOLUTE_MIN_PWM		= 0;
-
-		/* Put on top, key MAX_CONTINUOUS_THERMAL_TEMP */
-		lua_pushstring( L, "MAX_CONTINUOUS_THERMAL_TEMP" );
-		/* Get on top, value pair for key MAX_CONTINUOUS_THERMAL_TEMP*/
-		lua_gettable( L, -2 );
-		/* Get MAX_CONTINUOUS_THERMAL_TEMP value */
-		number = lua_tonumber( L, -1 );
-		if( number > ats.ABSOLUTE_MIN_THERMAL_TEMP && number < ats.ABSOLUTE_MAX_THERMAL_TEMP ){
-			ats.profile.MAX_CONTINUOUS_THERMAL_TEMP = ( signed char ) number;
-			printf( "info:    'MAX_CONTINUOUS_THERMAL_TEMP' = %d\n", ats.profile.MAX_CONTINUOUS_THERMAL_TEMP );
-		} else {
-			printf( "warn:    'MAX_CONTINUOUS_THERMAL_TEMP' outside range] %d, %d [\n         'MAX_CONTINUOUS_THERMAL_TEMP' = %d\n",
-													ats.ABSOLUTE_MIN_THERMAL_TEMP,
-													ats.ABSOLUTE_MAX_THERMAL_TEMP, 60 );
-			ats.profile.MAX_CONTINUOUS_THERMAL_TEMP = 60;
-		}
-		/* Free Stack MAX_CONTINUOUS_THERMAL_TEMP Value*/
-		lua_pop(L,1);
-
-		/* Put on top, key MIN_CONTINUOUS_THERMAL_TEMP */
-		lua_pushstring( L, "MIN_CONTINUOUS_THERMAL_TEMP" );
-		/* Get on top, value pair for key MIN_CONTINUOUS_THERMAL_TEMP*/
-		lua_gettable( L, -2 );
-		/* Get MIN_CONTINUOUS_THERMAL_TEMP value */
-		number = lua_tonumber( L, -1 );
-		if( number > ats.ABSOLUTE_MIN_THERMAL_TEMP && number < ats.ABSOLUTE_MAX_THERMAL_TEMP ){
-			ats.profile.MIN_CONTINUOUS_THERMAL_TEMP = ( signed char ) number;
-			printf( "info:    'MIN_CONTINUOUS_THERMAL_TEMP' = %d\n", ats.profile.MIN_CONTINUOUS_THERMAL_TEMP );
-		} else {
-			printf( "warn:    'MIN_CONTINUOUS_THERMAL_TEMP' outside range] %d, %d [\n         'MIN_CONTINUOUS_THERMAL_TEMP' = %d\n",
-													ats.ABSOLUTE_MIN_THERMAL_TEMP,
-													ats.ABSOLUTE_MAX_THERMAL_TEMP, 40 );
-			ats.profile.MIN_CONTINUOUS_THERMAL_TEMP = 40;
-		}
-		/* Free Stack MIN_CONTINUOUS_THERMAL_TEMP Value*/
-		lua_pop( L, 1 );
-
-		/* Put on top, key MAX_PWM */
-		lua_pushstring( L, "MAX_PWM" );
-		/* Get on top, value pair for key MAX_PWM*/
-		lua_gettable( L, -2 );
-		/* Get MAX_PWM value */
-		number = lua_tonumber( L, -1 );
-		if( number > ats.ABSOLUTE_MIN_PWM && number <= ats.ABSOLUTE_MAX_PWM ){
-			ats.profile.MAX_PWM = ( unsigned char ) number;
-			printf( "info:    'MAX_PWM' = %d\n", ats.profile.MAX_PWM );
-		} else {
-			printf( "warn:    'MAX_PWM' outside range[ %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
-													ats.ABSOLUTE_MAX_PWM );
-			ats.profile.MAX_PWM = ats.ABSOLUTE_MAX_PWM;
-		}
-		/* Free Stack MAX_PWM Value*/
-		lua_pop( L, 1 );
-
-		/* Put on top, key MIN_PWM */
-		lua_pushstring( L, "MIN_PWM" );
-		/* Get on top, value pair for key MIN_PWM*/
-		lua_gettable( L, -2 );
-		/* Get MIN_PWM value */
-		number = lua_tonumber( L, -1 );
-		if( number > ats.ABSOLUTE_MIN_PWM && number < ats.ABSOLUTE_MAX_PWM ){
-			ats.profile.MIN_PWM = ( unsigned char ) number;
-			printf( "info:    'MIN_PWM' = %d\n", ats.profile.MIN_PWM );
-		} else {
-			printf( "warn:    'MIN_PWM' outside range[ %d, %d ]\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
-			ats.profile.MIN_PWM = 40;
-		}
-		/* Free Stack MIN_PWM Value*/
-		lua_pop( L, 1 );
-
-		/* Put on top, key PROFILE_NAME */
-		lua_pushstring( L, "PROFILE_NAME" );
-		/* Get on top, value pair for key PROFILE_NAME*/
-		lua_gettable( L, -2 );
-		/* Get PROFILE_NAME value */
-		ats.profile.name = lua_tostring( L, -1 );
-		printf( "info:    'PROFILE_NAME' = %s\n", ats.profile.name );
-		/* Free Stack PROFILE_NAME Value*/
-		lua_pop( L, 1 );
-
-		/* Put on top, key PROFILE_NR */
-		lua_pushstring( L, "PROFILE_NR" );
-		/* Get on top, value pair for key PROFILE_NR*/
-		lua_gettable( L, -2 );
-		/* Get PROFILE_NR value */
-		number = lua_tonumber( L, -1 );
-		if( number >= 0 && number < 3 ){
-			ats.profile.nr = ( unsigned char ) number;
-			printf( "info:    'PROFILE' = %d\n", ats.profile.nr );
-		} else {
-			printf( "warn:    'PROFILE' outside range[ %d, %d ]\n     'MIN_PWM' = %d\n", 0, 2, 0 );
-			ats.profile.nr = 0;
-		}
-		/* Free Stack PROFILE Value*/
-		lua_pop( L, 1 );
-
-		ats.setTriggers = setTriggers;
-		ats.setTriggers( &ats );
-		
-		/* Return true on stack */
-		lua_pushboolean ( L, 1 );
-	} else {
-		printf( "warn:UPS.. there are problems with SYSTEM config table.\n     Expecting a SYSTEM table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
-		stackTrace( L );
-		
-		/* push false on stack( return false to lua ) */
-		lua_pushboolean ( L, 0 );
-	}
-	/* return one value on the stack */
-	return 1;
+	return initCore_c( L );
 }
 
 /* pooling loop */
 int tloop( lua_State *L ){
-	unsigned char instant_ratio;
-	signed char absolute_max_thermal_temp = ats.ABSOLUTE_MAX_THERMAL_TEMP;
-	signed char absolute_min_thermal_temp = ats.ABSOLUTE_MIN_THERMAL_TEMP;
-	unsigned int verbose = lua_toboolean ( L, -1 );
-	/* Free Stack verbose boolean Value*/
-	lua_pop( L, 1 );
-	
-	/* CTL Variables */
-	thermal_ctl[ 0 ]	= ( char * ) ats.THERMAL0_CTL;
-	thermal_ctl[ 1 ]	= ( char * ) ats.THERMAL1_CTL;
-	pwm_ctl			= ( char * ) ats.PWM_CTL;
-
-	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
-	temp = absolute_max_thermal_temp;
-
-	for(;;){
-		if( verbose )
-			printf( "Stopping for[ seconds ]............... %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", Qtimer[ temp ], thermal_[ 0 ], thermal_[ 1 ], pwm );
-		/* Sleeping with Fan OFF, until next cicle */
-		sleep( Qtimer[ temp ] );
-
-		/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
-		getThermal();
-
-		instant_ratio = Pratio[ temp ];
-
-		/* If temp doesn't change...don't update it..*/
-		if( instant_ratio != pwm ){
-			setPwm( instant_ratio );
-		}
-
-		/* Temp Above Threshold to ShutDown.. */
-		if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
-			/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
-			/* push false on stack( return false to lua ) */
-				lua_pushboolean ( L, 0 );
-			break;
-		}
-		if( verbose )
-			printf( "Running for[ seconds ]................ %d\nCPU Temperature[ max 70 °C ].......... %d\nGPU Temperature[ max 70 °C ].......... %d\nFan PWM Duty Cycle value[ 0 - 255 ]... %d\n--------------------\n", Rtimer[ temp ], thermal_[ 0 ], thermal_[ 1 ], pwm );
-		/* Sleeping with Fan ON until next cycle */
-		sleep( Rtimer[ temp ] );
-
-		/* Stop Fan */
-		setPwm( 0 );
-	}
-	return 1;
+	return loop_c( L );
 }
