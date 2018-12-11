@@ -55,11 +55,12 @@ char * pwm_ctl	= NULL;
 /** CPU  Thermal Zone / GPU Thermal Zone, variables used by this backend */
 signed char thermal_[2];
 
-
+/** File Descriptors for stdout **/
+FILE * fstdout = NULL;
 
 /* Function to set quiet,run timers and pwm ratios */
 static void setTriggers( ats_t *self ){
-	printf( "info:'Pratio' timers\n" );
+	fprintf( fstdout, "info:'Pratio' timers\n" );
 	signed char i;
 	/* to get pwm float char*/
 	char number[11];
@@ -73,7 +74,7 @@ static void setTriggers( ats_t *self ){
 	const signed char max_continuous_thermal_temp	= self->profile.MAX_CONTINUOUS_THERMAL_TEMP;
 	const signed char min_continuous_thermal_temp	= self->profile.MIN_CONTINUOUS_THERMAL_TEMP;
 	
-	printf( "info:    'Pratio[ %d - %d [' = %d\n", min, min_continuous_thermal_temp, self->ABSOLUTE_MIN_PWM );
+	fprintf( fstdout, "info:    'Pratio[ %d - %d [' = %d\n", min, min_continuous_thermal_temp, self->ABSOLUTE_MIN_PWM );
 	for ( i = min_plus; i <= max_plus; ++i ){
 
 		if( i < min_continuous_thermal_temp ){
@@ -108,7 +109,7 @@ static void setTriggers( ats_t *self ){
 			/* Get float to String, then convert String to integer*/
 			snprintf( number, 6, "%3.2f", ( float ) ( self->profile.MIN_PWM + ( ( ( self->profile.MAX_PWM - self->profile.MIN_PWM ) * 1.0 ) / ( self->profile.MAX_CONTINUOUS_THERMAL_TEMP - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) * ( i - self->profile.MIN_CONTINUOUS_THERMAL_TEMP ) ) );
 			Pratio[ i ] =  ( unsigned char ) atoi( number );
-			printf( "info:    'Pratio[ %d ]'       = %d\n", i, Pratio[ i ] );
+			fprintf( fstdout, "info:    'Pratio[ %d ]'       = %d\n", i, Pratio[ i ] );
 			
 			if ( i <= 45 ){
 				Qtimer[ i ]	= 90;
@@ -140,7 +141,7 @@ static void setTriggers( ats_t *self ){
 			}
 		}
 	}
-	printf( "info:    'Pratio[ %d - %d ['  = %d\n", max_continuous_thermal_temp, max, self->ABSOLUTE_MAX_PWM );
+	fprintf( fstdout, "info:    'Pratio[ %d - %d ['  = %d\n", max_continuous_thermal_temp, max, self->ABSOLUTE_MAX_PWM );
 }
 
 /**
@@ -148,23 +149,30 @@ static void setTriggers( ats_t *self ){
 */
 static int initCore_c( lua_State *L ){
 	double number;
+	/* Get Lua Frontend STDout descriptor.. */
+	lua_getglobal( L, "io" );
+	lua_pushstring(L, "stdout");
+	lua_gettable(L, -2);
+	fstdout = *(FILE **)lua_touserdata(L, -1);
+	lua_pop(L, 2);
+
 	/* Theoretically speaking, we received a Table...is this a table? */
 	if ( lua_istable( L, -1 ) ) {
-		printf( "info:'SYSTEM' Table\n" );
+		fprintf( fstdout, "info:'SYSTEM' Table\n" );
 
 		/* Looking up based on the key */
 		/* Add key we're interested in to the stack*/
 		lua_pushstring( L, "BOARD" );
 		lua_gettable( L, -2 );
 		if ( lua_istable( L, -1 ) ) {
-			printf( "info:    'BOARD' Table\n" );
+			fprintf( fstdout, "info:    'BOARD' Table\n" );
 			/* Put on top, key NAME*/
 			lua_pushstring( L, "NAME" );
 			/* Get on top, value pair for key NAME*/
 			lua_gettable( L, -2 );
 			/* Get NAME value */
 			ats.NAME = lua_tostring( L, -1 );
-			printf( "info:        'NAME' = %s\n", ats.NAME );
+			fprintf( fstdout, "info:        'NAME' = %s\n", ats.NAME );
 			/* Free Stack NAME Value*/
 			lua_pop( L, 1 );
 
@@ -174,15 +182,15 @@ static int initCore_c( lua_State *L ){
 			lua_gettable( L, -2 );
 			/* Get CPU value */
 			ats.CPU = lua_tostring( L, -1 );
-			printf( "info:        'CPU'  = %s\n", ats.CPU );
+			fprintf( fstdout, "info:        'CPU'  = %s\n", ats.CPU );
 			/* Free BOARD TABLE from Stack top*/
 			lua_pop( L, 2 );
 		} else {
 			/* Free BOARD TABLE key from Stack top*/
 			lua_pop( L, 1 );
 
-			printf( "warn:    UPS.. there are problems with SYSTEM config table.\n     Expecting a BOARD table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
-			stackTrace( L );
+			fprintf( fstdout, "warn:    UPS.. there are problems with SYSTEM config table.\n     Expecting a BOARD table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
+			stackTrace( fstdout, L );
 
 			/* push false on stack( return false to lua ) */
 			lua_pushboolean ( L, 0 );
@@ -194,7 +202,7 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get THERMAL0_CTL value */
 		ats.THERMAL0_CTL = lua_tostring( L, -1 );
-		printf( "info:    'THERMAL0_CTL' = %s\n", ats.THERMAL0_CTL );
+		fprintf( fstdout, "info:    'THERMAL0_CTL' = %s\n", ats.THERMAL0_CTL );
 		/* Free Stack THERMAL0_CTL Value*/
 		lua_pop( L, 1 );
 
@@ -204,7 +212,7 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get THERMAL1_CTL value */
 		ats.THERMAL1_CTL = lua_tostring( L, -1 );
-		printf( "info:    'THERMAL1_CTL' = %s\n", ats.THERMAL1_CTL );
+		fprintf( fstdout, "info:    'THERMAL1_CTL' = %s\n", ats.THERMAL1_CTL );
 		/* Free Stack THERMAL1_CTL Value*/
 		lua_pop( L, 1 );
 
@@ -214,7 +222,7 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get PWM_CTL value */
 		ats.PWM_CTL = lua_tostring( L, -1 );
-		printf( "info:    'PWM_CTL'      = %s\n", ats.PWM_CTL );
+		fprintf( fstdout, "info:    'PWM_CTL'      = %s\n", ats.PWM_CTL );
 		/* Free Stack PWM_CTL Value*/
 		lua_pop( L, 1 );
 
@@ -232,9 +240,9 @@ static int initCore_c( lua_State *L ){
 		number = lua_tonumber( L, -1 );
 		if( number > ats.ABSOLUTE_MIN_THERMAL_TEMP && number < ats.ABSOLUTE_MAX_THERMAL_TEMP ){
 			ats.profile.MAX_CONTINUOUS_THERMAL_TEMP = ( signed char ) number;
-			printf( "info:    'MAX_CONTINUOUS_THERMAL_TEMP' = %d\n", ats.profile.MAX_CONTINUOUS_THERMAL_TEMP );
+			fprintf( fstdout, "info:    'MAX_CONTINUOUS_THERMAL_TEMP' = %d\n", ats.profile.MAX_CONTINUOUS_THERMAL_TEMP );
 		} else {
-			printf( "warn:    'MAX_CONTINUOUS_THERMAL_TEMP' outside range] %d, %d [\n         'MAX_CONTINUOUS_THERMAL_TEMP' = %d\n",
+			fprintf( fstdout, "warn:    'MAX_CONTINUOUS_THERMAL_TEMP' outside range] %d, %d [\n         'MAX_CONTINUOUS_THERMAL_TEMP' = %d\n",
 													ats.ABSOLUTE_MIN_THERMAL_TEMP,
 													ats.ABSOLUTE_MAX_THERMAL_TEMP, 60 );
 			ats.profile.MAX_CONTINUOUS_THERMAL_TEMP = 60;
@@ -250,9 +258,9 @@ static int initCore_c( lua_State *L ){
 		number = lua_tonumber( L, -1 );
 		if( number > ats.ABSOLUTE_MIN_THERMAL_TEMP && number < ats.ABSOLUTE_MAX_THERMAL_TEMP ){
 			ats.profile.MIN_CONTINUOUS_THERMAL_TEMP = ( signed char ) number;
-			printf( "info:    'MIN_CONTINUOUS_THERMAL_TEMP' = %d\n", ats.profile.MIN_CONTINUOUS_THERMAL_TEMP );
+			fprintf( fstdout, "info:    'MIN_CONTINUOUS_THERMAL_TEMP' = %d\n", ats.profile.MIN_CONTINUOUS_THERMAL_TEMP );
 		} else {
-			printf( "warn:    'MIN_CONTINUOUS_THERMAL_TEMP' outside range] %d, %d [\n         'MIN_CONTINUOUS_THERMAL_TEMP' = %d\n",
+			fprintf( fstdout, "warn:    'MIN_CONTINUOUS_THERMAL_TEMP' outside range] %d, %d [\n         'MIN_CONTINUOUS_THERMAL_TEMP' = %d\n",
 													ats.ABSOLUTE_MIN_THERMAL_TEMP,
 													ats.ABSOLUTE_MAX_THERMAL_TEMP, 40 );
 			ats.profile.MIN_CONTINUOUS_THERMAL_TEMP = 40;
@@ -268,9 +276,9 @@ static int initCore_c( lua_State *L ){
 		number = lua_tonumber( L, -1 );
 		if( number > ats.ABSOLUTE_MIN_PWM && number <= ats.ABSOLUTE_MAX_PWM ){
 			ats.profile.MAX_PWM = ( unsigned char ) number;
-			printf( "info:    'MAX_PWM' = %d\n", ats.profile.MAX_PWM );
+			fprintf( fstdout, "info:    'MAX_PWM' = %d\n", ats.profile.MAX_PWM );
 		} else {
-			printf( "warn:    'MAX_PWM' outside range] %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
+			fprintf( fstdout, "warn:    'MAX_PWM' outside range] %d, %d ]\n         'MAX_PWM' = %d\n",ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM,
 													ats.ABSOLUTE_MAX_PWM );
 			ats.profile.MAX_PWM = ats.ABSOLUTE_MAX_PWM;
 		}
@@ -285,9 +293,9 @@ static int initCore_c( lua_State *L ){
 		number = lua_tonumber( L, -1 );
 		if( number > ats.ABSOLUTE_MIN_PWM && number < ats.ABSOLUTE_MAX_PWM ){
 			ats.profile.MIN_PWM = ( unsigned char ) number;
-			printf( "info:    'MIN_PWM' = %d\n", ats.profile.MIN_PWM );
+			fprintf( fstdout, "info:    'MIN_PWM' = %d\n", ats.profile.MIN_PWM );
 		} else {
-			printf( "warn:    'MIN_PWM' outside range] %d, %d [\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
+			fprintf( fstdout, "warn:    'MIN_PWM' outside range] %d, %d [\n         'MIN_PWM' = %d\n", ats.ABSOLUTE_MIN_PWM, ats.ABSOLUTE_MAX_PWM, 40 );
 			ats.profile.MIN_PWM = 40;
 		}
 		/* Free Stack MIN_PWM Value*/
@@ -300,9 +308,9 @@ static int initCore_c( lua_State *L ){
 		/* Get ALWAYS_ON value on ats structure */
 		ats.profile.ALWAYS_ON = ( unsigned char ) lua_toboolean( L, -1 );
 		if( ! ats.profile.ALWAYS_ON ){
-			printf( "info:    'ALWAYS_ON' = false\n");
+			fprintf( fstdout, "info:    'ALWAYS_ON' = false\n");
 		}else {
-			printf( "info:    'ALWAYS_ON' = true\n");
+			fprintf( fstdout, "info:    'ALWAYS_ON' = true\n");
 		}
 		/* Free Stack ALWAYS_ON Value*/
 		lua_pop( L, 1 );
@@ -313,7 +321,7 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get PROFILE_NAME value */
 		ats.profile.name = lua_tostring( L, -1 );
-		printf( "info:    'PROFILE_NAME' = %s\n", ats.profile.name );
+		fprintf( fstdout, "info:    'PROFILE_NAME' = %s\n", ats.profile.name );
 		/* Free Stack PROFILE_NAME Value*/
 		lua_pop( L, 1 );
 
@@ -325,9 +333,9 @@ static int initCore_c( lua_State *L ){
 		number = lua_tonumber( L, -1 );
 		if( number >= 0 && number < 3 ){
 			ats.profile.nr = ( unsigned char ) number;
-			printf( "info:    'PROFILE'      = %d\n", ats.profile.nr );
+			fprintf( fstdout, "info:    'PROFILE'      = %d\n", ats.profile.nr );
 		} else {
-			printf( "warn:    'PROFILE' outside range[ %d, %d ]\n     'MIN_PWM' = %d\n", 0, 2, 0 );
+			fprintf( fstdout, "warn:    'PROFILE' outside range[ %d, %d ]\n     'MIN_PWM' = %d\n", 0, 2, 0 );
 			ats.profile.nr = 0;
 		}
 		/* Free Stack PROFILE Value*/
@@ -339,8 +347,8 @@ static int initCore_c( lua_State *L ){
 		/* Return true on stack */
 		lua_pushboolean ( L, 1 );
 	} else {
-		printf( "warn:UPS.. there are problems with SYSTEM config table.\n     Expecting a SYSTEM table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
-		stackTrace( L );
+		fprintf( fstdout, "warn:UPS.. there are problems with SYSTEM config table.\n     Expecting a SYSTEM table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
+		stackTrace( fstdout, L );
 		
 		/* push false on stack( return false to lua ) */
 		lua_pushboolean ( L, 0 );
