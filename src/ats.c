@@ -153,7 +153,8 @@ static int initCore_c( lua_State *L ){
 	lua_getglobal( L, "io" );
 	lua_pushstring(L, "stdout");
 	lua_gettable(L, -2);
-	fstdout = *(FILE **)lua_touserdata(L, -1);
+	/*fstdout = *(FILE **)lua_touserdata(L, -1);*/
+	fstdout = ((luaL_Stream *)lua_touserdata(L, -1))->f;
 	lua_pop(L, 2);
 
 	/* Theoretically speaking, we received a Table...is this a table? */
