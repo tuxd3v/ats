@@ -148,7 +148,7 @@ if ( initCore( SYSTEM ) == true )
 then
 	if ( arg[1] == "--test" or arg[1] == "-t" )
 	then
-		if ( chkSymlink( "/var/run/systemd/units/invocation:ats.service" ) ~= true or chkSymlink( "/sys/fs/cgroup/pids/system.slice/ats.service/pids.current" ) ~= true )
+		if ( chkSymlink( "/var/run/systemd/units/invocation:ats.service" ) ~= true or chkSymlink( "/sys/fs/cgroup/systemd/system.slice/ats.service" ) ~= true )
 		then
 			-- start looping in verbose mode
 			if( loop( true ) == false )
