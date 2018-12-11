@@ -14,7 +14,7 @@ VERSION = "0.2.0"
 -- Print ATS Version, and exit..
 if( arg[1] == "--version" or arg[1] == "-v" )
 then
-	print( "ATS --- Active Termal Service.." )
+	print( "ATS --- Active Termal Service, Powered by: ".. _VERSION )
 	print( "    --  Copyright © 2018 Carlos Domingues<tuxd3v@sapo.pt>" )
 	print( "    --  Version: " .. VERSION )
 	os.exit( 0 )
@@ -156,7 +156,6 @@ then
 				-- Temp outside Limits
 				shutDown( 10 )
 			end
-				
 		else
 			print "Stop ATS Service first [ service ats stop ].."
 		end
