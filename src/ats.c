@@ -73,7 +73,7 @@ static void setTriggers( ats_t *self ){
 	const signed char max_continuous_thermal_temp	= self->profile.MAX_CONTINUOUS_THERMAL_TEMP;
 	const signed char min_continuous_thermal_temp	= self->profile.MIN_CONTINUOUS_THERMAL_TEMP;
 	
-	printf( "info:    'Pratio[%d - %d[' = %d\n", min, min_continuous_thermal_temp, self->ABSOLUTE_MIN_PWM );
+	printf( "info:    'Pratio[ %d - %d [' = %d\n", min, min_continuous_thermal_temp, self->ABSOLUTE_MIN_PWM );
 	for ( i = min_plus; i <= max_plus; ++i ){
 
 		if( i < min_continuous_thermal_temp ){
@@ -140,7 +140,7 @@ static void setTriggers( ats_t *self ){
 			}
 		}
 	}
-	printf( "info:    'Pratio[%d - %d[' = %d\n", max_continuous_thermal_temp, max, self->ABSOLUTE_MAX_PWM );
+	printf( "info:    'Pratio[ %d - %d [' = %d\n", max_continuous_thermal_temp, max, self->ABSOLUTE_MAX_PWM );
 }
 
 /**
