@@ -325,7 +325,7 @@ static int initCore_c( lua_State *L ){
 		number = lua_tonumber( L, -1 );
 		if( number >= 0 && number < 3 ){
 			ats.profile.nr = ( unsigned char ) number;
-			printf( "info:    'PROFILE' = %d\n", ats.profile.nr );
+			printf( "info:    'PROFILE'     = %d\n", ats.profile.nr );
 		} else {
 			printf( "warn:    'PROFILE' outside range[ %d, %d ]\n     'MIN_PWM' = %d\n", 0, 2, 0 );
 			ats.profile.nr = 0;
