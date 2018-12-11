@@ -140,7 +140,7 @@ static void setTriggers( ats_t *self ){
 			}
 		}
 	}
-	printf( "info:    'Pratio[ %d - %d ['    = %d\n", max_continuous_thermal_temp, max, self->ABSOLUTE_MAX_PWM );
+	printf( "info:    'Pratio[ %d - %d ['  = %d\n", max_continuous_thermal_temp, max, self->ABSOLUTE_MAX_PWM );
 }
 
 /**
@@ -214,7 +214,7 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get PWM_CTL value */
 		ats.PWM_CTL = lua_tostring( L, -1 );
-		printf( "info:    'PWM_CTL' = %s\n", ats.PWM_CTL );
+		printf( "info:    'PWM_CTL'     = %s\n", ats.PWM_CTL );
 		/* Free Stack PWM_CTL Value*/
 		lua_pop( L, 1 );
 
