@@ -14,7 +14,7 @@ VERSION = "0.2.0"
 -- Print ATS Version, and exit..
 if( arg[1] == "--version" or arg[1] == "-v" )
 then
-	print( "ATS --- Active Termal Service.." )
+	print( "ATS --- Active Termal Service, Powered by: ".. _VERSION )
 	print( "    --  Copyright © 2018 Carlos Domingues<tuxd3v@sapo.pt>" )
 	print( "    --  Version: " .. VERSION )
 	os.exit( 0 )
@@ -80,7 +80,7 @@ end
 --- Function to ShutDown..
 --  Temp Above 'ABSOLUTE_MAX_THERMAL_TEMP'
 function shutDown( seconds )
-	os.execute( "sleep " .. seconds .. " && shutdown -h +0 \"Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' ( " .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\" &")
+	os.execute( "sleep " .. seconds .. " && shutdown -h now &")
 	io.write( string.format( "Warning: SHUTTING DOWN in 10s\n" ) )
 	io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n" ) )
 	io.write( string.format( "Warning: Temperature **ABOVE** 'ABSOLUTE MAX THERMAL TEMP' (" .. ABSOLUTE_MAX_THERMAL_TEMP .. "°C )\n\nType 'shutdown -c' to cancel...\n" ) )
@@ -142,12 +142,13 @@ mSleep( 200 )
 setPwm( 190 )
 sSleep( 1 );
 
--- Initialize ATS Backend
+--- Initialize ATS Backend
+--
 if ( initCore( SYSTEM ) == true )
 then
 	if ( arg[1] == "--test" or arg[1] == "-t" )
 	then
-		if ( chkSymlink( "/var/run/systemd/units/invocation:ats.service" ) ~= true )
+		if ( chkSymlink( "/var/run/systemd/units/invocation:ats.service" ) ~= true and chkSymlink( "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ) ~= true )
 		then
 			-- start looping in verbose mode
 			if( loop( true ) == false )
@@ -155,7 +156,6 @@ then
 				-- Temp outside Limits
 				shutDown( 10 )
 			end
-				
 		else
 			print "Stop ATS Service first [ service ats stop ].."
 		end
@@ -168,21 +168,4 @@ then
 		end
 	end
 end
-
---[[
-	-- Function to calculate pwm values, using interpolated methods, for each profile
-	getProfile_pwm	= function ( self, t )
-				local p = self.FANSPEC
-				if( p == "profile1" )
-				then
-					return self.ceil( 40 + ( 215 / 20 ) * ( t - 40 ) )
-				elseif( p == "profile2" )
-				then
-					return self.ceil( 40 + ( 215 / 30 ) * ( t - 40 ) )
-				elseif( p == "profile3" )
-				then
-					return self.ceil( 40 + ( 215 / 40 ) * ( t - 40 ) ) 
-				end
-	end,
-]]
 os.exit( 1 );
