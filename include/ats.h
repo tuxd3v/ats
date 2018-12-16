@@ -60,7 +60,10 @@ struct System {
 	const char *NAME;
 	/** OnBoard CPU*/
 	const char *CPU;
-	unsigned char NR;
+	/** OnBoard Thermal Ctrl Zones*/
+	unsigned char THERMAL_CTL_NR;
+	/** OnBoard Pwm Ctrl Zones*/
+	unsigned char PWM_CTL_NR;
 
 	/***  Assigning SysFs Locations for control..
 	**/
@@ -73,6 +76,8 @@ struct System {
 	const char *THERMAL2_CTL;
 	/** FAN Control[ String ] */
 	const char *PWM_CTL;
+	/** FAN Control[ String ] */
+	const char *PWM2_CTL;
 
 	/*** Temperature Control Constants
 	**

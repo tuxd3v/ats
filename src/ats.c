@@ -167,14 +167,14 @@ static int initCore_c( lua_State *L ){
 		fprintf( fstdout, "info:'SYSTEM' Table\n" );
 
 		/* Looking up based on the key */
-		/* Add key we're interested in to the stack*/
+		/* Add key we're interested in to the stack ( "BOARD" ) */
 		lua_pushstring( L, "BOARD" );
 		lua_gettable( L, -2 );
 		if ( lua_istable( L, -1 ) ) {
 			fprintf( fstdout, "info:    'BOARD' Table\n" );
 			/* Put on top, key NAME*/
 			lua_pushstring( L, "NAME" );
-			/* Get on top, value pair for key NAME*/
+			/* Get on top, value pair for key NAME */
 			lua_gettable( L, -2 );
 			/* Get NAME value */
 			ats.NAME = lua_tostring( L, -1 );
@@ -184,22 +184,32 @@ static int initCore_c( lua_State *L ){
 
 			/* Put on top, key CPU*/
 			lua_pushstring(L,"CPU");
-			/* Get on top, value pair for key NAME*/
+			/* Get on top, value pair for key CPU */
 			lua_gettable( L, -2 );
 			/* Get CPU value */
 			ats.CPU = lua_tostring( L, -1 );
 			fprintf( fstdout, "info:        'CPU'  = %s\n", ats.CPU );
-			/* Free BOARD TABLE from Stack top*/
+			/* Free CPU from Stack on top*/
 			lua_pop( L, 1 );
 			
-			/* Put on top, key index Board*/
-			lua_pushstring( L, "NR" );
-			/* Get on top, value pair for key NAME*/
+			/* Put on top, key index THERMAL_CTL_NR */
+			lua_pushstring( L, "THERMAL_CTL_NR" );
+			/* Get on top, value pair for key THERMAL_CTL_NR*/
 			lua_gettable( L, -2 );
-			/* Get Board Number value */
+			/* Get THERMAL_CTL_NR Number value */
 			number = lua_tonumber( L, -1 );
-			ats.NR = ( unsigned char ) number;
-			fprintf( fstdout, "info:        'NR'   = %d\n", ats.NR );
+			ats.THERMAL_CTL_NR = ( unsigned char ) number;
+			fprintf( fstdout, "info:        'THERMAL_CTL_NR' = %d\n", ats.THERMAL_CTL_NR );
+			
+			/* Put on top, key index PWM_CTL_NR */
+			lua_pushstring( L, "PWM_CTL_NR" );
+			/* Get on top, value pair for key PWM_CTL_NR*/
+			lua_gettable( L, -2 );
+			/* Get PWM_CTL_NR Number value */
+			number = lua_tonumber( L, -1 );
+			ats.THERMAL_CTL_NR = ( unsigned char ) number;
+			fprintf( fstdout, "info:        'PWM_CTL_NR'     = %d\n", ats.PWM_CTL_NR );
+
 			/* Free BOARD TABLE from Stack top*/
 			lua_pop( L, 2 );
 		} else {
@@ -223,8 +233,8 @@ static int initCore_c( lua_State *L ){
 		/* Free Stack THERMAL0_CTL Value*/
 		lua_pop( L, 1 );
 
-		/* How much SysFs Controls exist? */
-		if( ats.NR >= 1 ){
+		/* How much Thermal SysFs Controls exist? */
+		if( ats.THERMAL_CTL_NR > 1 ){
 			/* Put on top, key THERMAL1_CTL */
 			lua_pushstring( L,"THERMAL1_CTL" );
 			/* Get on top, value pair for key THERMAL1_CTL*/
@@ -235,17 +245,15 @@ static int initCore_c( lua_State *L ){
 			/* Free Stack THERMAL1_CTL Value*/
 			lua_pop( L, 1 );
 		}
-
-		/* How much SysFs Controls exist? */
-		if( ats.NR >= 2 ){
-			/* Put on top, key THERMAL1_CTL */
+		if( ats.THERMAL_CTL_NR > 2 ){
+			/* Put on top, key THERMAL2_CTL */
 			lua_pushstring( L,"THERMAL2_CTL" );
-			/* Get on top, value pair for key THERMAL1_CTL*/
+			/* Get on top, value pair for key THERMAL2_CTL*/
 			lua_gettable( L, -2 );
 			/* Get THERMAL1_CTL value */
 			ats.THERMAL1_CTL = lua_tostring( L, -1 );
 			fprintf( fstdout, "info:    'THERMAL2_CTL' = %s\n", ats.THERMAL1_CTL );
-			/* Free Stack THERMAL1_CTL Value*/
+			/* Free Stack THERMAL2_CTL Value*/
 			lua_pop( L, 1 );
 		}
 
@@ -258,6 +266,19 @@ static int initCore_c( lua_State *L ){
 		fprintf( fstdout, "info:    'PWM_CTL'      = %s\n", ats.PWM_CTL );
 		/* Free Stack PWM_CTL Value*/
 		lua_pop( L, 1 );
+
+		/* How much PWM SysFs Controls exist? */
+		if( ats.PWM_CTL_NR > 1 ){
+			/* Put on top, key PWM2_CTL */
+			lua_pushstring( L, "PWM2_CTL" );
+			/* Get on top, value pair for key PWM2_CTL*/
+			lua_gettable( L, -2 );
+			/* Get PWM2_CTL value */
+			ats.PWM_CTL = lua_tostring( L, -1 );
+			fprintf( fstdout, "info:    'PWM2_CTL'     = %s\n", ats.PWM2_CTL );
+			/* Free Stack PWM2_CTL Value*/
+			lua_pop( L, 1 );
+		}
 
 		/* ATS Limits */
 		ats.ABSOLUTE_MAX_THERMAL_TEMP	= 70;
@@ -377,8 +398,8 @@ static int initCore_c( lua_State *L ){
 		/*** END ATS struct Initialization..
 		**/
 
-		/* Initialize CTL GLOBAL Variables 0,1,3*/
-		for ( i = 0; i <= ats.NR; i++ )
+		/* Initialize THERMAL_CTL_NR GLOBAL Variables 0,1,3*/
+		for ( i = 0; i <= ats.THERMAL_CTL_NR; i++ )
 			thermal_ctl[ i ] = ( char * ) ( ats.THERMAL0_CTL + i );
 		pwm_ctl	= ( char * ) ats.PWM_CTL;
 
@@ -406,7 +427,7 @@ static void getThermal(){
 	unsigned char i;
 	FILE * fthermal= NULL;
 
-	for ( i = 0; i <= ats.NR; i++ ){
+	for ( i = 0; i <= ats.THERMAL_CTL_NR; i++ ){
 		fthermal = fopen( thermal_ctl[ i ], "r" );
 		if( fthermal != NULL ){
 
