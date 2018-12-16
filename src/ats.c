@@ -431,7 +431,7 @@ static void getThermal(){
 	unsigned char i;
 	FILE * fthermal= NULL;
 
-	for ( i = 0; i <= ats.THERMAL_CTL_NR; i++ ){
+	for ( i = 0; i < ats.THERMAL_CTL_NR; i++ ){
 		fthermal = fopen( thermal_ctl[ i ], "r" );
 		if( fthermal != NULL ){
 
