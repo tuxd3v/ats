@@ -442,12 +442,12 @@ static void getThermal(){
 			if( fclose( fthermal ) != 0 )
 				thermal_[ i ] = ats.profile.MAX_CONTINUOUS_THERMAL_TEMP;
 
-			/* Get Biggest Thermal temp */
-			if( thermal_[ i ] > temp )
-				temp = thermal_[ i ];
 		}else{
 			thermal_[ i ] = ats.profile.MAX_CONTINUOUS_THERMAL_TEMP;
 		}
+		/* Get Biggest Thermal temp */
+		if( thermal_[ i ] > temp )
+			temp = thermal_[ i ];
 	}
 }
 /*** Set Fan PWM value[ unsigned char ]
@@ -488,7 +488,7 @@ static int loop_c( lua_State *L ){
 	lua_pop( L, 1 );
 
 	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
-	temp = absolute_max_thermal_temp;
+	/*temp = absolute_max_thermal_temp; */
 
 	/* Looping cycle.. */
 	if( ! ats.profile.ALWAYS_ON ){
@@ -535,6 +535,9 @@ static int loop_c( lua_State *L ){
 		}
 	}else{
 		for(;;){
+
+			/* Reset Temp to lowest possible Value ( absolute_min_thermal_temp - 10 )*/
+			temp = -30;
 
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
 			getThermal();
