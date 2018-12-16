@@ -200,7 +200,9 @@ static int initCore_c( lua_State *L ){
 			number = lua_tonumber( L, -1 );
 			ats.THERMAL_CTL_NR = ( unsigned char ) number;
 			fprintf( fstdout, "info:        'THERMAL_CTL_NR' = %d\n", ats.THERMAL_CTL_NR );
-			
+			/* Free THERMAL_CTL_NR from Stack on top*/
+			lua_pop( L, 1 );
+
 			/* Put on top, key index PWM_CTL_NR */
 			lua_pushstring( L, "PWM_CTL_NR" );
 			/* Get on top, value pair for key PWM_CTL_NR*/
@@ -209,9 +211,11 @@ static int initCore_c( lua_State *L ){
 			number = lua_tonumber( L, -1 );
 			ats.PWM_CTL_NR = ( unsigned char ) number;
 			fprintf( fstdout, "info:        'PWM_CTL_NR'     = %d\n", ats.PWM_CTL_NR );
-
-			/* Free BOARD TABLE from Stack top*/
+			/* Free PWM_CTL_NR key + top Value from Stack*/
 			lua_pop( L, 2 );
+
+			/* Free PWM_CTL_NR key from BOARD TABLE from Stack top*/
+			lua_pop( L, 1 );
 		} else {
 			/* Free BOARD TABLE key from Stack top*/
 			lua_pop( L, 1 );
