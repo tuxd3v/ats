@@ -180,7 +180,7 @@ static int initCore_c( lua_State *L ){
 			ats.NAME = lua_tostring( L, -1 );
 			fprintf( fstdout, "info:        'NAME' = %s\n", ats.NAME );
 			/* Free Stack NAME Value*/
-			lua_pop( L, 1 );
+			lua_pop( L, 2 );
 
 			/* Put on top, key CPU*/
 			lua_pushstring(L,"CPU");
@@ -190,7 +190,7 @@ static int initCore_c( lua_State *L ){
 			ats.CPU = lua_tostring( L, -1 );
 			fprintf( fstdout, "info:        'CPU'  = %s\n", ats.CPU );
 			/* Free CPU from Stack on top*/
-			lua_pop( L, 1 );
+			lua_pop( L, 2 );
 			
 			/* Put on top, key index THERMAL_CTL_NR */
 			lua_pushstring( L, "THERMAL_CTL_NR" );
@@ -201,7 +201,7 @@ static int initCore_c( lua_State *L ){
 			ats.THERMAL_CTL_NR = ( unsigned char ) number;
 			fprintf( fstdout, "info:        'THERMAL_CTL_NR' = %d\n", ats.THERMAL_CTL_NR );
 			/* Free THERMAL_CTL_NR from Stack on top*/
-			lua_pop( L, 1 );
+			lua_pop( L, 2 );
 
 			/* Put on top, key index PWM_CTL_NR */
 			lua_pushstring( L, "PWM_CTL_NR" );
@@ -211,10 +211,10 @@ static int initCore_c( lua_State *L ){
 			number = lua_tonumber( L, -1 );
 			ats.PWM_CTL_NR = ( unsigned char ) number;
 			fprintf( fstdout, "info:        'PWM_CTL_NR'     = %d\n", ats.PWM_CTL_NR );
-			/* Free PWM_CTL_NR key + top Value from Stack*/
+			/* Free PWM_CTL_NR value from Stack top*/
 			lua_pop( L, 2 );
 
-			/* Free PWM_CTL_NR key from BOARD TABLE from Stack top*/
+			/* Free BOARD TABLE from Stack top*/
 			lua_pop( L, 1 );
 		} else {
 			/* Free BOARD TABLE key from Stack top*/
