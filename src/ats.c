@@ -151,7 +151,8 @@ static int initCore_c( lua_State *L ){
 	/* hold LuaNumbers.. */
 	double number;
 	/* nr of thermal zones */
-	unsigned char i;
+	/* unsigned char i; */
+
 	/* Get Lua Frontend STDout descriptor.. */
 	lua_getglobal( L, "io" );
 	lua_pushstring(L, "stdout");
@@ -403,8 +404,12 @@ static int initCore_c( lua_State *L ){
 		**/
 
 		/* Initialize THERMAL_CTL_NR GLOBAL Variables 0,1,3*/
-		for ( i = 0; i < ats.THERMAL_CTL_NR; i++ )
-			thermal_ctl[ i ] = ats.THERMAL0_CTL[ i ];
+		/*for ( i = 0; i < ats.THERMAL_CTL_NR; i++ )*/
+		thermal_ctl[ 0 ] = ( char * ) ats.THERMAL0_CTL;
+		if( ats.THERMAL_CTL_NR > 1 )
+			thermal_ctl[ 1 ] = ( char * )ats.THERMAL1_CTL;
+		if( ats.THERMAL_CTL_NR > 2 )
+			thermal_ctl[ 2 ] = ( char * )ats.THERMAL2_CTL;
 		pwm_ctl	= ( char * ) ats.PWM_CTL;
 
 		/* Create predefined triggers for Timers.. F( TEMP ), TEMP[ -30, 80 ] */
