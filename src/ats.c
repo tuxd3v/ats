@@ -254,9 +254,9 @@ static int initCore_c( lua_State *L ){
 			lua_pushstring( L,"THERMAL2_CTL" );
 			/* Get on top, value pair for key THERMAL2_CTL*/
 			lua_gettable( L, -2 );
-			/* Get THERMAL1_CTL value */
-			ats.THERMAL1_CTL = lua_tostring( L, -1 );
-			fprintf( fstdout, "info:    'THERMAL2_CTL' = %s\n", ats.THERMAL1_CTL );
+			/* Get THERMAL2_CTL value */
+			ats.THERMAL2_CTL = lua_tostring( L, -1 );
+			fprintf( fstdout, "info:    'THERMAL2_CTL' = %s\n", ats.THERMAL2_CTL );
 			/* Free Stack THERMAL2_CTL Value*/
 			lua_pop( L, 1 );
 		}
@@ -429,7 +429,7 @@ static void getThermal(){
 	signed int value;
 	/* nr of thermal zones */
 	unsigned char i;
-	FILE * fthermal= NULL;
+	FILE * fthermal = NULL;
 
 	for ( i = 0; i < ats.THERMAL_CTL_NR; i++ ){
 		fthermal = fopen( thermal_ctl[ i ], "r" );
@@ -480,15 +480,15 @@ static void setPwm( unsigned char  value ){
 
 /* pooling loop */
 static int loop_c( lua_State *L ){
-	register unsigned char instant_ratio;
-	register signed char absolute_max_thermal_temp = ats.ABSOLUTE_MAX_THERMAL_TEMP;
-	register signed char absolute_min_thermal_temp = ats.ABSOLUTE_MIN_THERMAL_TEMP;
+	unsigned char instant_ratio;
+	signed char absolute_max_thermal_temp = ats.ABSOLUTE_MAX_THERMAL_TEMP;
+	signed char absolute_min_thermal_temp = ats.ABSOLUTE_MIN_THERMAL_TEMP;
 	unsigned int verbose = lua_toboolean ( L, -1 );
 	/* Free Stack verbose boolean Value*/
 	lua_pop( L, 1 );
 
 	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
-	/*temp = absolute_max_thermal_temp; */
+	temp = absolute_max_thermal_temp;
 
 	/* Looping cycle.. */
 	if( ! ats.profile.ALWAYS_ON ){

@@ -37,7 +37,11 @@ int main( int argc, char ** argv ){
 	lua_typename( L, 1 );
 	
 	luaL_dofile(L, "etc/ats.conf");
+
 	tinitCore( L );
+	stackTrace( stdout, L );
+	tloop( L );
+	
 	stackTrace( stdout, L );
 	/*lua_getfield(L, -1, "BOARD");*/
 	/*lua_call(L, 0, 0);*/
