@@ -46,14 +46,14 @@ unsigned short int *Rtimer	= ats.profile.run_timers + 30;
 
 /*** CTL Variables..
 **/
-char * thermal_ctl[ 2 ] = { NULL };
+char * thermal_ctl[ 3 ] = { NULL };
 char * pwm_ctl	= NULL;
 
 /*** Thermal values readed..
 **/
 
 /** CPU  Thermal Zone / GPU Thermal Zone, variables used by this backend */
-signed char thermal_[2];
+signed char thermal_[ 3 ];
 
 /** File Descriptors for stdout **/
 FILE * fstdout = NULL;
@@ -148,7 +148,10 @@ static void setTriggers( ats_t *self ){
 * Function to initialize ATS Backend
 */
 static int initCore_c( lua_State *L ){
+	/* hold LuaNumbers.. */
 	double number;
+	/* nr of thermal zones */
+	unsigned char i;
 	/* Get Lua Frontend STDout descriptor.. */
 	lua_getglobal( L, "io" );
 	lua_pushstring(L, "stdout");
@@ -157,6 +160,8 @@ static int initCore_c( lua_State *L ){
 	fstdout = ((luaL_Stream *)lua_touserdata(L, -1))->f;
 	lua_pop(L, 2);
 
+	/*** Start Initializing ATS struct
+	**/
 	/* Theoretically speaking, we received a Table...is this a table? */
 	if ( lua_istable( L, -1 ) ) {
 		fprintf( fstdout, "info:'SYSTEM' Table\n" );
@@ -185,6 +190,17 @@ static int initCore_c( lua_State *L ){
 			ats.CPU = lua_tostring( L, -1 );
 			fprintf( fstdout, "info:        'CPU'  = %s\n", ats.CPU );
 			/* Free BOARD TABLE from Stack top*/
+			lua_pop( L, 1 );
+			
+			/* Put on top, key index Board*/
+			lua_pushstring( L, "NR" );
+			/* Get on top, value pair for key NAME*/
+			lua_gettable( L, -2 );
+			/* Get Board Number value */
+			number = lua_tonumber( L, -1 );
+			ats.NR = ( unsigned char ) number;
+			fprintf( fstdout, "info:        'NR'   = %d\n", ats.NR );
+			/* Free BOARD TABLE from Stack top*/
 			lua_pop( L, 2 );
 		} else {
 			/* Free BOARD TABLE key from Stack top*/
@@ -207,15 +223,31 @@ static int initCore_c( lua_State *L ){
 		/* Free Stack THERMAL0_CTL Value*/
 		lua_pop( L, 1 );
 
-		/* Put on top, key THERMAL1_CTL */
-		lua_pushstring( L,"THERMAL1_CTL" );
-		/* Get on top, value pair for key THERMAL1_CTL*/
-		lua_gettable( L, -2 );
-		/* Get THERMAL1_CTL value */
-		ats.THERMAL1_CTL = lua_tostring( L, -1 );
-		fprintf( fstdout, "info:    'THERMAL1_CTL' = %s\n", ats.THERMAL1_CTL );
-		/* Free Stack THERMAL1_CTL Value*/
-		lua_pop( L, 1 );
+		/* How much SysFs Controls exist? */
+		if( ats.NR >= 1 ){
+			/* Put on top, key THERMAL1_CTL */
+			lua_pushstring( L,"THERMAL1_CTL" );
+			/* Get on top, value pair for key THERMAL1_CTL*/
+			lua_gettable( L, -2 );
+			/* Get THERMAL1_CTL value */
+			ats.THERMAL1_CTL = lua_tostring( L, -1 );
+			fprintf( fstdout, "info:    'THERMAL1_CTL' = %s\n", ats.THERMAL1_CTL );
+			/* Free Stack THERMAL1_CTL Value*/
+			lua_pop( L, 1 );
+		}
+
+		/* How much SysFs Controls exist? */
+		if( ats.NR >= 2 ){
+			/* Put on top, key THERMAL1_CTL */
+			lua_pushstring( L,"THERMAL2_CTL" );
+			/* Get on top, value pair for key THERMAL1_CTL*/
+			lua_gettable( L, -2 );
+			/* Get THERMAL1_CTL value */
+			ats.THERMAL1_CTL = lua_tostring( L, -1 );
+			fprintf( fstdout, "info:    'THERMAL2_CTL' = %s\n", ats.THERMAL1_CTL );
+			/* Free Stack THERMAL1_CTL Value*/
+			lua_pop( L, 1 );
+		}
 
 		/* Put on top, key PWM_CTL */
 		lua_pushstring( L, "PWM_CTL" );
@@ -342,9 +374,18 @@ static int initCore_c( lua_State *L ){
 		/* Free Stack PROFILE Value*/
 		lua_pop( L, 1 );
 
+		/*** END ATS struct Initialization..
+		**/
+
+		/* Initialize CTL GLOBAL Variables 0,1,3*/
+		for ( i = 0; i <= ats.NR; i++ )
+			thermal_ctl[ i ] = ( char * ) ( ats.THERMAL0_CTL + i );
+		pwm_ctl	= ( char * ) ats.PWM_CTL;
+
+		/* Create predefined triggers for Timers.. F( TEMP ), TEMP[ -30, 80 ] */
 		ats.setTriggers = setTriggers;
 		ats.setTriggers( &ats );
-		
+
 		/* Return true on stack */
 		lua_pushboolean ( L, 1 );
 	} else {
@@ -361,11 +402,11 @@ static int initCore_c( lua_State *L ){
 /* Get Thernal Values[ integer ] */
 static void getThermal(){
 	signed int value;
-	/* 2 thermal zones */
+	/* nr of thermal zones */
 	unsigned char i;
 	FILE * fthermal= NULL;
 
-	for ( i = 0; i < 2; i++ ){
+	for ( i = 0; i <= ats.NR; i++ ){
 		fthermal = fopen( thermal_ctl[ i ], "r" );
 		if( fthermal != NULL ){
 
@@ -375,15 +416,14 @@ static void getThermal(){
 
 			if( fclose( fthermal ) != 0 )
 				thermal_[ i ] = ats.profile.MAX_CONTINUOUS_THERMAL_TEMP;
+
+			/* Get Biggest Thermal temp */
+			if( thermal_[ i ] > temp )
+				temp = thermal_[ i ];
 		}else{
 			thermal_[ i ] = ats.profile.MAX_CONTINUOUS_THERMAL_TEMP;
 		}
 	}
-	/* Use  Biggest Thermal Value from THERMAL_{0,1} for temp var*/
-	if( thermal_[ 0 ] > thermal_[ 1 ] )
-		temp = thermal_[ 0 ];
-	else
-		temp = thermal_[ 1 ];
 }
 /*** Set Fan PWM value[ unsigned char ]
 **/ 
@@ -415,17 +455,12 @@ static void setPwm( unsigned char  value ){
 
 /* pooling loop */
 static int loop_c( lua_State *L ){
-	unsigned char instant_ratio;
-	signed char absolute_max_thermal_temp = ats.ABSOLUTE_MAX_THERMAL_TEMP;
-	signed char absolute_min_thermal_temp = ats.ABSOLUTE_MIN_THERMAL_TEMP;
+	register unsigned char instant_ratio;
+	register signed char absolute_max_thermal_temp = ats.ABSOLUTE_MAX_THERMAL_TEMP;
+	register signed char absolute_min_thermal_temp = ats.ABSOLUTE_MIN_THERMAL_TEMP;
 	unsigned int verbose = lua_toboolean ( L, -1 );
 	/* Free Stack verbose boolean Value*/
 	lua_pop( L, 1 );
-	
-	/* CTL Variables */
-	thermal_ctl[ 0 ]	= ( char * ) ats.THERMAL0_CTL;
-	thermal_ctl[ 1 ]	= ( char * ) ats.THERMAL1_CTL;
-	pwm_ctl			= ( char * ) ats.PWM_CTL;
 
 	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
 	temp = absolute_max_thermal_temp;
@@ -441,6 +476,9 @@ static int loop_c( lua_State *L ){
 																												pwm );
 			/* Sleeping with Fan OFF, until next cicle */
 			sleep( Qtimer[ temp ] );
+
+			/* Reset Temp to lowest possible Value ( absolute_min_thermal_temp - 10 )*/
+			temp = -30;
 
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
 			getThermal();

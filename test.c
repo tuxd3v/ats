@@ -19,7 +19,7 @@ int main( int argc, char ** argv ){
 	lua_State *L = luaL_newstate();
 	
 	lua_checkstack ( L, 10000 );
-	stackTrace( L );
+	stackTrace( stdout, L );
 
 	/* Load the standard Lua libraries. */
 	luaL_openlibs( L );
@@ -35,7 +35,7 @@ int main( int argc, char ** argv ){
 	lua_pushstring( L, "stdout" );
 	/* Get on top, value pair for key MAX_PWM*/
 	lua_gettable( L, -2 );
-	stackTrace( L );
+	stackTrace( stdout, L );
 	lua_typename( L, 1 );
 	
 	/*lua_getfield(L, -1, "BOARD");*/
