@@ -207,7 +207,7 @@ static int initCore_c( lua_State *L ){
 			lua_gettable( L, -2 );
 			/* Get PWM_CTL_NR Number value */
 			number = lua_tonumber( L, -1 );
-			ats.THERMAL_CTL_NR = ( unsigned char ) number;
+			ats.PWM_CTL_NR = ( unsigned char ) number;
 			fprintf( fstdout, "info:        'PWM_CTL_NR'     = %d\n", ats.PWM_CTL_NR );
 
 			/* Free BOARD TABLE from Stack top*/
