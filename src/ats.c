@@ -404,7 +404,7 @@ static int initCore_c( lua_State *L ){
 
 		/* Initialize THERMAL_CTL_NR GLOBAL Variables 0,1,3*/
 		for ( i = 0; i < ats.THERMAL_CTL_NR; i++ )
-			thermal_ctl[ i ] = ( char * ) ( ats.THERMAL0_CTL + i );
+			thermal_ctl[ i ] = ats.THERMAL0_CTL[ i ];
 		pwm_ctl	= ( char * ) ats.PWM_CTL;
 
 		/* Create predefined triggers for Timers.. F( TEMP ), TEMP[ -30, 80 ] */
