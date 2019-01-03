@@ -65,6 +65,7 @@ DEBUG_HDRS	:= $(addprefix $(HDRS_PATH)/,$(DEBUG_HDRS))
 
 TEST_HDRS	:= $(addprefix $(HDRS_PATH)/,$(TEST_HDRS))
 
+
 # Project systemd service relative path
 SERVICE_PATH	:= systemd
 # Project config service relative path
