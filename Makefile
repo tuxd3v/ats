@@ -9,7 +9,7 @@ IDIR		:= /usr/include/lua5.3
 #
 NAME		:= ats
 MAJOR		:= 0
-MINOR		:= 2
+MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
 ## ATS Installation PATHs

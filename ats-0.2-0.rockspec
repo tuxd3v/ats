@@ -1,6 +1,6 @@
 rockspec_format	= "1.0"
 package		= "ats"
-version		= "0.1-8"
+version		= "0.2-0"
 description = {
 	summary		= "Active Thermal Service",
 	detailed	= [[
@@ -11,9 +11,9 @@ description = {
 	maintainer	= "tuxd3v <tuxd3v@sapo.pt>"
 }
 source = {
-	url		= "https://github.com/tuxd3v/ats/archive/v0.1.8.tar.gz",
-	file		= "ats-0.1.8.tar.gz",
-	dir		= "ats-0.1.8"
+	url		= "https://github.com/tuxd3v/ats/archive/v0.2.0.tar.gz",
+	file		= "ats-0.2.0.tar.gz",
+	dir		= "ats-0.2.0"
 }
 dependencies = {
 	supported_platforms	= "linux",
