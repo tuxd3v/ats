@@ -9,7 +9,7 @@
 --
  
 -- Version String
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 -- Print ATS Version, and exit..
 if( arg[1] == "--version" or arg[1] == "-v" )
@@ -169,3 +169,4 @@ then
 	end
 end
 os.exit( 1 );
+

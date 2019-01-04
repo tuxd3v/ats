@@ -192,7 +192,39 @@ static int initCore_c( lua_State *L ){
 			fprintf( fstdout, "info:        'CPU'  = %s\n", ats.CPU );
 			/* Free CPU from Stack on top*/
 			lua_pop( L, 1 );
-			
+
+
+
+			/* Looking up based on the key */
+			/* Add key we're interested in to the stack ( "BOARD" ) */
+			lua_pushstring( L, "THERMAL_CTL" );
+			lua_gettable( L, -2 );
+			if ( lua_istable( L, -1 ) ) {
+				fprintf( fstdout, "info:        'THERMAL_CTL' Table\n" );
+
+				/* Put on top, key CPU*/
+				lua_pushstring( L, "NR" );
+				/* Get on top, value pair for key CPU */
+				lua_gettable( L, -2 );
+				/* Get CPU value */
+				ats.CPU = lua_tostring( L, -1 );
+				fprintf( fstdout, "info:            'NR'  = %d\n", ats.CPU );
+				/* Free CPU from Stack on top*/
+				lua_pop( L, 1 );
+
+
+			} else {
+				/* Free THERMAL_CTL TABLE key from Stack top*/
+				lua_pop( L, 1 );
+
+				fprintf( fstdout, "warn:    UPS.. there are problems with SYSTEM config table.\n     Expecting a THERMAL_CTL table..\n     Check your /etc/ats.conf file..\n     A trace follows bellow:\n" );
+				stackTrace( fstdout, L );
+
+				/* push false on stack( return false to lua ) */
+				lua_pushboolean ( L, 0 );
+				return 1;
+			}
+
 			/* Put on top, key index THERMAL_CTL_NR */
 			lua_pushstring( L, "THERMAL_CTL_NR" );
 			/* Get on top, value pair for key THERMAL_CTL_NR*/
@@ -333,7 +365,8 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get MAX_PWM value */
 		number = lua_tonumber( L, -1 );
-		if( number > ats.ABSOLUTE_MIN_PWM && number <= ats.ABSOLUTE_MAX_PWM ){
+		/* PWM cannot be bellow 30-35...fan will stop..*/
+		if( number > ( ats.ABSOLUTE_MIN_PWM + 35 ) && number <= ats.ABSOLUTE_MAX_PWM ){
 			ats.profile.MAX_PWM = ( unsigned char ) number;
 			fprintf( fstdout, "info:    'MAX_PWM' = %d\n", ats.profile.MAX_PWM );
 		} else {
@@ -350,7 +383,8 @@ static int initCore_c( lua_State *L ){
 		lua_gettable( L, -2 );
 		/* Get MIN_PWM value */
 		number = lua_tonumber( L, -1 );
-		if( number > ats.ABSOLUTE_MIN_PWM && number < ats.ABSOLUTE_MAX_PWM ){
+		/* PWM cannot be bellow 30-35...fan will stop..*/
+		if( number > ( ats.ABSOLUTE_MIN_PWM + 34 ) && number < ats.ABSOLUTE_MAX_PWM ){
 			ats.profile.MIN_PWM = ( unsigned char ) number;
 			fprintf( fstdout, "info:    'MIN_PWM' = %d\n", ats.profile.MIN_PWM );
 		} else {
@@ -394,7 +428,7 @@ static int initCore_c( lua_State *L ){
 			ats.profile.nr = ( unsigned char ) number;
 			fprintf( fstdout, "info:    'PROFILE'      = %d\n", ats.profile.nr );
 		} else {
-			fprintf( fstdout, "warn:    'PROFILE' outside range[ %d, %d ]\n     'MIN_PWM' = %d\n", 0, 2, 0 );
+			fprintf( fstdout, "warn:    'PROFILE' outside range[ %d, %d ]\n     'PROFILE' = %d\n", 0, 2, 0 );
 			ats.profile.nr = 0;
 		}
 		/* Free Stack PROFILE Value*/
@@ -440,11 +474,12 @@ static void getThermal(){
 		fthermal = fopen( thermal_ctl[ i ], "r" );
 		if( fthermal != NULL ){
 
-			/* Read thermal_{ 0, 1 } 5 chars has a integer.. TODO: compare speed has reading 2 chars to a buffer and then atoi()..*/
-			if ( fscanf( fthermal, "%d", &value ) != 0 )
+			/* Read thermal_{ 0, 1, 2 } 5 chars has a integer.. TODO: compare speed has reading 2 chars to a buffer and then atoi()..*/
+			if ( fscanf( fthermal, "%d", &value ) )
 				thermal_[ i ] = ( signed char ) ceil( value / 1000 );
 
-			if( fclose( fthermal ) != 0 )
+			/* If fclose() could NOT clode fd, return != 0 */
+			if( fclose( fthermal ) )
 				thermal_[ i ] = ats.profile.MAX_CONTINUOUS_THERMAL_TEMP;
 
 		}else{
@@ -492,7 +527,7 @@ static int loop_c( lua_State *L ){
 	/* Free Stack verbose boolean Value*/
 	lua_pop( L, 1 );
 
-	/* At beguining force timers for max thermal temp, so that, ATS will start check quickly the real temps.. */
+	/* At beguining force timers for Absolute max thermal temp, so that, ATS will start check quickly the real temps.. */
 	temp = absolute_max_thermal_temp;
 
 	/* Looping cycle.. */
@@ -507,7 +542,7 @@ static int loop_c( lua_State *L ){
 			/* Sleeping with Fan OFF, until next cicle */
 			sleep( Qtimer[ temp ] );
 
-			/* Reset Temp to lowest possible Value ( absolute_min_thermal_temp - 10 )*/
+			/* Reset Temp to lowest ATS internal possible Temp Value, ( -20 + -10 ) or ( absolute_min_thermal_temp - 10 )*/
 			temp = -30;
 
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
