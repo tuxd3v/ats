@@ -30,7 +30,7 @@ build = {
 	build_variables		= {},
 	install_target		= "install",
 	install_pass		= true,
-	install_variables	= { BINDIR="/usr/local/lib/luarocks/rocks/ats/master-0",CONFDIR="/usr/local/lib/luarocks/rocks/ats/master-0",LDIR="/usr/local/lib/luarocks/rocks/ats/master-0",SERVICEDIR="/usr/local/lib/luarocks/rocks/ats/master-0" },
+	install_variables	= { BINDIR="/usr/local/lib/luarocks/rocks/" .. package .. "/" .. version .. "",CONFDIR="/usr/local/lib/luarocks/rocks/" .. package .. "/" .. version .. "",LDIR="/usr/local/lib/luarocks/rocks/" .. package .. "/" .. version .. "",SERVICEDIR="/usr/local/lib/luarocks/rocks/" .. package .. "/" .. version .. "" },
 	variables		= {},
 	modules			= { ats = "src/ats.c" }
 }
