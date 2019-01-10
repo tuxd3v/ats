@@ -19,8 +19,7 @@ dependencies = {
 	"lua >= 5.3"
 	--[["lua-dev >= 5.3"
 		he doesn't know what is lua5.3-dev, needed to provide "lualib.h","lauxlib.h","lua.h" headers to build shared library..
-		Anny way, that package is provided by apt-get( Operating System Pkg Manager ), Luarocks doesn't know about, but no problem..
-		Because dependency check is provided in table var 'external_dependencies' bellow..
+		That package is provided by apt-get( Operating System Pkg Manager ), Luarocks doesn't know about, but no problem..
 	]]
 }
 build = {
@@ -31,7 +30,7 @@ build = {
 	build_variables		= {},
 	install_target		= "install",
 	install_pass		= true,
-	install_variables	= {},
+	install_variables	= { BINDIR="/usr/local/lib/luarocks/rocks/ats/master-0",CONFDIR="/usr/local/lib/luarocks/rocks/ats/master-0",LDIR="/usr/local/lib/luarocks/rocks/ats/master-0",SERVICEDIR="/usr/local/lib/luarocks/rocks/ats/master-0" },
 	variables		= {},
 	modules			= { ats = "src/ats.c" }
 }

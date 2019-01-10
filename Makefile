@@ -4,6 +4,9 @@
 DEPS		:= lua5.3
 # Lua-dev header PATHs
 IDIR		:= /usr/include/lua5.3
+ifeq (,$(wildcard $(IDIR)/.))
+        $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
+endif
 
 ## ATS Shared Library
 #
@@ -11,13 +14,6 @@ NAME		:= ats
 MAJOR		:= 0
 MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
-
-## ATS Installation PATHs
-#
-LDIR		:= /usr/local/lib/lua/5.3
-BINDIR		:= /usr/local/sbin
-CONFDIR		:= /etc
-SYSTEMDIR	:= /lib/systemd/system
 
 # Compiller Options
 #
@@ -28,6 +24,68 @@ TEST_CFLAGS     := -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -O3 -g -I$(ID
 
 LDFLAGS		:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 TEST_LDFLAGS	:= -L/usr/lib/aarch64-linux-gnu -l$(DEPS) -lm -ldl
+
+## ATS Installation ENVIRONMENT PATHs
+#
+# Shared Library Module
+ifndef LDIR
+        LDIR	:= /usr/local/lib/lua/5.3
+endif
+ifeq (,$(wildcard $(LDIR)/.))
+$(LDIR):
+	@mkdir -pv $(LDIR);
+        $(info ATS Module Folder: $(LDIR), created..)
+endif
+# ATS Binary
+ifndef BINDIR
+	# LuaRocks Paths or Makefile ONLY?
+        $(info Installing by MakeFile paths Only ..)
+        ifneq (,$(wildcard /lib/systemd/system/.))
+                BINDIR := /usr/local/sbin
+        else ifneq (,$(wildcard /etc/init.d/.))
+                BINDIR := /etc/init.d
+        endif
+        LUAROCKS := 0
+else
+        $(info Installing by LuaRocks ..)
+        LUAROCKS := 1
+endif
+ifeq (,$(wildcard $(BINDIR)/.))
+        $(error ATS Binary Folder: $(BINDIR), **NOT Detected**, ABORTING..)
+endif
+# ATS Config File
+ifndef CONFDIR
+        CONFDIR	:= /etc
+endif
+ifeq (,$(wildcard $(CONFDIR)/.))
+        $(error ATS Config Folder: $(CONFDIR), **NOT Detected**, ABORTING..)
+endif
+# ATS Service File
+ifndef SERVICEDIR
+	# The great SysVinit or ..SystemD ?
+        ifneq (,$(wildcard /lib/systemd/system/.))
+                $(info SystemD Detected ..)
+                SERVICEDIR := /lib/systemd/system
+                SYSVINIT   := 0
+        else ifneq (,$(wildcard /etc/init.d/.))
+                        $(info SysVinit Detected ..)
+                        SERVICEDIR := /etc/init.d
+                        BINDIR     := $(SERVICEDIR)
+                        SYSVINIT   := 1
+        endif
+else
+	# The great SysVinit or ..SystemD ?
+        ifneq (,$(wildcard /lib/systemd/system/.))
+                $(info SystemD Detected ..)
+                SYSVINIT   := 0
+        else ifneq (,$(wildcard /etc/init.d/.))
+                $(info SysVinit Detected ..)
+                SYSVINIT   := 1
+        endif
+endif
+ifeq (,$(wildcard $(SERVICEDIR)/.))
+        $(error ATS Service Folder: $(SERVICEDIR), **NOT Detected**, ABORTING..)
+endif
 
 ## ATS source/headers.. Code Related
 #
@@ -53,86 +111,117 @@ TEST_OBJS	:= $(TEST_SRCS:.c=.o)
 TEST_BIN	:= main
 
 
-# project c/h/lua paths
+# project c/h/lua  relative paths
 SRCS_PATH	:= src
 HDRS_PATH	:= include
-
 # Project c/h relative paths.to/file.name
 ATS_SRCS	:= $(addprefix $(SRCS_PATH)/,$(ATS_SRCS))
 ATS_HDRS	:= $(addprefix $(HDRS_PATH)/,$(ATS_HDRS))
 DEBUG_SRCS	:= $(addprefix $(SRCS_PATH)/,$(DEBUG_SRCS))
 DEBUG_HDRS	:= $(addprefix $(HDRS_PATH)/,$(DEBUG_HDRS))
-
+# for testing ats purposes( with a C frontend.. )
 TEST_HDRS	:= $(addprefix $(HDRS_PATH)/,$(TEST_HDRS))
-
 
 # Project systemd service relative path
 SERVICE_PATH	:= systemd
 # Project config service relative path
 CONFIG_PATH	:= etc
 
+
+# TARGETs
 .PHONY: all
 all   : $(NAME).so.$(VERSION)
 
 #$(OBJS): $(SRCS) $(HDRS)
 #	$(CC) -c $(CFLAGS) -o $@ $<
-
 $(DEBUG_OBJS): $(DEBUG_SRCS) $(DEBUG_HDRS)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(ATS_OBJS): $(ATS_SRCS) $(ATS_HDRS)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+
 #$(NAME).so.$(VERSION): $(OBJS)
 $(NAME).so.$(VERSION): $(DEBUG_OBJS) $(ATS_OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
+
 ## For testing and debugging ATS
-#  Not needed for end ATS Binary
+# Not needed for end ATS Binary
 .PHONY: test
 test  : $(TEST_BIN)
+
 
 $(TEST_OBJS): $(TEST_SRCS) $(TEST_HDRS)
 	$(CC) -c $(TEST_CFLAGS) -o $@ $<
 
+
 $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 	$(CC)  -o $@ $^ $(TEST_LDFLAGS)
 
+
 .PHONY:	install
 install:
-	@if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/var/run/systemd/units/invocation:fanctl.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
-		systemctl stop ats;																					\
+	@if [ ${SYSVINIT} -eq 0 ];then															\
+		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
+			echo "Stopping SystemD ATS Service ..";												\
+			systemctl stop ats;														\
+		fi;																	\
+		echo "Searching for Previous Install, and remove it:";											\
+		journalctl -u ats --rotate 1> /dev/null 2>&1;												\
+		sync;																	\
+		rm -v /etc/ats.conf;															\
+		rm -v /lib/systemd/system/ats.service;													\
+		rm -v /usr/local/sbin/ats;														\
+		rm -v /usr/local/lib/lua/5.3/ats.so*;													\
 	fi
-	@echo "Install ATS Tool ..................: ats in ${BINDIR}"
-	@install --preserve-timestamps --owner=root --group=root --mode=750 --target-directory=${BINDIR} ${SRCS_PATH}/ats
-	@echo "Install ATS Config ................: ats.config in ${CONFDIR}"
+	@if [ ${SYSVINIT} -eq 1 ];then															\
+		echo "Stopping SysVinit ATS Service ..";												\
+		/etc/init.d/ats stop;															\
+		chkconfig --level 12345 ats off;													\
+		chkconfig --del ats;															\
+		sync;																	\
+		rm -v /etc/ats.conf;															\
+		rm -v /etc/init.d/ats;															\
+		rm -v /usr/local/lib/lua/5.3/ats.so*;													\
+	fi
+	$(info Install ATS Service File ..........: ats.service in $(SERVICEDIR))
+	@if [ ${SYSVINIT} -eq 0 ];then															\
+		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
+	fi
+	$(info Install ATS Config ................: ats.config in $(CONFDIR))
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${CONFDIR} ${CONFIG_PATH}/ats.conf
-	@echo "Install ATS Service File ..........: ats.service in ${SERVICE_PATH}"
-	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SYSTEMDIR} ${SERVICE_PATH}/ats.service
-	@if [ ! -d $(LDIR) ];then																								\
-		mkdir -pv $(LDIR);																								\
-	else																											\
-		if [ -L ${LDIR}/${NAME}.so ] || [ -f ${LDIR}/${NAME}.so.?.? ];then																		\
-			echo "Remove previous ATS Library .......: ${NAME}.so.* from ${LDIR}";																	\
-			rm -f ${LDIR}/${NAME}.so*;																						\
-		fi;																										\
-		if [ -L ${LDIR_OLD}/fanctl.so ] || [ -f ${LDIR_OLD}/fanctl.so.?.? ] || [ -L ${LDIR_OLD}/sleep.so ] || [ -f ${LDIR_OLD}/sleep.so.?.? ] || [ -L ${LDIR_OLD}/ats.so ] || [ -f ${LDIR_OLD}/ats.so.?.? ];then	\
-			echo "V0.1.6 or older detected, Removing it from System..";																		\
-			systemctl stop fanctl 1> /dev/null 2>&1;																				\
-			systemctl disable fanctl 1> /dev/null 2>&1 && journalctl -u fanctl --rotate 1> /dev/null 2>&1;														\
-			sleep 1 && sync && journalctl -u fanctl --vacuum-time=1s 1> /dev/null 2>&1;																\
-			find /lib/systemd/system /usr/sbin ${LDIR_OLD} \( -name fanctl -o -name fanctl.so\* -o -name fanctl.service -o -name sleep.so\* -o -name ats -o -name ats.so\* \) -exec rm -v {} \;			\
-		;fi																										\
+	$(info Install ATS Tool ..................: ats in $(BINDIR))
+	@install --preserve-timestamps --owner=root --group=root --mode=550 --target-directory=${BINDIR} ${SRCS_PATH}/ats
+	$(info Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR})
+	@install --preserve-timestamps --owner=root --group=root --mode=440 --target-directory=${LDIR} ${NAME}.so.${VERSION}
+	$(info Create soname symLink .............: ${NAME}.so in ${LDIR})
+	@if [ ${LUAROCKS} -eq 0 ];then								\
+		ln -s ${LDIR}/${NAME}.so.${VERSION} ${LDIR}/${NAME}.so;				\
 	fi
-	@echo "Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR}"
-	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${LDIR} ${NAME}.so.${VERSION}
-	@echo "Create soname symLink .............: ${NAME}.so in ${LDIR}"
-	@ln -s ${LDIR}/${NAME}.so.${VERSION} ${LDIR}/${NAME}.so
-	@systemctl enable ats
-	@echo "Starting ATS Service.."
-	@systemctl start ats
-	@sleep 1
-	@systemctl status ats
+	@if [ ${LUAROCKS} -eq 1 ];then								\
+		if [ ${SYSVINIT} -eq 0 ];then							\
+			ln -s ${SERVICEDIR}/ats.service /lib/systemd/system/ats.service;	\
+			ln -s ${BINDIR}/ats /usr/local/sbin/ats;				\
+		fi;										\
+		if [ ${SYSVINIT} -eq 1 ];then							\
+			ln -s ${BINDIR}/ats /etc/init.d/ats;					\
+		fi;										\
+		ln -s ${CONFDIR}/ats.conf /etc/ats.conf;					\
+		ln -s ${LDIR}/${NAME}.so.${VERSION} /usr/local/lib/lua/5.3/${NAME}.so;		\
+	fi
+	@if [ ${SYSVINIT} -eq 1 ];then			\
+		chkconfig --add ats;			\
+		chkconfig --level 12345 ats on;		\
+		echo "Starting ATS Service..";		\
+		/etc/init.d/ats start;			\
+	fi
+	@if [ ${SYSVINIT} -eq 0 ];then			\
+		systemctl enable ats;			\
+		echo "Starting ATS Service..";		\
+		systemctl start ats;			\
+		sleep 1 && systemctl status ats;	\
+	fi
 
 
 .PHONY:	clean
