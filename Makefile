@@ -175,7 +175,7 @@ install:
 		rm -vf /etc/ats.conf															\
 		rm -vf /lib/systemd/system/ats.service													\
 		rm -vf /usr/local/sbin/ats														\
-		rm -vf /lib/local/lua/5.3/ats.so*;													\
+		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
 		CONTINUE=1;																\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
