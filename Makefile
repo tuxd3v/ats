@@ -172,7 +172,10 @@ install:
 			sync && sleep 1;														\
 		fi;																	\
 		echo "Searching for Previous Install, and remove it:";											\
-		unlink /etc/ats.conf /lib/systemd/system/ats.service /usr/local/sbin/ats /lib/lua/5.3/ats.so*;						\
+		rm -vf /etc/ats.conf															\
+		rm -vf /lib/systemd/system/ats.service													\
+		rm -vf /usr/local/sbin/ats														\
+		rm -vf /lib/lua/5.3/ats.so*;														\
 		CONTINUE=1;																\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
@@ -181,7 +184,9 @@ install:
 		chkconfig --level 12345 ats off;													\
 		chkconfig --del ats;															\
 		sync;																	\
-		unlink /etc/ats.conf /etc/init.d/ats} /usr/local/lib/lua/5.3/ats.so*;									\
+		rm -vf /etc/ats.conf															\
+		rm -vf /etc/init.d/ats															\
+		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
 		CONTINUE=1;																\
 	fi
 	@while [ ${CONTINUE} -ne 1 ]; do sleep 1; done;
