@@ -189,7 +189,7 @@ install:
 		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
 		CONTINUE=1;																\
 	fi
-	@while [ ${CONTINUE} -ne 1 ]; do sleep 1; done;
+	#@while [ ${CONTINUE} -ne 1 ]; do sleep 1; done;
 	$(info Install ATS Service File ..........: ats.service in $(SERVICEDIR))
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
