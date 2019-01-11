@@ -169,11 +169,8 @@ install:
 		fi;																	\
 		echo "Searching for Previous Install, and remove it:";											\
 		journalctl -u ats --rotate 1> /dev/null 2>&1;												\
-		sync;																	\
-		rm -v /etc/ats.conf;															\
-		rm -v /lib/systemd/system/ats.service;													\
-		rm -v /usr/local/sbin/ats;														\
-		rm -v /usr/local/lib/lua/5.3/ats.so*;													\
+		sleep 1 && sync;															\
+		rm -v /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};						\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
 		echo "Stopping SysVinit ATS Service ..";												\
@@ -181,9 +178,7 @@ install:
 		chkconfig --level 12345 ats off;													\
 		chkconfig --del ats;															\
 		sync;																	\
-		rm -v /etc/ats.conf;															\
-		rm -v /etc/init.d/ats;															\
-		rm -v /usr/local/lib/lua/5.3/ats.so*;													\
+		rm -v /{etc/{ats.conf,init.d/ats},usr/local/lib/lua/5.3/ats.so*};									\
 	fi
 	$(info Install ATS Service File ..........: ats.service in $(SERVICEDIR))
 	@if [ ${SYSVINIT} -eq 0 ];then															\
