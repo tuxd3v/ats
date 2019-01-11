@@ -190,24 +190,24 @@ install:
 	@install --preserve-timestamps --owner=root --group=root --mode=550 --target-directory=${BINDIR} ${SRCS_PATH}/ats
 	$(info Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR})
 	@install --preserve-timestamps --owner=root --group=root --mode=440 --target-directory=${LDIR} ${NAME}.so.${VERSION}
-	$(info Creating soname symLink .............: ${NAME}.so in \'${LDIR}\')
+	$(info Creating soname symLink .........: ${NAME}.so in \'${LDIR}\')
 	@if [ ${LUAROCKS} -eq 0 ];then					\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} ${LDIR}/${NAME}.so;	\
 	fi
 	@if [ ${LUAROCKS} -eq 1 ];then											\
 		if [ ${SYSVINIT} -eq 0 ];then										\
-			echo "Creating Service symLink ...........: ats.service in '/lib/systemd/system'";		\
+			echo "Creating Service symLink ..........: ats.service in '/lib/systemd/system'";		\
 			ln -s ${SERVICEDIR}/ats.service /lib/systemd/system/ats.service;				\
-			echo "Creating Binary symLink ............: ats in '/usr/local/sbin/ats'";			\
+			echo "Creating Binary symLink ...........: ats in '/usr/local/sbin/ats'";			\
 			ln -s ${BINDIR}/ats /usr/local/sbin/ats;							\
 		fi;													\
 		if [ ${SYSVINIT} -eq 1 ];then										\
-			echo "Creating Service symLink ...........: ats in '/usr/local/sbin/ats'";			\
+			echo "Creating Service symLink ..........: ats in '/usr/local/sbin/ats'";			\
 			ln -s ${BINDIR}/ats /etc/init.d/ats;								\
 		fi;													\
-		echo "Creating Config symLink ............: ats.conf in '/etc/ats.conf'";				\
+		echo "Creating Config symLink ...........: ats.conf in '/etc/ats.conf'";				\
 		ln -s ${CONFDIR}/ats.conf /etc/ats.conf;								\
-		echo "Creating SharedObject symLink ......: ${NAME}.so.${VERSION} in '/usr/local/lib/lua/5.3'";	\
+		echo "Creating SharedObject symLink .....: ${NAME}.so.${VERSION} in '/usr/local/lib/lua/5.3'";	\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} /usr/local/lib/lua/5.3/${NAME}.so;					\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then			\
