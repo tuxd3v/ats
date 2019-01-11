@@ -180,6 +180,7 @@ install:
 		sync;																	\
 		rm -vf /{etc/{ats.conf,init.d/ats},usr/local/lib/lua/5.3/ats.so*};									\
 	fi
+	sleep 2;
 	$(info Install ATS Service File ..........: ats.service in $(SERVICEDIR))
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
