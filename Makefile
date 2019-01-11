@@ -86,7 +86,7 @@ endif
 ifeq (,$(wildcard $(SERVICEDIR)/.))
         $(error ATS Service Folder: $(SERVICEDIR), **NOT Detected**, ABORTING..)
 endif
-CONTINUE := 0
+CONTINUE	:= 0
 
 
 ## ATS source/headers.. Code Related
@@ -173,7 +173,7 @@ install:
 		fi;																	\
 		echo "Searching for Previous Install, and remove it:";											\
 		rm -f /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};						\
-		CONTINUE = 1;																\
+		CONTINUE=1;																\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
 		echo "Stopping SysVinit ATS Service ..";												\
@@ -182,7 +182,7 @@ install:
 		chkconfig --del ats;															\
 		sync;																	\
 		rm -vf /{etc/{ats.conf,init.d/ats},usr/local/lib/lua/5.3/ats.so*};									\
-		CONTINUE = 1;																\
+		CONTINUE=1;																\
 	fi
 	@while [ ${CONTINUE} -eq 0 ];do sleep 1; done;
 	$(info Install ATS Service File ..........: ats.service in $(SERVICEDIR))
