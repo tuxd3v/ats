@@ -82,11 +82,12 @@ else
                 $(info SysVinit Detected ..)
                 SYSVINIT   := 1
         endif
-        CONTINUE := 0
 endif
 ifeq (,$(wildcard $(SERVICEDIR)/.))
         $(error ATS Service Folder: $(SERVICEDIR), **NOT Detected**, ABORTING..)
 endif
+CONTINUE := 0
+
 
 ## ATS source/headers.. Code Related
 #
