@@ -82,6 +82,7 @@ else
                 $(info SysVinit Detected ..)
                 SYSVINIT   := 1
         endif
+        CONTINUE := 0
 endif
 ifeq (,$(wildcard $(SERVICEDIR)/.))
         $(error ATS Service Folder: $(SERVICEDIR), **NOT Detected**, ABORTING..)
@@ -162,7 +163,6 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 
 .PHONY:	install
 install:
-	CONTINUE := 0
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
 			echo "Stopping SystemD ATS Service ..";												\
