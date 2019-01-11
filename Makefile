@@ -196,7 +196,7 @@ install:
 	@install --preserve-timestamps --owner=root --group=root --mode=550 --target-directory=${BINDIR} ${SRCS_PATH}/ats
 	$(info Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR})
 	@install --preserve-timestamps --owner=root --group=root --mode=440 --target-directory=${LDIR} ${NAME}.so.${VERSION}
-	$(info Creating soname symLink .......: ${NAME}.so in \'${LDIR}\')
+	$(info Creating soname symLink ........: ${NAME}.so in \'${LDIR}\')
 	@if [ ${LUAROCKS} -eq 0 ];then					\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} ${LDIR}/${NAME}.so;	\
 	fi
