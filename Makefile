@@ -167,10 +167,10 @@ install:
 			echo "Stopping SystemD ATS Service ..";												\
 			systemctl stop ats;														\
 			journalctl -u ats --rotate 1> /dev/null 2>&1;											\
+			sync && sleep 1;														\
 		fi;																	\
-		sync && sleep 1;															\
 		echo "Searching for Previous Install, and remove it:";											\
-		rm -v -f /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};						\
+		rm -v -f /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};					\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
 		echo "Stopping SysVinit ATS Service ..";												\
