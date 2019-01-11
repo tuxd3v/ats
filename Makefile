@@ -166,10 +166,10 @@ install:
 		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
 			echo "Stopping SystemD ATS Service ..";												\
 			systemctl stop ats;														\
+			journalctl -u ats --rotate 1> /dev/null 2>&1;											\
 		fi;																	\
+		sync && sleep 1;															\
 		echo "Searching for Previous Install, and remove it:";											\
-		journalctl -u ats --rotate 1> /dev/null 2>&1;												\
-		sleep 1 && sync;															\
 		rm -vf /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};						\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
