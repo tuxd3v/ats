@@ -186,17 +186,17 @@ install:
 		rm -vf /etc/init.d/ats															\
 		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
 	fi
-	$(info Install ATS Service File ..........: ats.service in $(SERVICEDIR))
+	$(info Install ATS Service File ..........: ats.service in '$(SERVICEDIR)')
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
 	fi
-	$(info Install ATS Config ................: ats.config in $(CONFDIR))
+	$(info Install ATS Config ................: ats.config in '$(CONFDIR)')
 	@install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${CONFDIR} ${CONFIG_PATH}/ats.conf
-	$(info Install ATS Tool ..................: ats in $(BINDIR))
+	$(info Install ATS Tool ..................: ats in '$(BINDIR)')
 	@install --preserve-timestamps --owner=root --group=root --mode=550 --target-directory=${BINDIR} ${SRCS_PATH}/ats
-	$(info Install new ATS Library ...........: ${NAME}.so.${VERSION} in ${LDIR})
+	$(info Install new ATS Library ...........: ${NAME}.so.${VERSION} in '${LDIR}')
 	@install --preserve-timestamps --owner=root --group=root --mode=440 --target-directory=${LDIR} ${NAME}.so.${VERSION}
-	$(info Creating soname symLink ........: ${NAME}.so in \'${LDIR}\')
+	$(info Creating soname symLink ........: ${NAME}.so in '${LDIR}')
 	@if [ ${LUAROCKS} -eq 0 ];then					\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} ${LDIR}/${NAME}.so;	\
 	fi
