@@ -170,7 +170,7 @@ install:
 			sync && sleep 1;														\
 		fi;																	\
 		echo "Searching for Previous Install, and remove it:";											\
-		rm -v -f /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};					\
+		rm -f /{etc/ats.conf,lib/systemd/system/ats.service,usr/local/{sbin/ats,lib/lua/5.3/ats.so*}};						\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
 		echo "Stopping SysVinit ATS Service ..";												\
