@@ -1,9 +1,9 @@
 rockspec_format	= "1.0"
 package		= "ats"
-version		= "master-1"
+version		= "0.2-0"
 description = {
 	summary		= "Active Thermal Service",
-	detailed		= [[
+	detailed	= [[
 		This tool, provide support for Rockpro64, Active thermal Service( Fan Control ).
 	]],
 	homepage	= "https://github.com/tuxd3v/ats",
@@ -11,8 +11,9 @@ description = {
 	maintainer	= "tuxd3v <tuxd3v@sapo.pt>"
 }
 source = {
-	url	= "git://github.com/tuxd3v/ats",
-	branch	= "master_next"
+	url		= "https://github.com/tuxd3v/ats/archive/v0.2.0.tar.gz",
+	file		= "ats-0.2.0.tar.gz",
+	dir		= "ats-0.2.0"
 }
 dependencies = {
 	supported_platforms	= "linux",
@@ -35,3 +36,4 @@ build = {
 	variables		= {},
 	modules			= { ats = "src/ats.c" }
 }
+
