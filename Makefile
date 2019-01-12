@@ -228,9 +228,9 @@ clean:
 .PHONY: remove
 remove:
 	@if [ ${SYSVINIT} -eq 0 ];then															\
-		$( if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
+		( if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
 			echo "Stopping SystemD ATS Service .." && systemctl stop ats && journalctl -u ats --rotate 1> /dev/null 2>&1;			\
-		fi ) && echo "Searching for Previous Install, and remove it:" && sync && rm -vf /etc/ats.conf && rm -vf /lib/systemd/system/ats.service && rm -vf /usr/local/sbin/ats && rm -vf /usr/local/lib/lua/5.3/ats.so*;	\
+		fi && echo "Searching for Previous Install, and remove it:" && sync && rm -vf /etc/ats.conf && rm -vf /lib/systemd/system/ats.service && rm -vf /usr/local/sbin/ats && rm -vf /usr/local/lib/lua/5.3/ats.so* );	\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
 		echo "Stopping SysVinit ATS Service ..";												\
