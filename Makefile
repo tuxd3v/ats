@@ -232,13 +232,9 @@ remove:
 			echo "Stopping SystemD ATS Service ..";												\
 			systemctl stop ats;														\
 			journalctl -u ats --rotate 1> /dev/null 2>&1;											\
-			sync && sleep 1;														\
 		fi;																	\
 		echo "Searching for Previous Install, and remove it:";											\
-		rm -vf /etc/ats.conf															\
-		rm -vf /lib/systemd/system/ats.service													\
-		rm -vf /usr/local/sbin/ats														\
-		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
+		sync && sleep 1 && rm -vf /etc/ats.conf && rm -vf /lib/systemd/system/ats.service && rm -vf /usr/local/sbin/ats && rm -vf /usr/local/lib/lua/5.3/ats.so*;	\
 	fi
 	@if [ ${SYSVINIT} -eq 1 ];then															\
 		echo "Stopping SysVinit ATS Service ..";												\
