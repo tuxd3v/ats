@@ -162,30 +162,7 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 
 
 .PHONY:	install
-install:
-	@if [ ${SYSVINIT} -eq 0 ];then															\
-		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
-			echo "Stopping SystemD ATS Service ..";												\
-			systemctl stop ats;														\
-			journalctl -u ats --rotate 1> /dev/null 2>&1;											\
-			sync && sleep 1;														\
-		fi;																	\
-		echo "Searching for Previous Install, and remove it:";											\
-		rm -vf /etc/ats.conf															\
-		rm -vf /lib/systemd/system/ats.service													\
-		rm -vf /usr/local/sbin/ats														\
-		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
-	fi
-	@if [ ${SYSVINIT} -eq 1 ];then															\
-		echo "Stopping SysVinit ATS Service ..";												\
-		/etc/init.d/ats stop;															\
-		chkconfig --level 12345 ats off;													\
-		chkconfig --del ats;															\
-		sync;																	\
-		rm -vf /etc/ats.conf															\
-		rm -vf /etc/init.d/ats															\
-		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
-	fi
+install: $(remove)
 	$(info Install ATS Service File ..........: ats.service in '$(SERVICEDIR)')
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
@@ -246,6 +223,32 @@ clean:
 	fi
 	@if [ -f $(TEST_BIN) ];then		\
 		rm -v $(TEST_BIN);		\
+	fi
+
+.PHONY: remove
+remove:
+	@if [ ${SYSVINIT} -eq 0 ];then															\
+		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then	\
+			echo "Stopping SystemD ATS Service ..";												\
+			systemctl stop ats;														\
+			journalctl -u ats --rotate 1> /dev/null 2>&1;											\
+			sync && sleep 1;														\
+		fi;																	\
+		echo "Searching for Previous Install, and remove it:";											\
+		rm -vf /etc/ats.conf															\
+		rm -vf /lib/systemd/system/ats.service													\
+		rm -vf /usr/local/sbin/ats														\
+		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
+	fi
+	@if [ ${SYSVINIT} -eq 1 ];then															\
+		echo "Stopping SysVinit ATS Service ..";												\
+		/etc/init.d/ats stop;															\
+		chkconfig --level 12345 ats off;													\
+		chkconfig --del ats;															\
+		sync;																	\
+		rm -vf /etc/ats.conf															\
+		rm -vf /etc/init.d/ats															\
+		rm -vf /usr/local/lib/lua/5.3/ats.so*;													\
 	fi
 
 .PHONY: purge
