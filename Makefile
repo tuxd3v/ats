@@ -8,7 +8,7 @@ ifeq (,$(wildcard $(IDIR)/.))
         $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
 endif
 
-## ARCH/OS
+## Platform/OS/Machine
 ifndef PLATFORM
         PLATFORM :=$(if $(shell uname | egrep -Ei linux),linux,android)
         ifeq ($(findstring linux,$(PLATFORM)),linux)
@@ -18,11 +18,23 @@ ifndef PLATFORM
         else
                 $(error **PLATFORM = $(PLATFORM)**, Invalid platform type..)
         endif
-endif
-ifndef ARCH
         LONG_BIT := $(shell getconf LONG_BIT)
         $(info **OS = $(LONG_BIT)Bits**)
         MACHINE	:= $(shell uname -m)
+endif
+
+## ATS Shared Library
+#
+NAME		:= ats
+MAJOR		:= 0
+MINOR		:= 9
+VERSION		:= $(MAJOR).$(MINOR)
+
+# Compiller Options
+#
+CC		:= gcc
+# Arch/Tune
+ifndef ARCH
         ifeq ($(LONG_BIT),32)
                 ARCH	:= $(shell ${PWD}/aarch march)
                 ARCH	:= $(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
@@ -44,19 +56,8 @@ ifndef ARCH
                 ARCH := native
         endif
 endif
-
-## ATS Shared Library
-#
-NAME		:= ats
-MAJOR		:= 0
-MINOR		:= 9
-VERSION		:= $(MAJOR).$(MINOR)
-
-# Compiller Options
-#
-CC		:= gcc
 ifdef TUNE
-        $(info **Compile Tune for: $(TUNE)**)
+        $(info **Tune for: $(TUNE)**)
         # In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
         CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
         TEST_CFLAGS	:= -march=$(ARCH) -mtune=$(TUNE) -O3 -g -I$(IDIR)
@@ -78,7 +79,7 @@ endif
 ifeq (,$(wildcard $(LDIR)/.))
 $(LDIR):
 	@mkdir -pv $(LDIR);
-        $(info ATS Module Folder: $(LDIR), created..)
+        $(info ATS Module Folder: $(LDIR),created..)
 endif
 # ATS Binary
 ifndef BINDIR
