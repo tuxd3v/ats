@@ -8,6 +8,42 @@ ifeq (,$(wildcard $(IDIR)/.))
         $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
 endif
 
+## ARCH/OS
+ifndef PLATFORM
+        PLATFORM :=$(if $(shell uname | egrep -Ei linux),linux,android)
+        ifeq ($(findstring linux,$(PLATFORM)),linux)
+                $(info **PLATFORM = $(PLATFORM)**)
+        else ifeq ($(findstring android,$(PLATFORM)),android)
+                $(info **PLATFORM = $(PLATFORM)**)
+        else
+                $(error **PLATFORM = $(PLATFORM)**, Invalid platform type..)
+        endif
+endif
+ifndef ARCH
+        LONG_BIT := $(shell getconf LONG_BIT)
+        $(info **OS = $(LONG_BIT)Bits**)
+        MACHINE	:= $(shell uname -m)
+        ifeq ($(LONG_BIT),32)
+                ARCH	:= $(shell ${PWD}/aarch march)
+                ARCH	:= $(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
+                ARCH	:= $(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
+                ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(MACHINE))
+                $(info **ARCH = $(ARCH) **)
+                TUNE	:= $(shell ${PWD}/aarch mtune)
+        else ifeq ($(LONG_BIT),64)
+                ARCH	:= $(shell ${PWD}/aarch march)
+                ARCH	:= $(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
+                ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
+                $(info **ARCH = $(ARCH) **)
+                TUNE	:= $(shell ${PWD}/aarch mtune)
+                TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
+        else
+                $(warning **ARCH = $(ARCH)**,Unknown Arch type..)
+                $(info **ARCH = native**, Will be used..)
+                ARCH := native
+        endif
+endif
+
 ## ATS Shared Library
 #
 NAME		:= ats
@@ -18,9 +54,16 @@ VERSION		:= $(MAJOR).$(MINOR)
 # Compiller Options
 #
 CC		:= gcc
-# In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
-CFLAGS		:= -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags, armv8-a+crc, tune for Big.Litle a72+a53
-TEST_CFLAGS     := -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -O3 -g -I$(IDIR)
+ifdef TUNE
+        $(info **Compile Tune for: $(TUNE)**)
+        # In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
+        CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+        TEST_CFLAGS	:= -march=$(ARCH) -mtune=$(TUNE) -O3 -g -I$(IDIR)
+else
+        # In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
+        CFLAGS		:= -march=$(ARCH) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+        TEST_CFLAGS	:= -march=$(ARCH) -O3 -g -I$(IDIR)
+endif
 
 LDFLAGS		:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 TEST_LDFLAGS	:= -L/usr/lib/aarch64-linux-gnu -l$(DEPS) -lm -ldl
