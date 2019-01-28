@@ -19,7 +19,7 @@ ifndef PLATFORM
                 $(error ** PLATFORM = $(PLATFORM)**, Invalid platform type..)
         endif
         LONG_BIT := $(shell getconf LONG_BIT)
-        $(info ** OS        = $(LONG_BIT)Bits**)
+        $(info ** OS       = $(LONG_BIT)Bits**)
         MACHINE	:= $(shell uname -m)
 endif
 
