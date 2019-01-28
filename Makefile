@@ -57,7 +57,7 @@ ifndef ARCH
         endif
 endif
 ifdef TUNE
-        $(info **Tune for: $(TUNE)**)
+        $(info ** TUNE    = $(TUNE)**)
         # In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
         CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
         TEST_CFLAGS	:= -march=$(ARCH) -mtune=$(TUNE) -O3 -g -I$(IDIR)
