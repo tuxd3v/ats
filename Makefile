@@ -30,6 +30,7 @@ ifndef ARCH
                 ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(MACHINE))
                 $(info **ARCH = $(ARCH) **)
                 TUNE	:= $(shell ${PWD}/aarch mtune)
+                TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
         else ifeq ($(LONG_BIT),64)
                 ARCH	:= $(shell ${PWD}/aarch march)
                 ARCH	:= $(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
