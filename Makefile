@@ -238,17 +238,16 @@ install: remove
 		echo "Creating SharedObject symLink ..: ${NAME}.so.${VERSION} in '/usr/local/lib/lua/5.3'";		\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} /usr/local/lib/lua/5.3/${NAME}.so;					\
 	fi
-	@if [ ${SYSVINIT} -eq 1 ];then			\
-		chkconfig --add ats;			\
-		chkconfig --level 12345 ats on;		\
-		echo "Starting ATS Service..";		\
-		/etc/init.d/ats start;			\
+	@if [ ${SYSVINIT} -eq 1 ];then				\
+		chkconfig --add ats;				\
+		chkconfig --level 12345 ats on;			\
+		echo "Starting ATS Service..";			\
+		/etc/init.d/ats start;				\
 	fi
-	@if [ ${SYSVINIT} -eq 0 ];then			\
-		systemctl enable ats;			\
-		echo "Starting ATS Service..";		\
-		systemctl start ats;			\
-		sleep 1 && systemctl status ats;	\
+	@if [ ${SYSVINIT} -eq 0 ];then				\
+		systemctl enable ats;				\
+		echo "Starting ATS Service..";			\
+		systemctl start ats && systemctl status ats;	\
 	fi
 
 
@@ -274,7 +273,7 @@ clean:
 remove:
 	@if [ ${SYSVINIT} -eq 0 ];then																\
 		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then		\
-			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats;			\
+			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats;									\
 		fi;																		\
 		echo "Searching for Previous Install, and Remove it:";												\
 		sleep 3 && rm -vf /etc/ats.conf && rm -vf /lib/systemd/system/ats.service && rm -vf /usr/local/sbin/ats && rm -vf /usr/local/lib/lua/5.3/ats.so*;	\

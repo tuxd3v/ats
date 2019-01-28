@@ -81,6 +81,8 @@ Several independent Options: Master, Release and Manual.
     * `make install`
  3. Run 'purge' target( the downloaded code is removed, **not** the installed one.. )
     * `make purge`
+ 4. Run 'remove' target( remove ats from system )
+    * `make remove`
 
 #### After install, verify the end of the output for something like:
 	systemctl status ats
