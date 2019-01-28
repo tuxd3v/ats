@@ -19,7 +19,7 @@ ifndef PLATFORM
                 $(error ** PLATFORM = $(PLATFORM)**, Invalid platform type..)
         endif
         LONG_BIT := $(shell getconf LONG_BIT)
-        $(info **OS = $(LONG_BIT)Bits**)
+        $(info ** OS        = $(LONG_BIT)Bits**)
         MACHINE	:= $(shell uname -m)
 endif
 
@@ -40,18 +40,18 @@ ifndef ARCH
                 ARCH	:= $(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
                 ARCH	:= $(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
                 ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(MACHINE))
-                $(info ** ARCH    = $(ARCH) **)
+                $(info ** ARCH     = $(ARCH) **)
                 TUNE	:= $(shell ${PWD}/aarch mtune)
                 TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
         else ifeq ($(LONG_BIT),64)
                 ARCH	:= $(shell ${PWD}/aarch march)
                 ARCH	:= $(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
                 ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
-                $(info ** ARCH    = $(ARCH) **)
+                $(info ** ARCH     = $(ARCH) **)
                 TUNE	:= $(shell ${PWD}/aarch mtune)
                 TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
         else
-                $(warning ** ARCH    = $(ARCH)**,Unknown Arch type..)
+                $(warning ** ARCH     = $(ARCH)**,Unknown Arch type..)
                 $(info ** ARCH    = native**, Will be used..)
                 ARCH := native
         endif
