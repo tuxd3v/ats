@@ -6,7 +6,7 @@ ifeq ($(MAKECMDGOALS),)
         MAKECMDGOALS := all
 endif
 ifeq ($(MAKECMDGOALS), all)
-        # Lua-dev header PATHs
+       	# Lua-dev header PATHs
         IDIR := /usr/include/lua5.3
         ifeq (,$(wildcard $(IDIR)/.))
                $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
@@ -15,14 +15,14 @@ ifeq ($(MAKECMDGOALS), all)
         ifndef PLATFORM
                 PLATFORM :=$(if $(shell uname | egrep -Ei linux),linux,android)
                 ifeq ($(findstring linux,$(PLATFORM)),linux)
-                       $(info ** PLATFORM = $(PLATFORM)**)
+                       $(info ** PLATFORM = $(PLATFORM)   **)
                 else ifeq ($(findstring android,$(PLATFORM)),android)
-                       $(info ** PLATFORM = $(PLATFORM)**)
+                       $(info ** PLATFORM = $(PLATFORM)   **)
                 else
-                       $(error ** PLATFORM = $(PLATFORM)**, Invalid platform type..)
+                       $(error ** PLATFORM = $(PLATFORM)  **,Invalid platform type..)
                 endif
                 LONG_BIT := $(shell getconf LONG_BIT)
-                $(info ** OS       = $(LONG_BIT)Bits**)
+                $(info ** OS       = $(LONG_BIT)Bits **)
                 MACHINE	:= $(shell uname -m)
        endif
 endif
