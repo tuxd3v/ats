@@ -1,80 +1,78 @@
 
 ## Lua-dev Dependencies Related
 #
-DEPS	:= lua5.3
+DEPS		:= lua5.3
 ifeq ($(MAKECMDGOALS),)
-    MAKECMDGOALS := all
+MAKECMDGOALS := all
 endif
 ifeq ($(MAKECMDGOALS), all)
-    # Lua-dev header PATHs
-    IDIR := /usr/include/lua5.3
-    ifeq (,$(wildcard $(IDIR)/.))
-       $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
-    endif
-    ## Platform/OS/Machine
-    ifndef PLATFORM
-       PLATFORM := $(if $(shell uname | egrep -Ei linux),linux,android)
-       ifeq ($(findstring linux,$(PLATFORM)),linux)
-          $(info ** PLATFORM = $(PLATFORM)  **)
-       else ifeq ($(findstring android,$(PLATFORM)),android)
-          $(info ** PLATFORM = $(PLATFORM)  **)
-       else
-          $(error ** PLATFORM = $(PLATFORM) **,Invalid platform type..)
-       endif
-       LONG_BIT := $(shell getconf LONG_BIT)
-       $(info ** OS       = $(LONG_BIT)Bits **)
-       MACHINE	:= $(shell uname -m)
-   endif
+# Lua-dev header PATHs
+IDIR		:= /usr/include/lua5.3
+ifeq (,$(wildcard $(IDIR)/.))
+$(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
+endif
+## Platform/OS/Machine
+ifndef PLATFORM
+PLATFORM	:= $(if $(shell uname | egrep -Ei linux),linux,android)
+ifeq ($(findstring linux,$(PLATFORM)),linux)
+$(info ** PLATFORM = $(PLATFORM)  **)
+else ifeq ($(findstring android,$(PLATFORM)),android)
+$(info ** PLATFORM = $(PLATFORM)  **)
+else
+$(error ** PLATFORM = $(PLATFORM) **,Invalid platform type..)
+endif
+LONG_BIT	:= $(shell getconf LONG_BIT)
+$(info ** OS       = $(LONG_BIT)Bits **)
+MACHINE		:= $(shell uname -m)
+endif
 endif
 
-## ATS Shared Library
-#
+ ## ATS Shared Library \
+ #
 NAME		:= ats
 MAJOR		:= 0
 MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
 ifeq ($(MAKECMDGOALS),all)
-   $(info ** I am here :$(LONG_BIT) **)
-   ## Compiller Options
-   CC := gcc
-   # Arch/Tune/ Linker Options
-   ifndef ARCH
-      ifeq ($(LONG_BIT),32)
-         $(info ** I am here :$(LONG_BIT) **)
-         ARCH	:= $(shell ${PWD}/aarch march)
-         ARCH	:= $(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
-         ARCH	:= $(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
-         ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(MACHINE))
-         $(info ** ARCH     = $(ARCH) **)
-         TUNE	:= $(shell ${PWD}/aarch mtune)
-         TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
-      else ifeq ($(LONG_BIT),64)
-         $(info ** I am here :$(LONG_BIT) **)
-         ARCH	:= $(shell ${PWD}/aarch march)
-         ARCH	:= $(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
-         ARCH	:= $(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
-         $(info ** ARCH     = $(ARCH) **)
-         TUNE	:= $(shell ${PWD}/aarch mtune)
-         TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
-      else
-         $(warning ** ARCH     = $(ARCH) **,Unknown Arch type..)
-         $(info ** ARCH    = native **, Will be used..)
-         ARCH := native
-      endif
-   endif
-   ifdef TUNE
-      $(info ** TUNE     = $(TUNE) **)
-      # In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
-      CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
-      TEST_CFLAGS	:= -march=$(ARCH) -mtune=$(TUNE) -O3 -g -I$(IDIR)
-   else
-      # In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
-      CFLAGS		:= -march=$(ARCH) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
-      TEST_CFLAGS	:= -march=$(ARCH) -O3 -g -I$(IDIR)
-   endif
-      LDFLAGS		:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
-      TEST_LDFLAGS	:= -L/usr/lib/aarch64-linux-gnu -l$(DEPS) -lm -ldl
+$(info ** I am here :$(LONG_BIT) **)
+ ## Compiller Options
+CC		:= gcc
+ # Arch/Tune/ Linker Options
+ifndef ARCH
+ifeq ($(LONG_BIT),32)
+$(info ** I am here :$(LONG_BIT) **)
+ARCH		:= $(shell ${PWD}/aarch march)
+ARCH		:= $(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
+ARCH		:= $(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
+ARCH		:= $(if $(findstring android,$(MACHINE)),armv7,$(MACHINE))
+$(info ** ARCH     = $(ARCH) **)
+TUNE		:= $(shell ${PWD}/aarch mtune)
+TUNE		:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
+else ifeq ($(LONG_BIT),64)
+$(info ** I am here :$(LONG_BIT) **)
+ARCH		:= $(shell ${PWD}/aarch march)
+ARCH		:= $(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
+ARCH		:= $(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
+$(info ** ARCH     = $(ARCH) **)
+TUNE		:= $(shell ${PWD}/aarch mtune)
+TUNE		:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
+else
+$(warning ** ARCH     = $(ARCH) **,Unknown Arch type..)
+$(info ** ARCH    = native **, Will be used..)
+ARCH := native
+endif
+endif
+ifdef TUNE
+$(info ** TUNE     = $(TUNE) **)
+CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+TEST_CFLAGS	:= -march=$(ARCH) -mtune=$(TUNE) -O3 -g -I$(IDIR)
+else
+CFLAGS		:= -march=$(ARCH) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+TEST_CFLAGS	:= -march=$(ARCH) -O3 -g -I$(IDIR)
+endif
+LDFLAGS		:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
+TEST_LDFLAGS	:= -L/usr/lib/aarch64-linux-gnu -l$(DEPS) -lm -ldl
 endif
 
 
@@ -82,15 +80,15 @@ endif
 ## ATS Installation ENVIRONMENT PATHs
 #
 ifeq ($(MAKECMDGOALS),install)
-   # Shared Library Module
-   ifndef LDIR
-      LDIR	:= /usr/local/lib/lua/5.3
-   endif
-   ifeq (,$(wildcard $(LDIR)/.))
+	# Shared Library Module
+ifndef LDIR
+LDIR		:= /usr/local/lib/lua/5.3
+endif
+ifeq (,$(wildcard $(LDIR)/.))
 $(LDIR):
 	@mkdir -pv $(LDIR);
-      $(info ATS Module Folder: $(LDIR),created..)
-   endif
+$(info ATS Module Folder: $(LDIR),created..)
+endif
 endif
 
 # ATS Binary
