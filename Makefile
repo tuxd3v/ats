@@ -1,27 +1,30 @@
 
 ## Lua-dev Dependencies Related
 #
-DEPS		:= lua5.3
-ifeq($(MAKECMDGOALS),all)
-	# Lua-dev header PATHs
-        IDIR    := /usr/include/lua5.3
+DEPS	:= lua5.3
+ifeq ($(MAKECMDGOALS),)
+        MAKECMDGOALS := all
+endif
+ifeq ($(MAKECMDGOALS), all)
+        # Lua-dev header PATHs
+        IDIR := /usr/include/lua5.3
         ifeq (,$(wildcard $(IDIR)/.))
-                $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
+               $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
         endif
 	## Platform/OS/Machine
         ifndef PLATFORM
                 PLATFORM :=$(if $(shell uname | egrep -Ei linux),linux,android)
                 ifeq ($(findstring linux,$(PLATFORM)),linux)
-                        $(info ** PLATFORM = $(PLATFORM)**)
+                       $(info ** PLATFORM = $(PLATFORM)**)
                 else ifeq ($(findstring android,$(PLATFORM)),android)
-                        $(info ** PLATFORM = $(PLATFORM)**)
+                       $(info ** PLATFORM = $(PLATFORM)**)
                 else
-                        $(error ** PLATFORM = $(PLATFORM)**, Invalid platform type..)
+                       $(error ** PLATFORM = $(PLATFORM)**, Invalid platform type..)
                 endif
                 LONG_BIT := $(shell getconf LONG_BIT)
                 $(info ** OS       = $(LONG_BIT)Bits**)
                 MACHINE	:= $(shell uname -m)
-        endif
+       endif
 endif
 
 ## ATS Shared Library
@@ -31,7 +34,7 @@ MAJOR		:= 0
 MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
-ifeq($(MAKECMDGOALS),all)
+ifeq ($(MAKECMDGOALS),all)
         ## Compiller Options
         #
         CC		:= gcc
@@ -77,7 +80,7 @@ endif
 
 ## ATS Installation ENVIRONMENT PATHs
 #
-ifeq($(MAKECMDGOALS),install)
+ifeq ($(MAKECMDGOALS),install)
         # Shared Library Module
         ifndef LDIR
                 LDIR	:= /usr/local/lib/lua/5.3

@@ -100,9 +100,7 @@ local manIdpart = {
 	{ mask = 0xff00fff0, val = 0x61000040, id = "Twister"       },
 	{ mask = 0xff00fff0, val = 0x61000050, id = "Twister/Elba/Malta" },
 	{ mask = 0xff00fff0, val = 0x61000060, id = "Hurricane"          },
-	{ mask = 0xff00fff0, val = 0x61000070, id = "Hurricane/Myst"     }.
-	-- Marvell
-	{ mask = 0xff00fff0, val = 0x61000010, id = "Cyclone" },
+	{ mask = 0xff00fff0, val = 0x61000070, id = "Hurricane/Myst"     }
 }
 ----
 --- Get CPU Information
