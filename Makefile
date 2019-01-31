@@ -45,9 +45,10 @@ CC		:= gcc
  # Arch/Tune/ Linker Options
 ifdef ARCH
 override undefine ARCH
+endif
 ifeq ($(LONG_BIT),32)
 $(info ** I am here :$(LONG_BIT) **)
-ARCH		:= $(shell ${PWD}/aarch march)
+ARCH		:= $(shell unset ARCH && ${PWD}/aarch march)
 ARCH		:= $(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
 ARCH		:= $(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
 ARCH		:= $(if $(findstring android,$(MACHINE)),armv7,$(MACHINE))
@@ -66,7 +67,6 @@ else
 $(warning ** ARCH     = $(ARCH) **,Unknown Arch type..)
 $(info ** ARCH    = native **, Will be used..)
 ARCH := native
-endif
 endif
 
 ifdef TUNE
