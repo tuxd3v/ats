@@ -14,15 +14,18 @@ endif
 ## Platform/OS/Machine
 ifndef PLATFORM
 PLATFORM	:= $(if $(shell uname | egrep -Ei linux),linux,android)
-ifeq ($(findstring linux,$(PLATFORM)),linux)
+ifeq ($(PLATFORM),linux)
 $(info ** PLATFORM = $(PLATFORM)  **)
-else ifeq ($(findstring android,$(PLATFORM)),android)
+else ifeq ($(PLATFORM),android)
 $(info ** PLATFORM = $(PLATFORM)  **)
 else
 $(error ** PLATFORM = $(PLATFORM) **,Invalid platform type..)
 endif
 LONG_BIT	:= $(shell getconf LONG_BIT)
 $(info ** OS       = $(LONG_BIT)Bits **)
+ifdef MACHINE
+      undefine MACHINE
+endif
 MACHINE		:= $(shell uname -m)
 endif
 endif
