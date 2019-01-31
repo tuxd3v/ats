@@ -6,7 +6,7 @@ ifeq ($(MAKECMDGOALS),)
         MAKECMDGOALS := all
 endif
 ifeq ($(MAKECMDGOALS), all)
-       	# Lua-dev header PATHs
+	# Lua-dev header PATHs
         IDIR := /usr/include/lua5.3
         ifeq (,$(wildcard $(IDIR)/.))
                $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
@@ -35,9 +35,10 @@ MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
 ifeq ($(MAKECMDGOALS), all)
+        $(info ** I am here :$(LONG_BIT) **)
         ## Compiller Options
         #
-        CC	:= gcc
+	CC	:= gcc
         # Arch/Tune/ Linker Options
         ifndef ARCH
                 ifeq ($(LONG_BIT),32)
