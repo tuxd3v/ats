@@ -13,13 +13,13 @@ ifeq ($(MAKECMDGOALS), all)
         endif
 	## Platform/OS/Machine
         ifndef PLATFORM
-                PLATFORM :=$(if $(shell uname | egrep -Ei linux),linux,android)
+                PLATFORM := $(if $(shell uname | egrep -Ei linux),linux,android)
                 ifeq ($(findstring linux,$(PLATFORM)),linux)
-                       $(info ** PLATFORM = $(PLATFORM)   **)
+                       $(info ** PLATFORM = $(PLATFORM)  **)
                 else ifeq ($(findstring android,$(PLATFORM)),android)
-                       $(info ** PLATFORM = $(PLATFORM)   **)
+                       $(info ** PLATFORM = $(PLATFORM)  **)
                 else
-                       $(error ** PLATFORM = $(PLATFORM)  **,Invalid platform type..)
+                       $(error ** PLATFORM = $(PLATFORM) **,Invalid platform type..)
                 endif
                 LONG_BIT := $(shell getconf LONG_BIT)
                 $(info ** OS       = $(LONG_BIT)Bits **)
@@ -34,10 +34,10 @@ MAJOR		:= 0
 MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
-ifeq ($(MAKECMDGOALS),all)
+ifeq ($(MAKECMDGOALS), all)
         ## Compiller Options
         #
-        CC		:= gcc
+        CC	:= gcc
         # Arch/Tune/ Linker Options
         ifndef ARCH
                 ifeq ($(LONG_BIT),32)
@@ -56,8 +56,8 @@ ifeq ($(MAKECMDGOALS),all)
                         TUNE	:= $(shell ${PWD}/aarch mtune)
                         TUNE	:= $(if $(findstring nil,$(TUNE)),,$(TUNE))
                 else
-                        $(warning ** ARCH     = $(ARCH)**,Unknown Arch type..)
-                        $(info ** ARCH    = native**, Will be used..)
+                        $(warning ** ARCH     = $(ARCH) **,Unknown Arch type..)
+                        $(info ** ARCH    = native **, Will be used..)
                         ARCH := native
                 endif
         endif
