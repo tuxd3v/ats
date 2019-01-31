@@ -20,6 +20,8 @@ local CPUS = {}
 local MACHINE = {}
 	MACHINE.big = {}
 	MACHINE.LITTLE = {}
+		-- 0xc09
+		MACHINE.big[ 3081 ]    = { tune = "cortex-a9",  arch = "armv7-a"    }
 		-- 0xc0f
 		MACHINE.big[ 3087 ]    = { tune = "cortex-a15", arch = "armv7-a"    }
 		-- 0xc0e
@@ -56,6 +58,7 @@ local manIdimplementer = {
 -- Part Manufacturer ID
 local manIdpart = {
 	-- ARM
+	{ mask = 0xff00fff0, val = 0x4100c090, id = "Cortex-A9"  },
 	{ mask = 0xff00fff0, val = 0x4100c070, id = "Cortex-A7"  },
 	{ mask = 0xff00fff0, val = 0x4100c0f0, id = "Cortex-A15" },
 	{ mask = 0xff00fff0, val = 0x4100c0e0, id = "Cortex-A17" },
@@ -97,7 +100,9 @@ local manIdpart = {
 	{ mask = 0xff00fff0, val = 0x61000040, id = "Twister"       },
 	{ mask = 0xff00fff0, val = 0x61000050, id = "Twister/Elba/Malta" },
 	{ mask = 0xff00fff0, val = 0x61000060, id = "Hurricane"          },
-	{ mask = 0xff00fff0, val = 0x61000070, id = "Hurricane/Myst"     }
+	{ mask = 0xff00fff0, val = 0x61000070, id = "Hurricane/Myst"     }.
+	-- Marvell
+	{ mask = 0xff00fff0, val = 0x61000010, id = "Cyclone" },
 }
 ----
 --- Get CPU Information
