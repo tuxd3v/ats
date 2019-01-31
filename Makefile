@@ -3,7 +3,6 @@
 #
 DEPS		:= lua5.3
 ifeq ($(MAKECMDGOALS),)
-undefine ARCH
 MAKECMDGOALS := all
 endif
 ifeq ($(MAKECMDGOALS), all)
@@ -40,7 +39,8 @@ ifeq ($(MAKECMDGOALS),all)
 $(info ** I am here :$(LONG_BIT) **)
 CC		:= gcc
  # Arch/Tune/ Linker Options
-ifndef ARCH
+ifdef ARCH
+undefine ARCH
 ifeq ($(LONG_BIT),32)
 $(info ** I am here :$(LONG_BIT) **)
 ARCH		:= $(shell ${PWD}/aarch march)
