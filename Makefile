@@ -3,6 +3,7 @@
 #
 DEPS		:= lua5.3
 ifeq ($(MAKECMDGOALS),)
+undefine ARCH
 MAKECMDGOALS := all
 endif
 ifeq ($(MAKECMDGOALS), all)
@@ -35,8 +36,8 @@ MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
 ifeq ($(MAKECMDGOALS),all)
+ # Compiller Options
 $(info ** I am here :$(LONG_BIT) **)
- ## Compiller Options
 CC		:= gcc
  # Arch/Tune/ Linker Options
 ifndef ARCH
@@ -63,6 +64,7 @@ $(info ** ARCH    = native **, Will be used..)
 ARCH := native
 endif
 endif
+
 ifdef TUNE
 $(info ** TUNE     = $(TUNE) **)
 CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
