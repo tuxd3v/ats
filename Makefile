@@ -3,12 +3,12 @@
 #
 DEPS		:= lua5.3
 ifeq($(MAKECMDGOALS),all)
-        # Lua-dev header PATHs
+	# Lua-dev header PATHs
         IDIR    := /usr/include/lua5.3
         ifeq (,$(wildcard $(IDIR)/.))
                 $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
         endif
-        ## Platform/OS/Machine
+	## Platform/OS/Machine
         ifndef PLATFORM
                 PLATFORM :=$(if $(shell uname | egrep -Ei linux),linux,android)
                 ifeq ($(findstring linux,$(PLATFORM)),linux)
