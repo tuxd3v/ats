@@ -49,11 +49,8 @@ endif
 ifeq ($(LONG_BIT),32)
 $(info ** I am here :$(LONG_BIT) **)
 ARCH		:=$(shell unset ARCH;${PWD}/aarch march)
-$(info ** ARCH     = $(ARCH) **)
 ARCH		:=$(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
-$(info ** ARCH     = $(ARCH) **)
 ARCH		:=$(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
-$(info ** ARCH     = $(ARCH) **)
 ARCH		:=$(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
 $(info ** ARCH     = $(ARCH) **)
 TUNE		:=$(shell ${PWD}/aarch mtune)
@@ -94,7 +91,7 @@ ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
 endif
 ifeq (,$(wildcard $(LDIR)/.))
-$( shell mkdir -pv $(LDIR))
+$(shell mkdir -pv $(LDIR))
 $(info ATS Module Folder: $(LDIR),created..)
 endif
 endif
