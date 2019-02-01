@@ -94,8 +94,7 @@ ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
 endif
 ifeq (,$(wildcard $(LDIR)/.))
-$(LDIR):
-	@mkdir -pv $(LDIR);
+$( shell mkdir -pv $(LDIR))
 $(info ATS Module Folder: $(LDIR),created..)
 endif
 endif
