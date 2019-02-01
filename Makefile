@@ -40,14 +40,12 @@ VERSION		:= $(MAJOR).$(MINOR)
 
 ifeq ($(MAKECMDGOALS),all)
  # Compiller Options
-$(info ** I am here :$(LONG_BIT) **)
 CC		:= gcc
  # Arch/Tune/ Linker Options
 ifdef ARCH
 override undefine ARCH
 endif
 ifeq ($(LONG_BIT),32)
-$(info ** I am here :$(LONG_BIT) **)
 ARCH		:=$(shell unset ARCH;${PWD}/aarch march)
 ARCH		:=$(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
 ARCH		:=$(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
@@ -91,8 +89,9 @@ ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
 endif
 ifeq (,$(wildcard $(LDIR)/.))
-$(shell mkdir -pv $(LDIR))
-$(info ATS Module Folder: $(LDIR),created..)
+$(LDIR):
+	@mkdir -pv $(LDIR)
+        $(info ATS Module Folder: $(LDIR),created..)
 endif
 endif
 
@@ -222,7 +221,7 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 
 
 .PHONY:	install
-install: remove
+install: $(LDIR) remove
 	$(info Install ATS Service File ..........: ats.service in '$(SERVICEDIR)')
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
