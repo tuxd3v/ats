@@ -54,7 +54,6 @@ $(info ** ARCH     = $(ARCH) **)
 TUNE		:=$(shell ${PWD}/aarch mtune)
 TUNE		:=$(if $(findstring nil,$(TUNE)),,$(TUNE))
 else ifeq ($(LONG_BIT),64)
-$(info ** I am here :$(LONG_BIT) **)
 ARCH		:=$(shell ${PWD}/aarch march)
 ARCH		:=$(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
 ARCH		:=$(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
@@ -89,9 +88,9 @@ ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
 endif
 ifeq (,$(wildcard $(LDIR)/.))
-$(LDIR):
-	@mkdir -pv $(LDIR)
-        $(info ATS Module Folder: $(LDIR),created..)
+#$(LDIR):
+$(shell mkdir -pv $(LDIR) )
+$(info ATS Module Folder: $(LDIR),created..)
 endif
 endif
 

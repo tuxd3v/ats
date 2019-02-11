@@ -244,4 +244,5 @@ local switch = {
 }
 
 switch[ arg[ 1 ] ]()
+os.exit( 0 )
 
