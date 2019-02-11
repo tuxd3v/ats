@@ -54,7 +54,7 @@ $(info ** ARCH     = $(ARCH) **)
 TUNE		:=$(shell ${PWD}/aarch mtune)
 TUNE		:=$(if $(findstring nil,$(TUNE)),,$(TUNE))
 else ifeq ($(LONG_BIT),64)
-ARCH		:=$(shell ${PWD}/aarch march)
+ARCH		:=$(shell unset ARCH;${PWD}/aarch march)
 ARCH		:=$(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
 ARCH		:=$(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
 $(info ** ARCH     = $(ARCH) **)
@@ -88,6 +88,7 @@ ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
 endif
 ifeq (,$(wildcard $(LDIR)/.))
+$(info Creating Library Path: $(LDIR))
 $(shell mkdir -pv ${LDIR})
 endif
 endif
@@ -284,7 +285,7 @@ clean:
 remove:
 	@if [ ${SYSVINIT} -eq 0 ];then																\
 		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then		\
-			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats;									\
+			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats && systemctl disable ats;				\
 		fi;																		\
 		echo "Searching for Previous Install, and Remove it:";												\
 		sleep 3 && rm -vf /etc/ats.conf && rm -vf /lib/systemd/system/ats.service && rm -vf /usr/local/sbin/ats && rm -vf /usr/local/lib/lua/5.3/ats.so*;	\
