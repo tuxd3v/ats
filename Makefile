@@ -91,7 +91,7 @@ endif
 # ATS Binary
 ifndef BINDIR
 	# LuaRocks Paths or Makefile ONLY?
-        $(info Make is Working ..)
+        $(info Install Method: Make..)
         ifneq (,$(wildcard /lib/systemd/system/.))
                 BINDIR := /usr/local/sbin
         else ifneq (,$(wildcard /etc/init.d/.))
@@ -99,7 +99,7 @@ ifndef BINDIR
         endif
         LUAROCKS := 0
 else
-        $(info LuaRocks is Working ..)
+        $(info Install Method: LuaRocks ..)
         LUAROCKS := 1
 endif
 ifeq (,$(wildcard $(BINDIR)/.))
