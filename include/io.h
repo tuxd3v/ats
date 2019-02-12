@@ -12,7 +12,7 @@ typedef enum DIRECTION direction_t;
 struct IO {
 	backend_t backendIn[ 3 ];
 	backend_t backendOut[ 2 ];
-	void *( *init )(  );			/* init set atributed functions and Ios for each facility */
+	void *( *init )(  );			/* init set atributed functions and IO's for each facility */
 	void ( *setPwm )( unsigned char );	/* Function to set pwm */
 	void ( *getThermal )( void );		/* Function to get Thermal Values */
 	void ( *close )( void * );		/* close and free memry... at least from now, *NOT* needed */

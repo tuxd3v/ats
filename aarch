@@ -1,0 +1,248 @@
+#! /usr/bin/env lua
+
+
+if _VERSION ~= "Lua 5.3" then
+	print( _VERSION  )
+	print( "Please install Lua >=5.3" )
+	print( "" )
+	os.exit( 1 )
+else
+	if #arg <= 0 then
+		print( "Use :" )
+		print( arg[ 0 ] .. " < cpushow | march | mtune >" )
+		print( "" )
+		os.exit( 1 )
+	end
+end
+
+local CPUINFO
+local CPUS = {}
+local MACHINE = {}
+	MACHINE.big = {}
+	MACHINE.LITTLE = {}
+		-- 0xc09
+		MACHINE.big[ 3081 ]    = { tune = "cortex-a9",  arch = "armv7-a"    }
+		-- 0xc0f
+		MACHINE.big[ 3087 ]    = { tune = "cortex-a15", arch = "armv7-a"    }
+		-- 0xc0e
+		MACHINE.big[ 3086 ]    = { tune = "cortex-a17", arch = "armv7-a"    }
+		-- 0xd07
+		MACHINE.big[ 3335 ]    = { tune = "cortex-a57", arch = "armv8-a+crc"}
+		-- 0xd08
+		MACHINE.big[ 3336 ]    = { tune = "cortex-a72", arch = "armv8-a+crc"}
+		-- 0xd09
+		MACHINE.big[ 3337 ]    = { tune = "cortex-a73", arch = "armv8-a+crc"}
+		-- 0xd0a
+		MACHINE.big[ 3338 ]    = { tune = "cortex-a75", arch = "armv8.2-a"  }
+		-- 0xc07
+		MACHINE.LITTLE[ 3079 ] = { tune = "cortex-a7",  arch = "armv7-a"    }
+		-- 0xd04
+		MACHINE.LITTLE[ 3332 ] = { tune = "cortex-a35", arch = "armv8-a+crc"}
+		-- 0xd03
+		MACHINE.LITTLE[ 3331 ] = { tune = "cortex-a53", arch = "armv8-a+crc"}
+		-- 0xd05
+		MACHINE.LITTLE[ 3333 ] = { tune = "cortex-a55", arch = "armv8.2-a"  }
+
+-- Implementer Manufacturer ID
+local manIdimplementer = {
+	{ mask = 0xff000000, val = 0x41000000, id = "ARM"           },
+	{ mask = 0xff000000, val = 0x42000000, id = "Broadcom"      },
+	{ mask = 0xff000000, val = 0x43000000, id = "Cavium"        },
+	{ mask = 0xff000000, val = 0x4d000000, id = "Motorola"      },
+	{ mask = 0xff000000, val = 0x4e000000, id = "Nvidia"        },
+	{ mask = 0xff000000, val = 0x50000000, id = "Applied Micro" },
+	{ mask = 0xff000000, val = 0x51000000, id = "Qualcomm"      },
+	{ mask = 0xff000000, val = 0x53000000, id = "Samsung"       },
+	{ mask = 0xff000000, val = 0x61000000, id = "Apple"         }
+}
+-- Part Manufacturer ID
+local manIdpart = {
+	-- ARM
+	{ mask = 0xff00fff0, val = 0x4100c090, id = "Cortex-A9"  },
+	{ mask = 0xff00fff0, val = 0x4100c070, id = "Cortex-A7"  },
+	{ mask = 0xff00fff0, val = 0x4100c0f0, id = "Cortex-A15" },
+	{ mask = 0xff00fff0, val = 0x4100c0e0, id = "Cortex-A17" },
+	{ mask = 0xff00fff0, val = 0x4100d030, id = "Cortex-A53" },
+	{ mask = 0xff00fff0, val = 0x4100d040, id = "Cortex-A35" },
+	{ mask = 0xff00fff0, val = 0x4100d070, id = "Cortex-A57" },
+	{ mask = 0xff00fff0, val = 0x4100d080, id = "Cortex-A72" },
+	{ mask = 0xff00fff0, val = 0x4100d090, id = "Cortex-A73" },
+	{ mask = 0xff00fff0, val = 0x4100d0a0, id = "Cortex-A75" },
+	{ mask = 0xff00fff0, val = 0x4100d050, id = "Cortex-A55" },
+	-- Broadcom
+	{ mask = 0xff00fff0, val = 0x42001000, id = "Brahma-B53" },
+	{ mask = 0xff00fff0, val = 0x42005160, id = "ThunderX2"  },
+	-- Cavium
+	{ mask = 0xff00fff0, val = 0x43000a00, id = "ThunderX"   },
+	{ mask = 0xff00fff0, val = 0x43000a10, id = "ThunderX 88xx"  },
+	{ mask = 0xff00fff0, val = 0x43000a20, id = "ThunderX 81xx"  },
+	{ mask = 0xff00fff0, val = 0x43000a30, id = "ThunderX 83xx"  },
+	{ mask = 0xff00fff0, val = 0x43000af0, id = "ThunderX2 99xx" },
+	-- Nvidia
+	{ mask = 0xff00fff0, val = 0x4e000000, id = "Denver"   },
+	{ mask = 0xff00fff0, val = 0x4e000030, id = "Denver 2" },
+	-- Applied Micro
+	{ mask = 0xff00fff0, val = 0x50000000, id = "X-Gene"   },
+	-- Qualcomm
+	{ mask = 0xff00fff0, val = 0x51002010, id = "Kryo" },
+	{ mask = 0xff00fff0, val = 0x51002050, id = "Kryo" },
+	{ mask = 0xff00fff0, val = 0x51002110, id = "Kryo" },
+	{ mask = 0xff00fff0, val = 0x51008000, id = "Falkor V1/Kryo" },
+	{ mask = 0xff00fff0, val = 0x51008010, id = "Kryo V2"        },
+	{ mask = 0xff00fff0, val = 0x5100c000, id = "Falkor"         },
+	{ mask = 0xff00fff0, val = 0x5100c010, id = "Saphira"        },
+	-- Samsung
+	{ mask = 0xff00fff0, val = 0x53000010, id = "M1"      },
+	-- Apple
+	{ mask = 0xff00fff0, val = 0x61000010, id = "Cyclone" },
+	{ mask = 0xff00fff0, val = 0x61000020, id = "Typhoon" },
+	{ mask = 0xff00fff0, val = 0x61000030, id = "Typhoon/Capri" },
+	{ mask = 0xff00fff0, val = 0x61000040, id = "Twister"       },
+	{ mask = 0xff00fff0, val = 0x61000050, id = "Twister/Elba/Malta" },
+	{ mask = 0xff00fff0, val = 0x61000060, id = "Hurricane"          },
+	{ mask = 0xff00fff0, val = 0x61000070, id = "Hurricane/Myst"     }
+}
+----
+--- Get CPU Information
+--
+function getCpuinfo()
+	 handle = io.open( "/proc/cpuinfo", "r")
+	if ( handle ~= nil )
+	then
+		CPUINFO = handle:read( "*a" )
+		handle:close()
+	end
+end
+----
+--- Initialize CPUS content
+--
+function initialize()
+	local snr
+	for line in string.gmatch( CPUINFO, "[^%c]+[^\r\n\r\n]+" )
+	do
+		local aux = string.match( line, "^processor[%s]+:[%s]+([%d]+)$" )
+		if aux ~= nil then
+			snr = aux
+			CPUS[ snr ] = {}
+			CPUS[ snr ].nr = snr
+		end
+		aux = string.match( line, "^model name[%s]+:[%s]+([%g%s]+)" )
+		if aux ~= nil then CPUS[ snr ].name = aux; end
+		aux = string.match( line, "^Features[%s]+:[%s]+([%g%s]+)" )
+		if aux ~= nil then CPUS[ snr ].features = aux; end
+		aux = string.match( line, "^CPU implementer[%s]+:[%s]+0x([%w]+[^%s])$" )
+		if aux ~= nil then CPUS[ snr ].implementer = ( tonumber( aux, 16 ) << 24 ); end
+		aux = string.match( line, "^CPU architecture[%s]*:[%s]*([%d]+)" )
+		if aux ~= nil then CPUS[ snr ].arch = aux; end
+		aux = string.match( line, "^CPU variant[%s]*:[%s]*0x([%w]+)" )
+		if aux ~= nil then CPUS[ snr ].variant = tonumber( aux, 16 ); end
+		aux = string.match( line, "^CPU part[%s]*:[%s]+0x([%w]+)" )
+		if aux ~= nil then CPUS[ snr ].part = tonumber( aux, 16 ); end
+		aux = string.match( line, "^CPU revision[%s]*:[%s]+([%d]+)" )
+		if aux ~= nil then CPUS[ snr ].revision = aux; end
+	end
+	CPUINFO = nil
+end
+
+----
+---- MAIN
+---
+
+-- Get CPU Information to CPUINFO string
+getCpuinfo()
+-- Parse CPUINFO string and fullfill CPUS table 
+initialize()
+
+local switch = {
+	---
+	--  Print CPUS content
+	cpushow = function ()
+		for i,t in pairs( CPUS )
+		do
+			for k,v in pairs( t )
+			do
+				print( "Core " .. i .. " : " .. k .. " = " .. v )		
+			end
+		end
+	end,
+	---
+	--  Get machine-option arch
+	march = function ()
+		local machinearch
+		local arch = {
+			big = {},
+			LITTLE = {}
+		}
+		for i,c in pairs( CPUS )
+		do
+			for k,m in pairs( MACHINE.big )
+			do		
+				if c.part == k and arch.big[ k ] ~= m.arch
+				then
+					arch.big[ k ]	= m.arch
+				end	
+			end
+			for k,m in pairs( MACHINE.LITTLE )
+			do
+				if c.part == k and arch.LITTLE[ k ] ~= m.arch
+				then
+					arch.LITTLE[ k ] = m.arch
+				end
+			end
+		end
+		for k,m in pairs( arch.big )
+		do
+			machinearch = m
+		end
+		for k,m in pairs( arch.LITTLE )
+		do
+			if machinearch ~= m then
+				machinearch = m
+			end	
+		end
+		print( machinearch )
+	end,
+	---
+	--  Get machine-option tune
+	mtune = function ()
+		local machinetune
+		local tune = {
+			big = {},
+			LITTLE = {}
+		}
+		for i,c in pairs( CPUS )
+		do
+			for k,m in pairs( MACHINE.big )
+			do		
+				if c.part == k and tune.big[ k ] ~= m.tune
+				then
+					tune.big[ k ]	= m.tune
+				end	
+			end
+			for k,m in pairs( MACHINE.LITTLE )
+			do
+				if c.part == k and tune.LITTLE[ k ] ~= m.tune
+				then
+					tune.LITTLE[ k ] = m.tune
+				end
+			end
+		end
+		for k,m in pairs( tune.LITTLE )
+		do
+			machinetune = m
+		end
+		for k,m in pairs( tune.big )
+		do
+			if machinetune ~= nil then
+				machinetune = m .. "." .. machinetune
+			else
+				machinetune = m
+			end
+		end
+		print( machinetune )
+	end
+}
+
+switch[ arg[ 1 ] ]()
+os.exit( 0 )
+

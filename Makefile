@@ -2,44 +2,96 @@
 ## Lua-dev Dependencies Related
 #
 DEPS		:= lua5.3
+ifeq ($(MAKECMDGOALS),)
+MAKECMDGOALS := all
+endif
+ifeq ($(MAKECMDGOALS), all)
 # Lua-dev header PATHs
 IDIR		:= /usr/include/lua5.3
 ifeq (,$(wildcard $(IDIR)/.))
-        $(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
+$(error Lua Include Folder: $(IDIR), **NOT Detected**, ABORTING..)
+endif
+## Platform/OS/Machine
+ifndef PLATFORM
+PLATFORM	:= $(if $(shell uname | egrep -Ei linux),linux,android)
+ifeq ($(PLATFORM),linux)
+$(info ** PLATFORM = $(PLATFORM)  **)
+else ifeq ($(PLATFORM),android)
+$(info ** PLATFORM = $(PLATFORM)  **)
+else
+$(error ** PLATFORM = $(PLATFORM) **,Invalid platform type..)
+endif
+LONG_BIT	:= $(shell getconf LONG_BIT)
+$(info ** OS       = $(LONG_BIT)Bits **)
+ifdef MACHINE
+      MACHINE :=
+      undefine MACHINE
+endif
+MACHINE		:= $(shell uname -m)
+endif
 endif
 
-## ATS Shared Library
-#
+
+ ## ATS Shared Library \
+ #
 NAME		:= ats
 MAJOR		:= 0
 MINOR		:= 9
 VERSION		:= $(MAJOR).$(MINOR)
 
-# Compiller Options
-#
+ifeq ($(MAKECMDGOALS),all)
+ # Compiller Options
 CC		:= gcc
-# In future, -march=armv8-a+simd+crypto+crc -ansi -Wno-long-long
-CFLAGS		:= -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags, armv8-a+crc, tune for Big.Litle a72+a53
-TEST_CFLAGS     := -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 -O3 -g -I$(IDIR)
+ # Arch/Tune/ Linker Options
+ifdef ARCH
+override undefine ARCH
+endif
+ifeq ($(LONG_BIT),32)
+ARCH		:=$(shell unset ARCH;${PWD}/aarch march)
+ARCH		:=$(if $(findstring x86,$(MACHINE)),i386,$(ARCH))
+ARCH		:=$(if $(findstring aarch64,$(MACHINE)),armv7-a,$(ARCH))
+ARCH		:=$(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
+$(info ** ARCH     = $(ARCH) **)
+TUNE		:=$(shell ${PWD}/aarch mtune)
+TUNE		:=$(if $(findstring nil,$(TUNE)),,$(TUNE))
+else ifeq ($(LONG_BIT),64)
+ARCH		:=$(shell unset ARCH;${PWD}/aarch march)
+ARCH		:=$(if $(findstring x86,$(MACHINE)),x86-64,$(ARCH))
+ARCH		:=$(if $(findstring android,$(MACHINE)),armv7,$(ARCH))
+$(info ** ARCH     = $(ARCH) **)
+TUNE		:=$(shell ${PWD}/aarch mtune)
+TUNE		:=$(if $(findstring nil,$(TUNE)),,$(TUNE))
+else
+$(warning ** ARCH     = $(ARCH) **,Unknown Arch type..)
+$(info ** ARCH    = native **, Will be used..)
+ARCH := native
+endif
 
+ifdef TUNE
+$(info ** TUNE     = $(TUNE) **)
+CFLAGS		:= -march=$(ARCH) -mtune=$(TUNE) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+TEST_CFLAGS	:= -march=$(ARCH) -mtune=$(TUNE) -O3 -g -I$(IDIR)
+else
+CFLAGS		:= -march=$(ARCH) -fPIC -Wall -Werror -O3 -g -I$(IDIR) # Compiler Flags
+TEST_CFLAGS	:= -march=$(ARCH) -O3 -g -I$(IDIR)
+endif
 LDFLAGS		:= -shared -Wl,-soname,$(NAME).so.$(MAJOR) -l$(DEPS) # Linker Flags
 TEST_LDFLAGS	:= -L/usr/lib/aarch64-linux-gnu -l$(DEPS) -lm -ldl
+endif
+
+
 
 ## ATS Installation ENVIRONMENT PATHs
 #
-# Shared Library Module
+ifeq ($(MAKECMDGOALS),install)
+	# Shared Library Module
 ifndef LDIR
-        LDIR	:= /usr/local/lib/lua/5.3
-endif
-ifeq (,$(wildcard $(LDIR)/.))
-$(LDIR):
-	@mkdir -pv $(LDIR);
-        $(info ATS Module Folder: $(LDIR), created..)
+LDIR		:= /usr/local/lib/lua/5.3
 endif
 # ATS Binary
 ifndef BINDIR
 	# LuaRocks Paths or Makefile ONLY?
-        $(info Make is Working ..)
+        $(info Install Method: Make..)
         ifneq (,$(wildcard /lib/systemd/system/.))
                 BINDIR := /usr/local/sbin
         else ifneq (,$(wildcard /etc/init.d/.))
@@ -47,7 +99,7 @@ ifndef BINDIR
         endif
         LUAROCKS := 0
 else
-        $(info LuaRocks is Working ..)
+        $(info Install Method: LuaRocks ..)
         LUAROCKS := 1
 endif
 ifeq (,$(wildcard $(BINDIR)/.))
@@ -86,7 +138,7 @@ endif
 ifeq (,$(wildcard $(SERVICEDIR)/.))
         $(error ATS Service Folder: $(SERVICEDIR), **NOT Detected**, ABORTING..)
 endif
-
+endif
 
 ## ATS source/headers.. Code Related
 #
@@ -161,8 +213,14 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 	$(CC)  -o $@ $^ $(TEST_LDFLAGS)
 
 
+.PHONY: pre-install
+pre-install: remove
+	@if [ ! -d "/usr/local/lib/lua/5.3" ];then								\
+		echo "Creating Library Path: /usr/local/lib/lua/5.3" && mkdir -pv /usr/local/lib/lua/5.3;	\
+	fi
+
 .PHONY:	install
-install: remove
+install: pre-install
 	$(info Install ATS Service File ..........: ats.service in '$(SERVICEDIR)')
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
@@ -193,17 +251,16 @@ install: remove
 		echo "Creating SharedObject symLink ..: ${NAME}.so.${VERSION} in '/usr/local/lib/lua/5.3'";		\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} /usr/local/lib/lua/5.3/${NAME}.so;					\
 	fi
-	@if [ ${SYSVINIT} -eq 1 ];then			\
-		chkconfig --add ats;			\
-		chkconfig --level 12345 ats on;		\
-		echo "Starting ATS Service..";		\
-		/etc/init.d/ats start;			\
+	@if [ ${SYSVINIT} -eq 1 ];then				\
+		chkconfig --add ats;				\
+		chkconfig --level 12345 ats on;			\
+		echo "Starting ATS Service..";			\
+		/etc/init.d/ats start;				\
 	fi
-	@if [ ${SYSVINIT} -eq 0 ];then			\
-		systemctl enable ats;			\
-		echo "Starting ATS Service..";		\
-		systemctl start ats;			\
-		sleep 1 && systemctl status ats;	\
+	@if [ ${SYSVINIT} -eq 0 ];then				\
+		systemctl enable ats;				\
+		echo "Starting ATS Service..";			\
+		systemctl start ats && systemctl status ats;	\
 	fi
 
 
@@ -229,7 +286,7 @@ clean:
 remove:
 	@if [ ${SYSVINIT} -eq 0 ];then																\
 		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then		\
-			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats && journalctl -q -u ats --rotate 1> /dev/null 2>&1 && sync;		\
+			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats && systemctl disable ats;				\
 		fi;																		\
 		echo "Searching for Previous Install, and Remove it:";												\
 		sleep 3 && rm -vf /etc/ats.conf && rm -vf /lib/systemd/system/ats.service && rm -vf /usr/local/sbin/ats && rm -vf /usr/local/lib/lua/5.3/ats.so*;	\
