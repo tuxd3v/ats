@@ -215,14 +215,14 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 	$(CC)  -o $@ $^ $(TEST_LDFLAGS)
 
 
-.PHONY: post-install
-post-install:
-	@if [ ! -d "${LDIR}" ];then						\
-		echo "Creating Library Path: ${LDIR}" && mkdir -pv ${LDIR};	\
+.PHONY: pre-install
+pre-install: remove
+	@if [ ! -d "/usr/local/lib/lua/5.3" ];then								\
+		echo "Creating Library Path: /usr/local/lib/lua/5.3" && mkdir -pv /usr/local/lib/lua/5.3;	\
 	fi
 
 .PHONY:	install
-install: remove
+install: pre-install
 	$(info Install ATS Service File ..........: ats.service in '$(SERVICEDIR)')
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
@@ -285,7 +285,7 @@ clean:
 	fi
 
 .PHONY: remove
-remove: post-install
+remove:
 	@if [ ${SYSVINIT} -eq 0 ];then																\
 		if [ -L "/var/run/systemd/units/invocation:ats.service" ] || [ -L "/sys/fs/cgroup/systemd/system.slice/ats.service/tasks" ];then		\
 			echo "Stopping SystemD ATS Service .." && systemctl -q stop ats && systemctl disable ats;				\
