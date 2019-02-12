@@ -217,7 +217,7 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 
 .PHONY: pre-install
 pre-install: remove
-	@if [ -d "${LDIR}" ];then		\
+	@if [ ! -d "${LDIR}" ];then						\
 		echo "Creating Library Path: ${LDIR}" && mkdir -pv ${LDIR};	\
 	fi
 
