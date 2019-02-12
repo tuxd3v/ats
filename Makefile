@@ -88,8 +88,6 @@ ifeq ($(MAKECMDGOALS),install)
 ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
 endif
-endif
-
 # ATS Binary
 ifndef BINDIR
 	# LuaRocks Paths or Makefile ONLY?
@@ -140,7 +138,7 @@ endif
 ifeq (,$(wildcard $(SERVICEDIR)/.))
         $(error ATS Service Folder: $(SERVICEDIR), **NOT Detected**, ABORTING..)
 endif
-
+endif
 
 ## ATS source/headers.. Code Related
 #
