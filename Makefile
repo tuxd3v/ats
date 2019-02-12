@@ -31,6 +31,7 @@ MACHINE		:= $(shell uname -m)
 endif
 endif
 
+
  ## ATS Shared Library \
  #
 NAME		:= ats
@@ -86,10 +87,6 @@ ifeq ($(MAKECMDGOALS),install)
 	# Shared Library Module
 ifndef LDIR
 LDIR		:= /usr/local/lib/lua/5.3
-endif
-ifeq (,$(wildcard $(LDIR)/.))
-$(info Creating Library Path: $(LDIR))
-$(shell mkdir -pv ${LDIR})
 endif
 endif
 
@@ -218,8 +215,14 @@ $(TEST_BIN): $(DEBUG_OBJS) $(ATS_OBJS) $(TEST_OBJS)
 	$(CC)  -o $@ $^ $(TEST_LDFLAGS)
 
 
+.PHONY: pre-install
+pre-install: remove
+	@if [ -d "${LDIR}" ];then		\
+		echo "Creating Library Path: ${LDIR}" && mkdir -pv ${LDIR};	\
+	fi
+
 .PHONY:	install
-install: remove
+install: pre-install
 	$(info Install ATS Service File ..........: ats.service in '$(SERVICEDIR)')
 	@if [ ${SYSVINIT} -eq 0 ];then															\
 		install --preserve-timestamps --owner=root --group=root --mode=640 --target-directory=${SERVICEDIR} ${SERVICE_PATH}/ats.service;	\
