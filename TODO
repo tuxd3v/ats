@@ -3,8 +3,6 @@ Improve rockspec to create a rock, so that it could be easilly downloaded. WIP
 Add support for SysVinit systems. not possible yet( needs a SysVinit supported OS.. Devuan ASCII )
 Create a new backend API, to be used for SysFs,pwm,i2c,1wire sensor readings, and writings. WIP
 
-
-
 v0.2.1 master
 Maintenence point version.. WIP
 Deprecate Completly, the profiles used for Fan behaviour. WIP
