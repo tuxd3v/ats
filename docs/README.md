@@ -15,6 +15,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 * [Install](#install)
 * [Run Test](#run-test)
 * [Version](#check-ats-version)
+* [Donations](#donations)
 * [Credits](#credits)
 
 ### Characteristics:
@@ -116,7 +117,25 @@ You can execute in **test mode**( to see state values ),
 Check which version you have installed:
  * `ats -v`
  * `ats --version`
- 
+
+### Support Project
+----
+This project is been made availlable by the eforts of a volunteer man only..
+To help this project, please, consider a donation..
+
+Magi Wallet:
+   * 96H3wSX8e5sqJ1tHpXjhJrppKhsLQEWFMz
+Monero Wallet:
+   * 47gzrS7JU5E7tUF9YcdgXw68DhbJokuHTWKSr42LcmU4RTFFvCoU8W7NDjauef5kGQY5WRZXfoVWENutt3afKv9YDufEgJx
+AEON Wallet:
+   * WmtL2wph84vb5inWpMoXFucwBmDtF4BsLLjWvP4LEd435tvjpfcUTjegSXKnrT3FjATzo8X8ouSwVArooxmauniP2TLKCXQdc
+VertCoin Wallet:
+   * vtc1qmck0q88enwneha75cpfcys6eyst4rnsr8h2uk8
+Ryo Wallet:
+   * RYoKsxn7kT4DZVagVtmTuT5wwvrQ2f38pJ8AcE2jcUyogcNVFZ2syeN
+BitCoin Wallet:
+   * 1GuBhkustzsCLUbFhRLcppp9Pf4KW9TxXQ
+
 ### Credits
 ----
 ATS             : tuxd3v
