@@ -120,8 +120,9 @@ Check which version you have installed:
 
 ### Donations
 ----
-This project is been made availlable by the eforts of a volunteer man only..
-To help this project, please, consider a donation..
+ATS project, is been made availlable by the eforts of a volunteer.
+
+To help improove this project, please, consider a donation..
 
 	* Magi Address    : 96H3wSX8e5sqJ1tHpXjhJrppKhsLQEWFMz
 	* Monero Address  : 47gzrS7JU5E7tUF9YcdgXw68DhbJokuHTWKSr42LcmU4RTFFvCoU8W7NDjauef5kGQY5WRZXfoVWENutt3afKv9YDufEgJx
