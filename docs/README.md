@@ -124,12 +124,12 @@ ATS project, is been made availlable by the eforts of a volunteer.
 
 To help improove this project, please, consider a donation..
 ```lua
- -  Magi Address    : 96H3wSX8e5sqJ1tHpXjhJrppKhsLQEWFMz
- -  Monero Address  : 47gzrS7JU5E7tUF9YcdgXw68DhbJokuHTWKSr42LcmU4RTFFvCoU8W7NDjauef5kGQY5WRZXfoVWENutt3afKv9YDufEgJx
- -  AEON Address    : WmtL2wph84vb5inWpMoXFucwBmDtF4BsLLjWvP4LEd435tvjpfcUTjegSXKnrT3FjATzo8X8ouSwVArooxmauniP2TLKCXQdc
- -  VertCoin Address: vtc1qmck0q88enwneha75cpfcys6eyst4rnsr8h2uk8
- -  Ryo Address     : RYoKsxn7kT4DZVagVtmTuT5wwvrQ2f38pJ8AcE2jcUyogcNVFZ2syeN
- -  BitCoin Address : 1GuBhkustzsCLUbFhRLcppp9Pf4KW9TxXQ
+ - Magi Address    : 96H3wSX8e5sqJ1tHpXjhJrppKhsLQEWFMz
+ - Monero Address  : 47gzrS7JU5E7tUF9YcdgXw68DhbJokuHTWKSr42LcmU4RTFFvCoU8W7NDjauef5kGQY5WRZXfoVWENutt3afKv9YDufEgJx
+ - AEON Address    : WmtL2wph84vb5inWpMoXFucwBmDtF4BsLLjWvP4LEd435tvjpfcUTjegSXKnrT3FjATzo8X8ouSwVArooxmauniP2TLKCXQdc
+ - VertCoin Address: vtc1qmck0q88enwneha75cpfcys6eyst4rnsr8h2uk8
+ - Ryo Address     : RYoKsxn7kT4DZVagVtmTuT5wwvrQ2f38pJ8AcE2jcUyogcNVFZ2syeN
+ - BitCoin Address : 1GuBhkustzsCLUbFhRLcppp9Pf4KW9TxXQ
 ```
 ### Credits
 ----
