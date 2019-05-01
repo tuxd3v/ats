@@ -1,15 +1,21 @@
 v0.2.2
 Improve rockspec to create a rock, so that it could be easilly downloaded. WIP
-
-v0.2.1
-Add support for SysVinit systems. WIP( needs a SysVinit supported OS.. Devuan ASCII )
+Add support for SysVinit systems. not possible yet( needs a SysVinit supported OS.. Devuan ASCII )
 Create a new backend API, to be used for SysFs,pwm,i2c,1wire sensor readings, and writings. WIP
 
-v0.2.0 - master
+
+
+v0.2.1 master
+Maintenence point version.. WIP
+Deprecate Completly, the profiles used for Fan behaviour. WIP
+Update /etc/ats.conf with changes made acordingly on profiles.. WIP
+Activate Fan 1st stage only inside active envelop, reported by Luke. WIP
+
+v0.2.0 - release
 Add option for 'allways on' - DONE
 Add structures, and funcionality to C backend, optimize them - Done( around 10.04us/Per_CPU_second or 0.001% CPU time )
 Clean all Lua FrontEnd, turn it more reable. Done
-Create config File /etc/ats.conf - DONE( it will be further improved in next version, and a new backedn API is been designed  )
+Create config File /etc/ats.conf - DONE( it will be further improved in next versions, and a new backedn API will be designed designed  )
 
 
 v0.1.8 - release
