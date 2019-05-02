@@ -120,9 +120,9 @@ Check which version you have installed:
 
 ### Donations
 ----
-ATS project, is been made availlable by the eforts of a volunteer.
+ATS project, is been made availlable by me, has a way to have a active cooling tool, for Our SBCs..
 
-To help improove this project, please, consider a donation..
+If you want to help this project, consider a donation..
 ```lua
  - Magi Address    : 96H3wSX8e5sqJ1tHpXjhJrppKhsLQEWFMz
  - Monero Address  : 47gzrS7JU5E7tUF9YcdgXw68DhbJokuHTWKSr42LcmU4RTFFvCoU8W7NDjauef5kGQY5WRZXfoVWENutt3afKv9YDufEgJx
