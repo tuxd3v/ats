@@ -64,9 +64,9 @@ To use ATS: First, you need to install its depedencies..
 	update-alternatives --install /usr/bin/lua lua /usr/bin/lua5.3 1
 	update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 1
 	apt-get install luarocks 
-	```
+     ```
 
-	Nota:
+   * Nota:
 	You can also use git, to download, ( if you want to install manually..step 3. ).
 
 ### Install
