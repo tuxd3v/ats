@@ -68,9 +68,11 @@ To use ATS: First, you need to install its depedencies..
    apt-get install luarocks  ```
  * Install Manually( method 3, in 'Install' section bellow )
    ```lua
-   apt-get install lua5.3 lua5.3-dev gcc make```
-      Nota:
-      You can also use git, to download, ( if you want to install manually..step 3. ).
+   apt-get install lua5.3 lua5.3-dev gcc make
+   
+   Nota:
+   You can also add git, to download the code..
+   ```
 
 ### Install
 ----
