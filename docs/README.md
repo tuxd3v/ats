@@ -108,9 +108,10 @@ Several independent Options: Master, Release and Manual.
 
 	Nov 23 01:43:10 rockpro64 systemd[1]: Started ATS - Active Thermal Service.
 
-#### Run Test
+#### Run Test/ Adjust Values
 ----
-You can execute in **test mode**( to see state values ),
+You can execute in **test mode**( to see state values, and configuration ),
+You can also edit '**/etc/ats.conf**', to tune for your cooling System, or preferences..
 
  1. Stop the service first:
     * `service ats stop`
