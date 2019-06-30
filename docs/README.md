@@ -111,7 +111,7 @@ Several independent Options: Master, Release and Manual.
 #### Run Test/Adjust Values
 ----
 You can execute in **test mode**( to see state values, and configuration ),
-you can also edit '**/etc/ats.conf**', to tune for your Cooling-System, or preferences..
+and also edit '**/etc/ats.conf**', to tune for your Cooling-System, or preferences..
 
  1. Stop the service first:
     * `service ats stop`
