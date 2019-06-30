@@ -61,10 +61,11 @@ To use ATS: First, you need to install its depedencies..
 ###### 1. Install Dependencies.
    * Install Automatically( method 1,2 in 'Install' section bellow )
      ```lua
-     apt-get install lua5.3 lua5.3-dev gcc make
-     update-alternatives --install /usr/bin/lua lua /usr/bin/lua5.3 1
-     update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 1
-     apt-get install luarocks```
+apt-get install lua5.3 lua5.3-dev gcc make
+update-alternatives --install /usr/bin/lua lua /usr/bin/lua5.3 1
+update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 1
+apt-get install luarocks
+```
    * Install Manually( method 3, in 'Install' section bellow )
      ```lua
      apt-get install lua5.3 lua5.3-dev gcc make
