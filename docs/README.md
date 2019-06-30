@@ -71,8 +71,8 @@ To use ATS: First, you need to install its depedencies..
    ```lua
    apt-get install lua5.3 lua5.3-dev gcc make
    ```
-   Nota:
-   You can also use git, to download, ( if you want to install manually..step 3. ).
+      Nota:
+      You can also use git, to download, ( if you want to install manually..step 3. ).
 
 ### Install
 ----
