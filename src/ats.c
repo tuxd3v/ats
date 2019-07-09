@@ -90,15 +90,15 @@ static void setTriggers( ats_t *self ){
 
 			} else if( i <= 10 ){
 				Qtimer[ i ]	= 250;
-				Rtimer[ i ]	= 0;
+				Rtimer[ i ]	= 1;
 
 			} else if( i <= 35 ){
 				Qtimer[ i ]	= 190;
-				Rtimer[ i ]	= 0;
+				Rtimer[ i ]	= 3;
 
 			} else {
 				Qtimer[ i ]	= 120;
-				Rtimer[ i ]	= 0;
+				Rtimer[ i ]	= 5;
 
 			}
 		} else if( i >= min_continuous_thermal_temp && i <= max_continuous_thermal_temp ){
