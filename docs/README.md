@@ -81,17 +81,11 @@ Several independent Options: Master, Release and Manual.
 
 ##### 1. Using Luarocks 
  a. Install from master( last code, but more prone to errors.. )
-    * ```lua
-    luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec
-    ```
+    * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
  b. Install by release, check in Releases tab( ie: v0.2.0 ):
-    * ```lua
-    luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.2-0.rockspec
-    ```
+    * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.2-0.rockspec`
  c. Remove using LuaRocks
-    * ```lua
-    luarocks remove ats
-    ```
+    * `luarocks remove ats`
 
 ##### 2. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
  1. Run 'all' target
