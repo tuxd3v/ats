@@ -12,7 +12,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 #### Table of contents
 * [Characteristics](#characteristics)
 * [Requirements](#requirements)
-* [Install](#install)
+* [Install](#install/remove)
 * [Run Test](#run-test)
 * [Version](#check-ats-version)
 * [Donations](#donations)
