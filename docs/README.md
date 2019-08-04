@@ -12,7 +12,7 @@ You can Adapt the file ats, if you want( its configured  for RockPro64 )
 #### Table of contents
 * [Characteristics](#characteristics)
 * [Requirements](#requirements)
-* [Install/Remove](#install)
+* [Install/Remove](#install-or-remove)
 * [Run Tests](#run-tests)
 * [Version](#check-ats-version)
 * [Donations](#donations)
@@ -75,7 +75,7 @@ To use ATS: First, you need to install its depedencies..
    You can also add git, to download the code..
    ```
 
-### Install/Remove
+### Install or Remove
 ----
 Several independent Options: Master, Release and Manual.
 
@@ -110,7 +110,7 @@ Several independent Options: Master, Release and Manual.
 
 	Nov 23 01:43:10 rockpro64 systemd[1]: Started ATS - Active Thermal Service.
 
-#### Run Tests/Adjust Values
+#### Run Tests
 ----
 You can execute in **test mode**( to see state values, and configuration ),
 and also edit '**/etc/ats.conf**', to tune for your Cooling-System, or preferences..
