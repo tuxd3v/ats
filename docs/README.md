@@ -79,22 +79,22 @@ To use ATS: First, you need to install its depedencies..
 ----
 Several independent Options: Master, Release and Manual.
 
-##### 1. Using Luarocks 
- a. Install from master( last code, but more prone to errors.. )
+##### A. Using Luarocks 
+ 1. Install from master( last code, but more prone to errors.. )
     * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-master-0.rockspec`
- b. Install by release, check in Releases tab( ie: v0.2.0 ):
+ 3. Install by release, check in Releases tab( ie: v0.2.0 ):
     * `luarocks build  https://raw.githubusercontent.com/tuxd3v/ats/master/ats-0.2-0.rockspec`
- c. Remove using LuaRocks
+ 3. Remove using LuaRocks
     * `luarocks remove ats`
 
-##### 2. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
- 1. Run 'all' target
+##### B. Compile/Install/Remove manually, using make ( need to download first the code ie: with git, by browser).
+ 1. Compile
     *  `make`
- 2. Run 'install' target
+ 2. Install
     * `make install`
- 3. Run 'purge' target( the downloaded code is removed, **not** the installed one.. )
+ 3. Remove the downloaded code..
     * `make purge`
- 4. Run 'remove' target( remove ats from system )
+ 4. Remove ats
     * `make remove`
 
 #### After install, verify the end of the output for something like:
