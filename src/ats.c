@@ -36,8 +36,8 @@ ats_t ats;
 
 /** Temperature Value( CPU or GPU ), which one is greater... */
 signed char temp;
-/** Fan Pwm Value */
-unsigned char pwm;
+/** Initial Fan Pwm Value set in ats Lua file.. */
+unsigned char pwm = 190;
 
 /* Timer Pointers to all pre-calculated values... */
 unsigned char *Pratio		= ats.profile.pwm_ratio + 30;
@@ -80,6 +80,7 @@ static void setTriggers( ats_t *self ){
 		if( i < min_continuous_thermal_temp ){
 
 			Pratio[ i ] = self->ABSOLUTE_MIN_PWM;
+			//Bellow -10°C, heat up the CPU[ -20°C, +80°C ]
 			if( i <= -10 ){
 				Qtimer[ i ]	= 360;
 				Rtimer[ i ]	= 0;
@@ -390,7 +391,7 @@ static void getThermal(){
 static void setPwm( unsigned char  value ){
 	FILE * pwm1 = NULL;
 	if( ! pwm ){
-		/* When stopped, it needs more power to start...give him 0.2 seconds to rotate poles a bit, so that would be bether for aplying bigger push,
+		/* When stopped, it needs more power to start...give him 0.2 seconds to rotate poles a bit, so that would be better for aplying bigger push,
 		 * In This Way, initial peak current needed to start fan is lower..
 		 */
 		/* to force recursion, and update PWM, in case of fail PWM is set to zero bellow, so that it will try again, in second call .. */
