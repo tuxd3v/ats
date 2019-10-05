@@ -87,11 +87,11 @@ static void setTriggers( ats_t *self ){
 
 			} else if( i <= 0 ){
 				Qtimer[ i ]	= 300;
-				Rtimer[ i ]	= 0;
+				Rtimer[ i ]	= 1;
 
 			} else if( i <= 10 ){
 				Qtimer[ i ]	= 250;
-				Rtimer[ i ]	= 1;
+				Rtimer[ i ]	= 2;
 
 			} else if( i <= 35 ){
 				Qtimer[ i ]	= 190;
