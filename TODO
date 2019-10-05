@@ -9,6 +9,7 @@ Deprecate Completly, the profiles used for Fan behaviour. WIP
 Update /etc/ats.conf with changes made acordingly on profiles.. WIP
 Activate Fan 1st stage only inside active envelop, reported by Luke. WIP
 Detect if /etc/ats,conf already exists, if Yes ask, if replace or not..see ISSUE#10 - To Be Done
+Fix synchronization problem when FAN set to ALWAYS_ON = true. DONE
 
 v0.2.0 - release
 Add option for 'allways on' - DONE
