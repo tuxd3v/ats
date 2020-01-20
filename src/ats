@@ -59,7 +59,7 @@ function getConditions()
 		if ( handle ~= nil )
 		then
 			handle:close()
-			SYSTEM.THERMAL0_CTL	= location
+			SYSTEM.THERMAL1_CTL	= location
 			state[ 2 ]		= 0
 			break
 		else
