@@ -44,10 +44,10 @@ function getConditions()
 		then
 			handle:close()
 			SYSTEM.THERMAL0_CTL = v
-			state[ "THERMAL0_CTL" ] == 0
+			state[ 1 ] == 0
 			break
 		else
-			state[ "THERMAL0_CTL" ] == 1
+			state[ 1 ] == 1
 		end
 	end
 	if state[ 1 ] == 1
@@ -60,10 +60,10 @@ function getConditions()
 		then
 			handle:close()
 			SYSTEM.THERMAL0_CTL = v
-			state[ "THERMAL1_CTL" ] == 0
+			state[ 2 ] == 0
 			break
 		else
-			state[ "THERMAL1_CTL" ] == 1
+			state[ 2 ] == 1
 		end
 	end
 	if state[ 2 ] == 1
@@ -76,11 +76,10 @@ function getConditions()
 		then
 			handle:close()
 			SYSTEM.PWM_CTL = v
-			state[ "PWM_CTL" ] == 0
+			state[ 3 ] == 0
 			break
 		else
-			state[ "PWM_CTL" ] == 1
-			state = 1
+			state[ 3 ] == 1
 		end
 	end
 	if state[ 3 ] == 1
