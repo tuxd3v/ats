@@ -37,9 +37,9 @@ function getConditions()
 		THERMAL1_CTL = 0,
 		PWM_CTL = 0
 	}
-	local handle
+	local handle = nil
 	for key, location in ipairs( SYSTEM.THERMAL0_CTL ) do
-	 	local handle = open( location , "r")
+	 	handle = open( location , "r")
 		if ( handle ~= nil )
 		then
 			handle:close()
