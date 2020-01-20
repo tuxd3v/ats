@@ -33,9 +33,9 @@ dofile("/etc/ats.conf")
 function getConditions()
 	local open   = io.open
 	local state  = {
-		THERMAL0_CTL,
-		THERMAL1_CTL,
-		PWM_CTL
+		THERMAL0_CTL = 0,
+		THERMAL1_CTL = 0,
+		PWM_CTL = 0
 	}
 	local handle
 	for k, v in ipairs( SYSTEM.THERMAL0_CTL ) do
@@ -44,13 +44,13 @@ function getConditions()
 		then
 			handle:close()
 			SYSTEM.THERMAL0_CTL = v
-			state[ 1 ] == 0
+			state[ 1 ] = 0
 			break
 		else
-			state[ 1 ] == 1
+			state[ 1 ] = 1
 		end
 	end
-	if state[ 1 ] == 1
+	if ( state[ 1 ] == 1 )
 	then
 			SYSTEM.THERMAL0_CTL = "ERROR"
 	end
@@ -60,13 +60,13 @@ function getConditions()
 		then
 			handle:close()
 			SYSTEM.THERMAL0_CTL = v
-			state[ 2 ] == 0
+			state[ 2 ] = 0
 			break
 		else
-			state[ 2 ] == 1
+			state[ 2 ] = 1
 		end
 	end
-	if state[ 2 ] == 1
+	if ( state[ 2 ] == 1 )
 	then
 			SYSTEM.THERMAL1_CTL = "ERROR"
 	end
@@ -76,13 +76,13 @@ function getConditions()
 		then
 			handle:close()
 			SYSTEM.PWM_CTL = v
-			state[ 3 ] == 0
+			state[ 3 ] = 0
 			break
 		else
-			state[ 3 ] == 1
+			state[ 3 ] = 1
 		end
 	end
-	if state[ 3 ] == 1
+	if ( state[ 3 ] == 1 )
 	then
 			SYSTEM.PWM_CTL	= "ERROR"
 	end
