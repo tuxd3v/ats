@@ -32,34 +32,67 @@ dofile("/etc/ats.conf")
 --
 function getConditions()
 	local open   = io.open
- 	local handle = open( SYSTEM.THERMAL0_CTL , "r")
- 	local state  = 0
-	if ( handle ~= nil )
-	then
-		handle:close()
-	else
-		SYSTEM.THERMAL0_CTL = "ERROR"
-		state = 1
+	local state  = {
+		THERMAL0_CTL,
+		THERMAL1_CTL,
+		PWM_CTL
+	}
+	local handle
+	for k, v in ipairs( SYSTEM.THERMAL0_CTL ) do
+	 	local handle = open( SYSTEM.THERMAL0_CTL , "r")
+		if ( handle ~= nil )
+		then
+			handle:close()
+			SYSTEM.THERMAL0_CTL = v
+			state[ "THERMAL0_CTL" ] == 0
+			break
+		else
+			state[ "THERMAL0_CTL" ] == 1
+		end
 	end
- 	handle = open( SYSTEM.THERMAL1_CTL , "r")
-	if ( handle ~= nil )
+	if state[ "THERMAL0_CTL" ] == 1
 	then
-		handle:close()
-	else
-		SYSTEM.THERMAL1_CTL = "ERROR"
-		state = 1
+			SYSTEM.THERMAL0_CTL = "ERROR"
 	end
- 	handle = open( SYSTEM.PWM_CTL , "r")
-	if ( handle ~= nil )
-	then
-		handle:close()
-	else
-		SYSTEM.PWM_CTL	= "ERROR"
-		state = 1
+	for k, v in ipairs( SYSTEM.THERMAL1_CTL ) do
+	 	handle = open( SYSTEM.THERMAL1_CTL , "r")
+		if ( handle ~= nil )
+		then
+			handle:close()
+			SYSTEM.THERMAL0_CTL = v
+			state[ "THERMAL1_CTL" ] == 0
+			break
+		else
+			state[ "THERMAL1_CTL" ] == 1
+		end
 	end
-	if( state == 1 )
+	if state[ "THERMAL1_CTL" ] == 1
 	then
-		return false
+			SYSTEM.THERMAL1_CTL = "ERROR"
+	end
+	for k, v in ipairs( SYSTEM.PWM_CTL ) do
+	 	handle = open( SYSTEM.PWM_CTL , "r")
+		if ( handle ~= nil )
+		then
+			handle:close()
+			SYSTEM.PWM_CTL = v
+			state[ "PWM_CTL" ] == 0
+			break
+		else
+			state[ "PWM_CTL" ] == 1
+			state = 1
+		end
+	end
+	if state[ "PWM_CTL" ] == 1
+	then
+			SYSTEM.PWM_CTL	= "ERROR"
+	end
+	-- report only in the end, to get "the full picture"
+	for k, v in ipairs( state ) do
+		if( state[ v ] == 1 )
+		then
+			return false
+		end
 	end
 	return true
 end
