@@ -38,13 +38,13 @@ function getConditions()
 		PWM_CTL = 0
 	}
 	local handle
-	for k, v in ipairs( SYSTEM.THERMAL0_CTL ) do
-	 	local handle = open( SYSTEM.THERMAL0_CTL , "r")
+	for key, location in ipairs( SYSTEM.THERMAL0_CTL ) do
+	 	local handle = open( location , "r")
 		if ( handle ~= nil )
 		then
 			handle:close()
-			SYSTEM.THERMAL0_CTL = v
-			state[ 1 ] = 0
+			SYSTEM.THERMAL0_CTL	= location
+			state[ 1 ]		= 0
 			break
 		else
 			state[ 1 ] = 1
@@ -54,13 +54,13 @@ function getConditions()
 	then
 			SYSTEM.THERMAL0_CTL = "ERROR"
 	end
-	for k, v in ipairs( SYSTEM.THERMAL1_CTL ) do
-	 	handle = open( SYSTEM.THERMAL1_CTL , "r")
+	for key, location in ipairs( SYSTEM.THERMAL1_CTL ) do
+	 	handle = open( location , "r")
 		if ( handle ~= nil )
 		then
 			handle:close()
-			SYSTEM.THERMAL0_CTL = v
-			state[ 2 ] = 0
+			SYSTEM.THERMAL0_CTL	= location
+			state[ 2 ]		= 0
 			break
 		else
 			state[ 2 ] = 1
@@ -70,13 +70,13 @@ function getConditions()
 	then
 			SYSTEM.THERMAL1_CTL = "ERROR"
 	end
-	for k, v in ipairs( SYSTEM.PWM_CTL ) do
-	 	handle = open( SYSTEM.PWM_CTL , "r")
+	for key, location in ipairs( SYSTEM.PWM_CTL ) do
+	 	handle = open( location , "r")
 		if ( handle ~= nil )
 		then
 			handle:close()
-			SYSTEM.PWM_CTL = v
-			state[ 3 ] = 0
+			SYSTEM.PWM_CTL	= location
+			state[ 3 ]	= 0
 			break
 		else
 			state[ 3 ] = 1
@@ -87,8 +87,8 @@ function getConditions()
 			SYSTEM.PWM_CTL	= "ERROR"
 	end
 	-- report only in the end, to get "the full picture"
-	for k, v in ipairs( state ) do
-		if( state[ v ] == 1 )
+	for key, value in ipairs( state ) do
+		if( state[ value ] == 1 )
 		then
 			return false
 		end
