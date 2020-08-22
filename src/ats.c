@@ -1,4 +1,3 @@
-
 /* I/O */
 #include <stdio.h>
 
@@ -19,8 +18,13 @@
 
 #include "../include/debug.h"
 #include "../include/ats.h"
-
-
+#include <stdio.h>      // standard input / output functions
+#include <stdlib.h>
+#include <string.h>     // string function definitions
+#include <unistd.h>     // UNIX standard function definitions
+#include <fcntl.h>      // File control definitions
+#include <errno.h>      // Error number definitions
+#include <termios.h>    // POSIX terminal control definitions
 /* Structure to hold all relevant information about ATS 
 *
 * Set ATS Constants..
@@ -48,6 +52,13 @@ unsigned short int *Rtimer	= ats.profile.run_timers + 30;
 **/
 char * thermal_ctl[ 2 ] = { NULL };
 char * pwm_ctl	= NULL;
+ 
+/*** Configure Srial Port  ***/
+int serial_port;
+struct termios tty;
+
+
+/* Flush Port, then applies attributes */
 
 /*** Thermal values readed..
 **/
@@ -149,6 +160,19 @@ static void setTriggers( ats_t *self ){
 * Function to initialize ATS Backend
 */
 static int initCore_c( lua_State *L ){
+	serial_port = open("/dev/ttyUSB0", O_RDWR);
+	if ( serial_port < 0 )
+	{
+		printf("Error %d opening  /dev/ttyUSB0 : %s", errno, strerror (errno));
+	}
+	tcgetattr(serial_port, &tty);
+	cfsetospeed (&tty, (speed_t)B115200);
+	cfsetispeed (&tty, (speed_t)B115200);
+	tcsetattr(serial_port, TCSANOW, &tty);
+	int n = write(serial_port, "1:254\n", 6);
+	printf("Info:   Serial Port %d\n",serial_port );
+	if(n!=6)
+		printf("error");
 	double number;
 	/* Get Lua Frontend STDout descriptor.. */
 	lua_getglobal( L, "io" );
@@ -389,7 +413,6 @@ static void getThermal(){
 /*** Set Fan PWM value[ unsigned char ]
 **/ 
 static void setPwm( unsigned char  value ){
-	FILE * pwm1 = NULL;
 	if( ! pwm ){
 		/* When stopped, it needs more power to start...give him 0.2 seconds to rotate poles a bit, so that would be better for aplying bigger push,
 		 * In This Way, initial peak current needed to start fan is lower..
@@ -402,16 +425,28 @@ static void setPwm( unsigned char  value ){
 		setPwm( 190 );
 		sleep( 1 );
 	}
-	pwm1 = fopen( pwm_ctl, "w" );
-	if ( pwm1 != NULL ){
-		if( fprintf( pwm1, "%d", value ) != 0 )
-			pwm = value;
-		/* could be dangerous...if not able to close the file open descriptor...will loop recursivelly until resources exausted.. FIXME */ 
-		if ( fclose( pwm1 ) != 0 )
-			pwm = 0;
-	}else{
-		  pwm = 0;
+	pwm = value;
+	int length = 4;
+	if(value > 9)
+		length = 5;
+	if (value > 99)
+		length = 6;
+	char out [length];
+  	sprintf(out, "1:%u", value);
+	out[length-1]='\n';
+	int n_written = 0,
+	spot = 0;
+
+	do {
+    		n_written = write( serial_port, &out[spot], length );
+    		spot += n_written;
+	} while (out[spot-1]!='\n' && n_written > 0 && spot < length);
+	if(spot != length )
+	{
+		fprintf(fstdout, "Error writing %u bytes, wrote %u bytes\n", length, spot);
+		pwm = 0;
 	}
+	fprintf(fstdout,"Written to %d : %s",serial_port, (char*) out);
 }
 
 /* pooling loop */
