@@ -497,14 +497,14 @@ static void setHddPwm(int hddtemp){
         if(spot != length )
         {
                 fprintf(fstdout, "ERROR:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
-				LOG(ERROR, "HDD SET")
+				LOG(ERROR, "HDD SET");
                 hddPwm = 0;
 		}
 		else {
 			hddPwm = pwm;
 			char message[length+20];
-			sprintf(out, "HDD: %u° set to %u", pwm, hddtemp)
-			LOG(INFO, message )
+			sprintf(message, "HDD: %u° set to %u", pwm, hddtemp);
+			LOG(INFO, message);
 		}
 
 }
@@ -543,16 +543,16 @@ static void setPwm( unsigned char  value ){
 	if(spot != length )
 	{
 		fprintf(fstdout, "ERROR:   CPU FAN writing %u bytes, wrote %u bytes\n", length, spot);
-		LOG(ERROR, "CPU SET")
+		LOG(ERROR, "CPU SET");
 		pwm = 0;
 	}
 	else {
 		char message[length + 20];
-		sprintf(out, "CPU: %u° set to %u", temp, value)
-			LOG(INFO, message)
+		sprintf(message, "CPU: %u° set to %u", temp, value);
+		LOG(INFO, message);
 	}
 }
-}
+
 
 /* pooling loop */
 static int loop_c( lua_State *L ){
