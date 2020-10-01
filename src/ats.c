@@ -583,7 +583,7 @@ static int loop_c( lua_State *L ){
             {
                 setHddPwm(currentHddTemp);
                 hddTemp= currentHddTemp;
-				char message[length + 20];
+				char message[24];
 				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
 				fprintf(fstdout, "Logging message");
 				LOG(INFO, message);
@@ -637,7 +637,7 @@ static int loop_c( lua_State *L ){
                         {
                                 setHddPwm(currentHddTemp);
                                 hddTemp= currentHddTemp;
-								char message[length + 20];
+								char message[24];
 								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
 								fprintf(fstdout, "Logging message");
 								LOG(INFO, message);
