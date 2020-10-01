@@ -99,7 +99,17 @@ int getMaxHddTemp(void) {
 
 }
 
-
+void log(char* message, int ltype) {
+	if(ltype==1)
+		LOG(INFO, message);
+	else if(type==2)
+		LOG(WARN, message);
+	else if(type==3)
+		LOG(ERROR, message);
+	else
+		LOG(INFO, message);
+	
+}
 
 /* Function to set quiet,run timers and pwm ratios */
 static void setTriggers( ats_t *self ){
@@ -192,6 +202,7 @@ static void setTriggers( ats_t *self ){
 * Function to initialize ATS Backend
 */
 static int initCore_c( lua_State *L ){
+
 	hddPwm = -1;
 	serial_port = open("/dev/ttyUSB0", O_RDWR);
 	if ( serial_port < 0 )
@@ -206,6 +217,10 @@ static int initCore_c( lua_State *L ){
 	printf("Info:   Serial Port %d\n",serial_port );
 	if(n!=6)
 		printf("error");
+
+
+	logfile = fopen(LOGPATH, "w");
+
 	double number;
 	/* Get Lua Frontend STDout descriptor.. */
 	lua_getglobal( L, "io" );
@@ -444,16 +459,16 @@ static void getThermal(){
 		temp = thermal_[ 1 ];
 }
 
-static void setHddPwm(int temp){
+static void setHddPwm(int hddtemp){
 	int pwm = 0;
-	if(temp == 0){
+	if(hddtemp == 0){
 		pwm = 255;
 	}
-	else if(temp > 36 && temp < 45)
+	else if(hddtemp > 36 && hddtemp < 45)
 	{
-		pwm = 21.65306*temp - 719.22449;
+		pwm = 21.65306* hddtemp - 719.22449;
 	}
-	else if(temp> 45){
+	else if(hddtemp > 45){
 		pwm = 255;
 
 	}
@@ -481,10 +496,16 @@ static void setHddPwm(int temp){
         } while (out[spot-1]!='\n' && n_written > 0 && spot < length);
         if(spot != length )
         {
-                fprintf(fstdout, "ERRRO:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
+                fprintf(fstdout, "ERROR:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
+				LOG(ERROR, "HDD SET")
                 hddPwm = 0;
-        }else
-		hddPwm=pwm;
+		}
+		else {
+			hddPwm = pwm;
+			char message[length+20];
+			sprintf(out, "HDD: %u° set to %u", pwm, hddtemp)
+			LOG(INFO, message )
+		}
 
 }
 
@@ -522,8 +543,15 @@ static void setPwm( unsigned char  value ){
 	if(spot != length )
 	{
 		fprintf(fstdout, "ERROR:   CPU FAN writing %u bytes, wrote %u bytes\n", length, spot);
+		LOG(ERROR, "CPU SET")
 		pwm = 0;
 	}
+	else {
+		char message[length + 20];
+		sprintf(out, "CPU: %u° set to %u", temp, value)
+			LOG(INFO, message)
+	}
+}
 }
 
 /* pooling loop */

@@ -5,6 +5,7 @@
 #include <inttypes.h> */
 /* ********************************  Declarations ******************** */
 
+
 typedef struct System	ats_t;
 	typedef struct Cooling	profile_t;
 
@@ -121,5 +122,10 @@ static int chkSymlink_c( lua_State * );
 /* Functions to be used by CTest frontend.. */
 int tinitCore( lua_State * );
 int tloop( lua_State * );
+
+
+#define LOG(X, Y) fprintf (logfile, #X ": Time:%s, File:%s(%d) " #Y  "\n", __TIMESTAMP__, __FILE__, __LINE__)
+static char* LOGPATH = "/var/log/ats.log"; 
+FILE* logfile; 
 
 #endif
