@@ -52,22 +52,54 @@ unsigned short int *Rtimer	= ats.profile.run_timers + 30;
 **/
 char * thermal_ctl[ 2 ] = { NULL };
 char * pwm_ctl	= NULL;
- 
+
 /*** Configure Srial Port  ***/
 int serial_port;
 struct termios tty;
 
-
-/* Flush Port, then applies attributes */
-
-/*** Thermal values readed..
-**/
+/* Read buffer Hdd temp*/
+#define BUFSIZE 4
+int hddPwm, hddTemp, currentHddTemp;
 
 /** CPU  Thermal Zone / GPU Thermal Zone, variables used by this backend */
 signed char thermal_[2];
 
 /** File Descriptors for stdout **/
 FILE * fstdout = NULL;
+
+int getMaxHddTemp(void) {
+    char* bash_cmd="lsblk -nd --output NAME -I 8 -d";
+    FILE *pipe, *tempPipe;
+    pipe = popen(bash_cmd, "r");
+
+    if (NULL == pipe) {
+        perror("pipe");
+        return 0;
+    }
+    char *buffer=malloc (sizeof (char) * BUFSIZE);
+    int temp =0, maxTemp = 0;
+    while(fgets(buffer,BUFSIZE, pipe ))
+    {
+        if(strlen(buffer)!=3)
+                continue;
+        char* cmd, *res;
+        cmd = malloc (sizeof (char) * 100);
+        res = malloc (sizeof (char) * 10);
+        sprintf(cmd,"smartctl -A /dev/%s | egrep Temperature_Celsius | awk '{print $10}'",buffer);
+        tempPipe = popen(cmd, "r");
+        if(fgets(res, 3, tempPipe)==NULL)
+		continue;
+	temp = atoi(res);
+        if(temp > maxTemp)
+                maxTemp = temp;
+    }
+
+    pclose(pipe);
+    return maxTemp;
+
+}
+
+
 
 /* Function to set quiet,run timers and pwm ratios */
 static void setTriggers( ats_t *self ){
@@ -160,6 +192,7 @@ static void setTriggers( ats_t *self ){
 * Function to initialize ATS Backend
 */
 static int initCore_c( lua_State *L ){
+	hddPwm = -1;
 	serial_port = open("/dev/ttyUSB0", O_RDWR);
 	if ( serial_port < 0 )
 	{
@@ -410,6 +443,51 @@ static void getThermal(){
 	else
 		temp = thermal_[ 1 ];
 }
+
+static void setHddPwm(int temp){
+	int pwm = 0;
+	if(temp == 0){
+		pwm = 255;
+	}
+	else if(temp > 36 && temp < 45)
+	{
+		pwm = 21.65306*temp - 719.22449;
+	}
+	else if(temp> 45){
+		pwm = 255;
+
+	}
+	if(pwm == hddPwm)
+		return;
+        int length = 4;
+        if(pwm > 9)
+                length = 5;
+        if (pwm > 99)
+                length = 6;
+	if(hddPwm == 0 && pwm !=0)
+	{
+		while(write( serial_port,"2:255\n", 6 )==0)
+		sleep(1);
+	}
+        char out [length];
+        sprintf(out, "2:%u", pwm);
+        out[length-1]='\n';
+        int n_written = 0,
+        spot = 0;
+
+        do {
+                n_written = write( serial_port, &out[spot], length );
+                spot += n_written;
+        } while (out[spot-1]!='\n' && n_written > 0 && spot < length);
+        if(spot != length )
+        {
+                fprintf(fstdout, "ERRRO:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
+                hddPwm = 0;
+        }else
+		hddPwm=pwm;
+
+}
+
 /*** Set Fan PWM value[ unsigned char ]
 **/ 
 static void setPwm( unsigned char  value ){
@@ -443,10 +521,9 @@ static void setPwm( unsigned char  value ){
 	} while (out[spot-1]!='\n' && n_written > 0 && spot < length);
 	if(spot != length )
 	{
-		fprintf(fstdout, "Error writing %u bytes, wrote %u bytes\n", length, spot);
+		fprintf(fstdout, "ERROR:   CPU FAN writing %u bytes, wrote %u bytes\n", length, spot);
 		pwm = 0;
 	}
-	fprintf(fstdout,"Written to %d : %s",serial_port, (char*) out);
 }
 
 /* pooling loop */
@@ -479,6 +556,21 @@ static int loop_c( lua_State *L ){
 			sleep( Qtimer[ temp ] );
 
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
+			currentHddTemp = getMaxHddTemp();
+			if(verbose)
+				fprintf(fstdout, "Current HDD temp: %d", currentHddTemp);
+                        if(currentHddTemp != hddTemp)
+                        {
+                                setHddPwm(currentHddTemp);
+                                hddTemp= currentHddTemp;
+				if(verbose)
+					fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
+                        }else 
+			{
+				if(verbose)
+					fprintf(fstdout, " -> Fan PWM unchanged\n");
+			}
+			
 			getThermal();
 
 			instant_ratio = Pratio[ temp ];
@@ -510,6 +602,20 @@ static int loop_c( lua_State *L ){
 		for(;;){
 
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
+			currentHddTemp = getMaxHddTemp();
+                        if(verbose)
+                                fprintf(fstdout, "Current HDD temp: %d", currentHddTemp);
+                        if(currentHddTemp != hddTemp)
+                        {
+                                setHddPwm(currentHddTemp);
+                                hddTemp= currentHddTemp;
+                                if(verbose)
+                                        fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
+                        }else
+                        {
+                                if(verbose)
+                                        fprintf(fstdout, " -> Fan PWM unchanged\n");
+                        }
 			getThermal();
 
 			instant_ratio = Pratio[ temp ];
