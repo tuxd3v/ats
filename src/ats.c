@@ -68,12 +68,6 @@ signed char thermal_[2];
 /** File Descriptors for stdout **/
 FILE * fstdout = NULL;
 
-void LOG(char* X, char* Y) {
-	fprintf(logfile, "%s: Time:%s, File:%s(%d) %s\n", X, __TIMESTAMP__, __FILE__, __LINE__, Y);
-	if(logfile == NULL)
-		fprintf(fstdout, "FILE LOG ERROR");
-}
-
 int getMaxHddTemp(void) {
     char* bash_cmd="lsblk -nd --output NAME -I 8 -d";
     FILE *pipe, *tempPipe;
