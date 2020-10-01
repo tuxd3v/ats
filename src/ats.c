@@ -99,18 +99,6 @@ int getMaxHddTemp(void) {
 
 }
 
-void log(char* message, int ltype) {
-	if(ltype==1)
-		LOG(INFO, message);
-	else if(type==2)
-		LOG(WARN, message);
-	else if(type==3)
-		LOG(ERROR, message);
-	else
-		LOG(INFO, message);
-	
-}
-
 /* Function to set quiet,run timers and pwm ratios */
 static void setTriggers( ats_t *self ){
 	fprintf( fstdout, "info:'Pratio' timers\n" );
