@@ -494,10 +494,7 @@ static void setHddPwm(int hddtemp){
 		}
 		else {
 			hddPwm = pwm;
-			char message[length+20];
-			sprintf(message, "HDD: %u° set to %u", pwm, hddtemp);
-			fprintf(fstdout, "Logging message");
-			LOG(INFO, message);
+
 		}
 
 }
@@ -578,18 +575,28 @@ static int loop_c( lua_State *L ){
 
 			/* Aquire  { CPU, GPU } -> THERMAL_{ 0, 1 } values */
 			currentHddTemp = getMaxHddTemp();
-			if(verbose)
-				fprintf(fstdout, "Current HDD temp: %d", currentHddTemp);
-                        if(currentHddTemp != hddTemp)
-                        {
-                                setHddPwm(currentHddTemp);
-                                hddTemp= currentHddTemp;
-				if(verbose)
-					fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
-                        }else 
+			if (verbose)
 			{
-				if(verbose)
+				fprintf(fstdout, "Current HDD temp: %d", currentHddTemp);
+			}
+            if(currentHddTemp != hddTemp)
+            {
+                setHddPwm(currentHddTemp);
+                hddTemp= currentHddTemp;
+				char message[length + 20];
+				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
+				fprintf(fstdout, "Logging message");
+				LOG(INFO, message);
+				if (verbose)
+				{
+					fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
+				}
+            }else 
+			{
+				if (verbose)
+				{
 					fprintf(fstdout, " -> Fan PWM unchanged\n");
+				}
 			}
 			
 			getThermal();
@@ -630,6 +637,10 @@ static int loop_c( lua_State *L ){
                         {
                                 setHddPwm(currentHddTemp);
                                 hddTemp= currentHddTemp;
+								char message[length + 20];
+								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
+								fprintf(fstdout, "Logging message");
+								LOG(INFO, message);
                                 if(verbose)
                                         fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
                         }else
