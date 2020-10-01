@@ -70,7 +70,8 @@ FILE * fstdout = NULL;
 
 void LOG(char* X, char* Y) {
 	fprintf(logfile, "%s: Time:%s, File:%s(%d) %s\n", X, __TIMESTAMP__, __FILE__, __LINE__, Y);
-	fprintf(fstdout, "FILE LOGGED");
+	if(logfile == NULL)
+		fprintf(fstdout, "FILE LOG ERROR");
 }
 
 int getMaxHddTemp(void) {
