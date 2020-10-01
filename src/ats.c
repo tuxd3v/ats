@@ -26,12 +26,6 @@
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definitions
 
-void LOG(char* X, char* Y) {
-	fprintf(logfile, "%s: Time:%s, File:%s(%d) %s\n", X, __TIMESTAMP__, __FILE__, __LINE__, Y);
-	fprintf(fstdout, "FILE LOGGED");
-}
-
-
 /* Structure to hold all relevant information about ATS 
 *
 * Set ATS Constants..
@@ -73,6 +67,11 @@ signed char thermal_[2];
 
 /** File Descriptors for stdout **/
 FILE * fstdout = NULL;
+
+void LOG(char* X, char* Y) {
+	fprintf(logfile, "%s: Time:%s, File:%s(%d) %s\n", X, __TIMESTAMP__, __FILE__, __LINE__, Y);
+	fprintf(fstdout, "FILE LOGGED");
+}
 
 int getMaxHddTemp(void) {
     char* bash_cmd="lsblk -nd --output NAME -I 8 -d";
