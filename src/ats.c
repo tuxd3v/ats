@@ -26,7 +26,10 @@
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definitions
 
-#define LOG(X, Y) fprintf (logfile, #X ": Time:%s, File:%s(%d) " #Y  "\n", __TIMESTAMP__, __FILE__, __LINE__)
+void LOG(X, Y) {
+	fprintf(logfile, #X ": Time:%s, File:%s(%d) " #Y  "\n", __TIMESTAMP__, __FILE__, __LINE__);
+	fprintf(fstdout, "FILE LOGGED");
+}
 
 
 /* Structure to hold all relevant information about ATS 
@@ -585,8 +588,6 @@ static int loop_c( lua_State *L ){
                 hddTemp= currentHddTemp;
 				char message[24];
 				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-				if(logfile== NULL)
-					fprintf(fstdout, " LOGILE ERRROR");
 				LOG(INFO, message);
 				if (verbose)
 				{
@@ -640,8 +641,6 @@ static int loop_c( lua_State *L ){
                                 hddTemp= currentHddTemp;
 								char message[24];
 								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-								if (logfile == NULL)
-									fprintf(fstdout, " LOGILE ERRROR");
 								LOG(INFO, message);
                                 if(verbose)
                                         fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
