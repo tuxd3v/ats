@@ -585,7 +585,8 @@ static int loop_c( lua_State *L ){
                 hddTemp= currentHddTemp;
 				char message[24];
 				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-				fprintf(fstdout, "Logging message");
+				if(logfile== NULL)
+					fprintf(fstdout, " LOGILE ERRROR");
 				LOG(INFO, message);
 				if (verbose)
 				{
@@ -639,7 +640,8 @@ static int loop_c( lua_State *L ){
                                 hddTemp= currentHddTemp;
 								char message[24];
 								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-								fprintf(fstdout, "Logging message");
+								if (logfile == NULL)
+									fprintf(fstdout, " LOGILE ERRROR");
 								LOG(INFO, message);
                                 if(verbose)
                                         fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
