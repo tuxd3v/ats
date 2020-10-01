@@ -491,7 +491,7 @@ static void setHddPwm(int hddtemp){
         if(spot != length )
         {
                 fprintf(fstdout, "ERROR:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
-				syslog(LOG_ERROR, "%s", "HDD SET");
+				syslog(LOG_ERR, "%s", "HDD SET");
                 hddPwm = 0;
 		}
 		else {
@@ -535,7 +535,7 @@ static void setPwm( unsigned char  value ){
 	if(spot != length )
 	{
 		fprintf(fstdout, "ERROR:   CPU FAN writing %u bytes, wrote %u bytes\n", length, spot);
-		syslog(LOG_ERROR, "%s", "CPU SET");
+		syslog(LOG_ERR, "%s", "CPU SET");
 		pwm = 0;
 	}
 	else {
