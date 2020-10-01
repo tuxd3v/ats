@@ -26,8 +26,8 @@
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definitions
 
-void LOG(X, Y) {
-	fprintf(logfile, #X ": Time:%s, File:%s(%d) " #Y  "\n", __TIMESTAMP__, __FILE__, __LINE__);
+void LOG(char* X, char* Y) {
+	fprintf(logfile, "%s: Time:%s, File:%s(%d) %s\n", X, __TIMESTAMP__, __FILE__, __LINE__, Y);
 	fprintf(fstdout, "FILE LOGGED");
 }
 
@@ -492,7 +492,7 @@ static void setHddPwm(int hddtemp){
         if(spot != length )
         {
                 fprintf(fstdout, "ERROR:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
-				LOG(ERROR, "HDD SET");
+				LOG("ERROR", "HDD SET");
                 hddPwm = 0;
 		}
 		else {
@@ -536,13 +536,13 @@ static void setPwm( unsigned char  value ){
 	if(spot != length )
 	{
 		fprintf(fstdout, "ERROR:   CPU FAN writing %u bytes, wrote %u bytes\n", length, spot);
-		LOG(ERROR, "CPU SET");
+		LOG("ERROR", "CPU SET");
 		pwm = 0;
 	}
 	else {
 		char message[length + 20];
 		sprintf(message, "CPU: %u° set to %u", temp, value);
-		LOG(INFO, message);
+		LOG("INFO", message);
 	}
 }
 
@@ -588,7 +588,7 @@ static int loop_c( lua_State *L ){
                 hddTemp= currentHddTemp;
 				char message[24];
 				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-				LOG(INFO, message);
+				LOG("INFO", message);
 				if (verbose)
 				{
 					fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
@@ -641,7 +641,7 @@ static int loop_c( lua_State *L ){
                                 hddTemp= currentHddTemp;
 								char message[24];
 								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-								LOG(INFO, message);
+								LOG("INFO", message);
                                 if(verbose)
                                         fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
                         }else
