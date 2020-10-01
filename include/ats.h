@@ -124,8 +124,4 @@ int tinitCore( lua_State * );
 int tloop( lua_State * );
 
 
-
-static char* LOGPATH = "/var/log/ats.log"; 
-FILE* logfile; 
-
 #endif

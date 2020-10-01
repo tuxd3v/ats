@@ -1,6 +1,6 @@
 /* I/O */
 #include <stdio.h>
-
+#include <syslog.h>
 /* for sleep/usleep*/
 #include <unistd.h>
 /* for symlink checks */
@@ -213,8 +213,7 @@ static int initCore_c( lua_State *L ){
 	if(n!=6)
 		printf("error");
 
-
-	logfile = fopen(LOGPATH, "w");
+	openlog("ats", 0, LOG_USER);
 
 	double number;
 	/* Get Lua Frontend STDout descriptor.. */
@@ -492,7 +491,7 @@ static void setHddPwm(int hddtemp){
         if(spot != length )
         {
                 fprintf(fstdout, "ERROR:   HDD FAN writing %u bytes, wrote %u bytes\n", length, spot);
-				LOG("ERROR", "HDD SET");
+				syslog(LOG_ERROR, "%s", "HDD SET");
                 hddPwm = 0;
 		}
 		else {
@@ -536,13 +535,13 @@ static void setPwm( unsigned char  value ){
 	if(spot != length )
 	{
 		fprintf(fstdout, "ERROR:   CPU FAN writing %u bytes, wrote %u bytes\n", length, spot);
-		LOG("ERROR", "CPU SET");
+		syslog(LOG_ERROR, "%s", "CPU SET");
 		pwm = 0;
 	}
 	else {
 		char message[length + 20];
 		sprintf(message, "CPU: %u° set to %u", temp, value);
-		LOG("INFO", message);
+		syslog(LOG_INFO, "%s", message);
 	}
 }
 
@@ -588,7 +587,7 @@ static int loop_c( lua_State *L ){
                 hddTemp= currentHddTemp;
 				char message[24];
 				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-				LOG("INFO", message);
+				syslog(LOG_INFO, "%s",  message);
 				if (verbose)
 				{
 					fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
@@ -641,7 +640,7 @@ static int loop_c( lua_State *L ){
                                 hddTemp= currentHddTemp;
 								char message[24];
 								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-								LOG("INFO", message);
+								syslog(LOG_INFO, "%s", message);
                                 if(verbose)
                                         fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
                         }else
