@@ -25,6 +25,10 @@
 #include <fcntl.h>      // File control definitions
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definitions
+
+#define LOG(X, Y) fprintf (logfile, #X ": Time:%s, File:%s(%d) " #Y  "\n", __TIMESTAMP__, __FILE__, __LINE__)
+
+
 /* Structure to hold all relevant information about ATS 
 *
 * Set ATS Constants..
@@ -492,6 +496,7 @@ static void setHddPwm(int hddtemp){
 			hddPwm = pwm;
 			char message[length+20];
 			sprintf(message, "HDD: %u° set to %u", pwm, hddtemp);
+			fprintf(fstdout, "Logging message");
 			LOG(INFO, message);
 		}
 

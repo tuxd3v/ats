@@ -124,7 +124,7 @@ int tinitCore( lua_State * );
 int tloop( lua_State * );
 
 
-#define LOG(X, Y) fprintf (logfile, #X ": Time:%s, File:%s(%d) " #Y  "\n", __TIMESTAMP__, __FILE__, __LINE__)
+
 static char* LOGPATH = "/var/log/ats.log"; 
 FILE* logfile; 
 
