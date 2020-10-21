@@ -31,7 +31,6 @@ MACHINE		:= $(shell uname -m)
 endif
 endif
 
-
  ## ATS Shared Library \
  #
 NAME		:= ats
@@ -104,6 +103,11 @@ else
 endif
 ifeq (,$(wildcard $(BINDIR)/.))
         $(error ATS Binary Folder: $(BINDIR), **NOT Detected**, ABORTING..)
+endif
+
+# Rsyslog Config File
+ifndef RSYSLOGCONFDIR
+        RSYSLOGCONFDIR	:= /etc/rsyslog.d
 endif
 # ATS Config File
 ifndef CONFDIR
@@ -180,6 +184,7 @@ SERVICE_PATH	:= systemd
 # Project config service relative path
 CONFIG_PATH	:= etc
 
+RSYSLOG_CONFIG_PATH := etc/rsyslog.d
 
 # TARGETs
 .PHONY: all
@@ -231,6 +236,8 @@ install: pre-install
 	@install --preserve-timestamps --owner=root --group=root --mode=550 --target-directory=${BINDIR} ${SRCS_PATH}/ats
 	$(info Install new ATS Library ...........: ${NAME}.so.${VERSION} in '${LDIR}')
 	@install --preserve-timestamps --owner=root --group=root --mode=440 --target-directory=${LDIR} ${NAME}.so.${VERSION}
+	$(info Install new Rsyslog Config ...........: 30-ats.config in '$(RSYSLOGCONFDIR)')
+	@install --preserve-timestamps --owner=root --group=root --mode=440 --target-directory=${RSYSLOGCONFDIR} ${RSYSLOG_CONFIG_PATH}/30-ats.conf
 	$(info Creating soname symLink ........: ${NAME}.so in '${LDIR}')
 	@if [ ${LUAROCKS} -eq 0 ];then					\
 		ln -s ${LDIR}/${NAME}.so.${VERSION} ${LDIR}/${NAME}.so;	\
