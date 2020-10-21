@@ -532,11 +532,7 @@ static void setPwm( unsigned char  value ){
 		syslog(LOG_ERR, "%s", "CPU SET");
 		pwm = 0;
 	}
-	else {
-		char message[length + 20];
-		sprintf(message, "CPU: %u° set to %u", temp, value);
-		syslog(LOG_INFO, "%s", message);
-	}
+	
 }
 
 
@@ -579,9 +575,7 @@ static int loop_c( lua_State *L ){
             {
                 setHddPwm(currentHddTemp);
                 hddTemp= currentHddTemp;
-				char message[24];
-				sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-				syslog(LOG_INFO, "%s",  message);
+
 				if (verbose)
 				{
 					fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
@@ -601,7 +595,9 @@ static int loop_c( lua_State *L ){
 			/* If temp doesn't change...don't update it..*/
 			if( instant_ratio != pwm )
 				setPwm( instant_ratio );
-
+			char message[100];
+			sprintf(message, "CPU: %u° set to %u, HDD: %u° set to %u", temp, pwm, currentHddTemp, hddPwm);
+			syslog(LOG_INFO, "%s", message);
 			/* Temp Above Threshold to ShutDown.. */
 			if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
 				/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
@@ -632,9 +628,6 @@ static int loop_c( lua_State *L ){
                         {
                                 setHddPwm(currentHddTemp);
                                 hddTemp= currentHddTemp;
-								char message[24];
-								sprintf(message, "HDD: %u° set to %u", currentHddTemp, hddPwm);
-								syslog(LOG_INFO, "%s", message);
                                 if(verbose)
                                         fprintf(fstdout, " -> Fan PWM set to %d\n", hddPwm);
                         }else
@@ -649,7 +642,9 @@ static int loop_c( lua_State *L ){
 			/* If temp doesn't change...don't update it..*/
 			if( instant_ratio != pwm )
 				setPwm( instant_ratio );
-
+			char message[100];
+			sprintf(message, "CPU: %u° set to %u, HDD: %u° set to %u", temp, pwm, currentHddTemp, hddPwm);
+			syslog(LOG_INFO, "%s", message);
 			/* Temp Above Threshold to ShutDown.. */
 			if( temp <= absolute_min_thermal_temp || temp >= absolute_max_thermal_temp ){
 				/*  Temp is Critically Above 'ABSOLUTE_MAX_THERMAL_TEMP' */
