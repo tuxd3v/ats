@@ -466,7 +466,12 @@ static int loop_c( lua_State *L ){
 																												thermal_[ 1 ],
 																												pwm );
 			/* Sleeping with Fan ON until next cycle */
-			sleep( Rtimer[ temp ] );
+			// sleep( Rtimer[ temp ] );
+            for (int i = 0; i< Rtimer[ temp ]; i++)
+            {
+                setPwm(instant_ratio);
+                sleep(1);
+            }
 
 			/* Stop Fan */
 			setPwm( 0 );
