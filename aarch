@@ -69,10 +69,10 @@ local manIdimplementer = {
 local manIdpart = {
 	-- ARM
 	{ mask = 0xff00fff0, val = 0x4100b760, id = "arm1176jzf-s"  },
-	{ mask = 0xff00fff0, val = 0x4100c090, id = "Cortex-A9"     },
 	{ mask = 0xff00fff0, val = 0x4100c070, id = "Cortex-A7"     },
-	{ mask = 0xff00fff0, val = 0x4100c0f0, id = "Cortex-A15"    },
+	{ mask = 0xff00fff0, val = 0x4100c090, id = "Cortex-A9"     },
 	{ mask = 0xff00fff0, val = 0x4100c0e0, id = "Cortex-A17"    },
+	{ mask = 0xff00fff0, val = 0x4100c0f0, id = "Cortex-A15"    },
 	{ mask = 0xff00fff0, val = 0x4100d030, id = "Cortex-A53"    },
 	{ mask = 0xff00fff0, val = 0x4100d040, id = "Cortex-A35"    },
 	{ mask = 0xff00fff0, val = 0x4100d050, id = "Cortex-A55"    },
@@ -85,8 +85,8 @@ local manIdpart = {
 	{ mask = 0xff00fff0, val = 0x4100d460, id = "Cortex-A510"   },
 	{ mask = 0xff00fff0, val = 0x4100d470, id = "Cortex-A710"   },
 	-- Broadcom
-	{ mask = 0xff00fff0, val = 0x42001000, id = "Brahma-B53" },
-	{ mask = 0xff00fff0, val = 0x42005160, id = "ThunderX2"  },
+	{ mask = 0xff00fff0, val = 0x42001000, id = "Brahma-B53"    },
+	{ mask = 0xff00fff0, val = 0x42005160, id = "ThunderX2"     },
 	-- Cavium
 	{ mask = 0xff00fff0, val = 0x43000a00, id = "ThunderX"       },
 	{ mask = 0xff00fff0, val = 0x43000a10, id = "ThunderX 88xx"  },
@@ -95,10 +95,10 @@ local manIdpart = {
 	{ mask = 0xff00fff0, val = 0x43000af0, id = "ThunderX2 99xx" },
 	-- Motorola
 	-- Nvidia
-	{ mask = 0xff00fff0, val = 0x4e000000, id = "Denver"      },
-	{ mask = 0xff00fff0, val = 0x4e000030, id = "Denver 2"    },
+	{ mask = 0xff00fff0, val = 0x4e000000, id = "Denver"	     },
+	{ mask = 0xff00fff0, val = 0x4e000030, id = "Denver 2"	     },
 	-- Applied Micro
-	{ mask = 0xff00fff0, val = 0x50000000, id = "X-Gene" },
+	{ mask = 0xff00fff0, val = 0x50000000, id = "X-Gene"	     },
 	-- Qualcomm
 	{ mask = 0xff00fff0, val = 0x51002010, id = "Kryo"           },
 	{ mask = 0xff00fff0, val = 0x51002050, id = "Kryo"           },
@@ -108,7 +108,7 @@ local manIdpart = {
 	{ mask = 0xff00fff0, val = 0x5100c000, id = "Falkor"         },
 	{ mask = 0xff00fff0, val = 0x5100c010, id = "Saphira"        },
 	-- Samsung
-	{ mask = 0xff00fff0, val = 0x53000010, id = "M1"       },
+	{ mask = 0xff00fff0, val = 0x53000010, id = "M1"		},
 	-- Apple
 	{ mask = 0xff00fff0, val = 0x61000010, id = "Cyclone"            },
 	{ mask = 0xff00fff0, val = 0x61000020, id = "Typhoon"            },
