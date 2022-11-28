@@ -468,8 +468,9 @@ static int loop_c( lua_State *L ){
 			/* Sleeping with Fan ON until next cycle */
 			sleep( Rtimer[ temp ] );
 
-			/* Stop Fan */
-			setPwm( 0 );
+			/* Stop Fan only if its running.. */
+			if( pwm )
+				setPwm( 0 );
 		}
 	}else{
 		for(;;){
