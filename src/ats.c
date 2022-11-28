@@ -390,7 +390,7 @@ static void getThermal(){
 **/ 
 static void setPwm( unsigned char  value ){
 	FILE * pwm1 = NULL;
-	if( ! pwm ){
+	if( ! pwm && value != 0){
 		/* When stopped, it needs more power to start...give him 0.2 seconds to rotate poles a bit, so that would be better for aplying bigger push,
 		 * In This Way, initial peak current needed to start fan is lower..
 		 */
