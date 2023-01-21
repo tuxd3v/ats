@@ -12,7 +12,7 @@ typedef struct System	ats_t;
 /* #define luaL_reg     luaL_Reg */
 
 /* Struct to Hold Profile Name*/
-struct Cooling {
+struct __attribute__((packed)) Cooling {
 	const char * name;
 	unsigned char nr;
 
@@ -51,7 +51,7 @@ struct Cooling {
 };
 /*static unsigned char getProfile_pwm( ats_t *, unsigned char );*/
 
-struct System {
+struct __attribute__((packed)) System {
 
 	/*** Board Specs..
 	**/
